@@ -1,0 +1,64 @@
+// gltf.scene.traverse(function (child) {
+            //     if (child.isObject3D && child.name.startsWith('R') || child.isObject3D && child.name.startsWith('Mid') || child.isObject3D && child.name.startsWith('O') ) {  // Проверяем, что объект является экземпляром THREE.Object3D
+            //     console.log(child.name)}});  // Выводим имя объекта
+
+//objects.forEach(nameOb => {console.log(nameOb[0].name)})
+
+
+    for (var i = Objects.length - 1; i >= 0; i--) {
+        console.log(Objects[i].name)
+    }
+
+function highLightLayer(normal, intersectObject) {
+    const cooridnate_comparison = 0.01; // Порог сравнения координат
+    console.log(selectedObject.material.emissive) // выводит "Color {r: 0.05..., g: 0, b: 1, isColor: True}"
+
+    // Определяем ось для сравнения в зависимости от нормали
+    let axis;
+    if (Math.abs(normal.x) > cooridnate_comparison) axis = 'x';
+    else if (Math.abs(normal.y) > cooridnate_comparison) axis = 'y';
+    else if (Math.abs(normal.z) > cooridnate_comparison) axis = 'z';
+    else return; // Если нормаль не определяет направление, прерываем выполнение
+
+    // Фильтруем объекты по нужной координате
+    const selectedObjects = Objects.filter(object => 
+        Math.abs(object.position[axis] - intersectObject.position[axis]) < cooridnate_comparison
+    );
+    console.log(selectedObjects)// выводит (9) [Group, Group, Group, Group, Mash, Group, Group, Group, Group]
+
+    // Применяем эмиссию ко всем отобранным объектам
+    selectedObjects.forEach(object => {
+        // если это группа то обработка дочерних элементов
+        if (object.isGroup) {
+            object.children.forEach(child => ApplyEmissiveToObject(child))
+        } else {
+            ApplyEmissiveToObject(object)
+        }
+    });
+
+    // функция применения эмиссии
+    function ApplyEmissiveToObject(object){
+        if (Array.isArray(object.material)) {
+            console.log("Множества материалов обнаружено: ", object.material)
+            object.material.forEach(mater => ApplyEmissive(mater))
+        } else if (object.material) {
+            ApplyEmissive(object.material)
+        } else {
+            console.log("Материал не найден", object)
+        }
+    }
+
+    // функция применеия материала к эммисии
+    function ApplyEmissive(material) {
+        if (material && material.emissive) {
+            material.emissive.setHex(0x0f00ff)
+        } else {
+            console.log("Материал не имеет эмиссии", material)
+        }
+    }
+}
+
+
+function resetHighLight(object) {
+    object.material.emissive.setHex(0x000000)
+}
