@@ -10,30 +10,9 @@ export let scene, camera, controlsPointer, observerCamera, cameraPlayer, rendere
 export let CurrentActiveCam = 'observer'
 let stats
 let Planegeometry, Planematerial, PlaneCube;
-let selectedface = null;
-let selectedObject = null;
-let flash_speed = 2; // скорость мигания
-let emissiveMin = 0; // минимальная интенсивность
-let emissiveMax = 1; // максимальная интенсивность
-let flash_on = false; // флаг мерцания
-const loaderGLTF = new GLTFLoader();
-//const bodies = []; // массив для физических тел
-const objects = []; // двумерный массив
 export const Objects = []; // одномерный массив с объектами
-let raycaster = new THREE.Raycaster();
-let rotationGroup = [];
-let isDragging = false;
-let previousMousePosition = { x: 0, y: 0 };
-let cubesToRotate = [];
-let selectedNormal = null; // Нормаль выбранной грани для вращения
-let mouse = new THREE.Vector2();
 let textureLoader = new THREE.TextureLoader();
 let texture_grass = textureLoader.load("https://threejs.org/examples/textures/terrain/grasslight-big.jpg");
-let scale = 1;
-let MouseXplayer = 0;
-let MouseYplayer = 0;
-let playerModel; // Модель игрока
-let playerSpeed = 0.35; // Скорость движения игрока
 const keys = {}; // Состояние клавиш
 document.getElementById('menu_settings').style.display = 'none'
 
@@ -170,7 +149,7 @@ function startworld(){
 
 window.addEventListener('load', () => {
     initThree();
-    initCube(scene, renderer, controls, controlsPointer, camera, world);
+    initCube(scene, world);
     initPlayer(scene, renderer, controls, controlsPointer);
     startworld(world);
 })

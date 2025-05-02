@@ -124,7 +124,7 @@ export function checkFpsHit(){
     return raycaster.intersectObjects(Objects, true)[0] || null        
 }
 
-export function initCube(sceneArg, rendererArg, controlsArg, controlsPointerArg, cameraArg, worldArg) {
+export function initCube(sceneArg, worldArg) {
     scene = sceneArg;
     world = worldArg;
     
