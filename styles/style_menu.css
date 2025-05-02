@@ -10,6 +10,7 @@
     background-color: rgba(0, 0, 0, 0.4);
     padding: 0.5px;
     font-family: 'Times New Roman', Times, serif;
+    pointer-events: none;
 }
 
 body {
@@ -78,4 +79,5 @@ canvas {
  top: 50px;
  color: white;
  font-size: 25px;
+ pointer-events: none;
 }
