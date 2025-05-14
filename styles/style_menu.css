@@ -8,7 +8,7 @@
     color: white;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.4);
-    padding: 0.5px;
+    padding: 2.5px;
     font-family: 'Times New Roman', Times, serif;
     pointer-events: none;
 }
@@ -76,8 +76,8 @@ canvas {
 #OrbitCon{
  position: absolute;
  left: 90px;
- top: 50px;
+ top: 70px;
  color: white;
- font-size: 25px;
+ font-size: 20px;
  pointer-events: none;
 }
