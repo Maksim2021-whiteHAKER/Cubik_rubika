@@ -3,28 +3,22 @@ import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cann
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { camera, controls, CurrentActiveCam } from './index.js';
 
-let Planegeometry, Planematerial, PlaneCube
 let scene;
 export let world;
-let selectedface = null;
 let selectedObject = null;
-let flash_speed = 2; // скорость мигания
-let emissiveMin = 0; // минимальная интенсивность
-let emissiveMax = 1; // максимальная интенсивность
-let flash_on = false; // флаг мерцания
+let marker_on = false; // флаг маркера
 const loaderGLTF = new GLTFLoader();
 export const bodies = []; // массив для физических тел
-const objects = []; // двумерный массив
 const Objects = []; // одномерный массив с объектами
 let raycaster = new THREE.Raycaster();
-let rotationGroup = [];
-let isDragging = false;
+let rotationGroup = null;
 let previousMousePosition = { x: 0, y: 0 };
 let cubesToRotate = [];
 let selectedNormal = null; // Нормаль выбранной грани для вращения
 export let mouse = new THREE.Vector2();
 const center = new THREE.Vector2(); // центр экрана 0, 0
 let arrowHelper = null;
+let progressArrows = []
 
 export const originalMaterials = new Map();
 
@@ -44,7 +38,6 @@ const validGroups = [
 let isRotating = false;
 let startMousePosition = new THREE.Vector2();
 let rotationAxis = new THREE.Vector3();
-let threerotationGroup = new THREE.Group();
 
 // для обозначения выбраного кубика
 let cursorSelected = document.createElement('div');
@@ -53,53 +46,167 @@ document.body.appendChild(cursorSelected)
 
 // функции событий
 function handleGlobalMouse(event){
-    console.log('hgMClick: ', event)
-    // обработка только ПКМ и ЛКМ
-    
-    // блок контекс-меню для ПКМ
+    console.log('hgMClick: ', event)    
+    // блок контекс-меню для ПКМ и вызов общего отработчика
     if (event.button === 2) event.preventDefault();
-
-    // вызов общего отработчика
     handleCubeClick(event);
 }
 
-// Измените функцию handleGlobalMouseMove
+let mouseHistory = [];
 function handleGlobalMouseMove(event) {
     if (!isRotating || !rotationGroup) return;
-        
-    const currentMousePosition = new THREE.Vector2(
-        (event.clientX / window.innerWidth) * 2 - 1,
-        -(event.clientY / window.innerHeight) * 2 + 1
+
+    const currentMousePosition = new THREE.Vector2(event.clientX, event.clientY);
+
+    // Сглаживание: храним последние 5 позиций мыши
+    mouseHistory.push(currentMousePosition.clone());
+    if (mouseHistory.length > 5) mouseHistory.shift();
+
+    // Вычисляем среднюю позицию
+    const avgMousePosition = new THREE.Vector2(0, 0);
+    mouseHistory.forEach(pos => avgMousePosition.add(pos));
+    avgMousePosition.divideScalar(mouseHistory.length);
+
+    const delta = avgMousePosition.clone().sub(startMousePosition);
+
+    // Порог для игнорирования мелких движений
+    const movementThreshold = 3;
+    if (delta.length() < movementThreshold) return;
+
+    // Определяем доминирующую ось движения мыши
+    const axisThreshold = 1.5;
+    let dominantAxis = 'none';
+    if (Math.abs(delta.x) > Math.abs(delta.y) * axisThreshold) {
+        dominantAxis = 'x';
+        delta.y = 0;
+    } else if (Math.abs(delta.y) > Math.abs(delta.x) * axisThreshold) {
+        dominantAxis = 'y';
+        delta.x = 0;
+    } else {
+        return; // Игнорируем нечёткие движения
+    }
+
+    // Вычисляем угол вращения
+    const rotationSpeed = 0.015;
+    let rotationAngle = delta.length() * rotationSpeed;
+
+    // Определяем направление движения мыши
+    const mouseDir = delta.clone().normalize();
+
+    // Получаем векторы направления камеры
+    const cameraDir = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+    const cameraUp = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+    const cameraRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+
+    // Определяем направление вращения
+    let direction = 0;
+    if (Math.abs(rotationAxis.x) > 0.9) {
+        // Вращение по x (боковые слои, например, левая/правая грань)
+        if (dominantAxis === 'y') {
+            // Вертикальное движение: вращение вверх/вниз
+            direction = -mouseDir.y * Math.sign(rotationAxis.x) * Math.sign(cameraRight.dot(new THREE.Vector3(1, 0, 0)));
+        } else if (dominantAxis === 'x') {
+            // Горизонтальное движение: вращение влево/вправо
+            direction = mouseDir.x * Math.sign(rotationAxis.x) * Math.sign(cameraDir.dot(new THREE.Vector3(0, 0, -1)));
+        }
+    } else if (Math.abs(rotationAxis.y) > 0.9) {
+        // Вращение по y (верх/низ)
+        if (dominantAxis === 'x') {
+            // Горизонтальное движение: вращение влево/вправо
+            direction = mouseDir.x * Math.sign(rotationAxis.y) * Math.sign(cameraRight.dot(new THREE.Vector3(1, 0, 0)));
+        } else if (dominantAxis === 'y') {
+            // Вертикальное движение: вращение вверх/вниз
+            direction = -mouseDir.y * Math.sign(rotationAxis.y) * Math.sign(cameraUp.dot(new THREE.Vector3(0, 1, 0)));
+        }
+    } else if (Math.abs(rotationAxis.z) > 0.9) {
+        // Вращение по z (перед/зад)
+        if (dominantAxis === 'x') {
+            // Горизонтальное движение: вращение влево/вправо
+            direction = -mouseDir.x * Math.sign(rotationAxis.z) * Math.sign(cameraUp.dot(new THREE.Vector3(0, 1, 0)));
+        } else if (dominantAxis === 'y') {
+            // Вертикальное движение: вращение вверх/вниз
+            direction = mouseDir.y * Math.sign(rotationAxis.z) * Math.sign(cameraRight.dot(new THREE.Vector3(1, 0, 0)));
+        }
+    }
+
+    rotationAngle *= Math.sign(direction);
+    if (Math.abs(rotationAngle) < 0.001) return;
+
+    // Применяем вращение
+    rotationGroup.rotateOnAxis(rotationAxis, rotationAngle);
+
+    // Обновляем стрелки прогресса
+    if (typeof updateProgressArrows === 'function') {
+        updateProgressArrows(rotationAngle);
+    }
+
+    // Обновляем начальную позицию
+    startMousePosition.copy(avgMousePosition);
+
+    // Отладка
+    console.log(`Движение мыши: delta=${delta.x},${delta.y}, dominantAxis=${dominantAxis}, direction=${direction}, angle=${rotationAngle}, axis=${rotationAxis.toArray()}, degrees=${rotationAngle * 180 / Math.PI}`);
+}
+
+function updateProgressArrows(currentAngle) {
+    // Удаляем старые стрелки
+    progressArrows.forEach(arrow => scene.remove(arrow));
+    progressArrows = [];
+
+    // Вычисляем прогресс (0–1) до ближайшего угла 90°
+    const targetAngle = Math.round(currentAngle / (Math.PI / 2)) * (Math.PI / 2);
+    const progress = Math.min(Math.abs(currentAngle) / (Math.PI / 2), 1);
+
+    // Определяем цвета
+    const startColor = new THREE.Color(0xff0000); // Красный
+    const endColor = new THREE.Color(0x00ff00);   // Зелёный
+    const arrowColor = startColor.clone().lerp(endColor, progress);
+
+    // Создаём две стрелки
+    const arrowLength = 5 + progress * 2; // Длина от 1 до 3
+    // Положительная стрелка
+    const arrow1 = new THREE.ArrowHelper(
+        rotationAxis,
+        rotationGroup.position,
+        arrowLength,
+        arrowColor.getHex(),
+        0.3,
+        0.1
     );
-    
-    const delta = currentMousePosition.clone().sub(startMousePosition);
-    const rotationAngle = delta.length() * Math.PI;
-    
-    if (rotationAngle > 0) {
-        rotationGroup.rotation.set(0, 0, 0);
-        rotationGroup.rotateOnAxis(rotationAxis, delta.x > 0 ? rotationAngle : -rotationAngle);
-    }   
+    scene.add(arrow1);
+    progressArrows.push(arrow1);
+
+    // Отрицательная стрелка
+    const arrow2 = new THREE.ArrowHelper(
+        rotationAxis.clone().negate(),
+        rotationGroup.position,
+        arrowLength,
+        arrowColor.getHex(),
+        0.3,
+        0.1
+    );
+    scene.add(arrow2);
+    progressArrows.push(arrow2);
 }
 
 function handleGlobalMouseUp(event){
     if (!isRotating) return;
         
     // Вычисляем ближайший угол 90 градусов
-    const angle = rotationGroup.rotation.toVector3().dot(rotationAxis);
-    const targetAngle = Math.round(angle / (Math.PI/2)) * (Math.PI/2);
-    const deltaAngle = targetAngle - angle;
+    const currentAngle = rotationGroup.rotation.toVector3().dot(rotationAxis);
+    const targetAngle = Math.round(currentAngle / (Math.PI/2)) * (Math.PI/2);
     
     // Анимация завершения вращения
     const duration = 300; // ms
     const startTime = performance.now();
     
     function animateCompletion(currentTime) {
+        if (!rotationGroup) return;
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const currentDelta = deltaAngle * progress;
+        const angle = currentAngle + (targetAngle - currentAngle) * progress;
         
         rotationGroup.rotation.set(0, 0, 0);
-        rotationGroup.rotateOnAxis(rotationAxis, angle + currentDelta);
+        rotationGroup.rotateOnAxis(rotationAxis, angle);
         
         if (progress < 1) {
             requestAnimationFrame(animateCompletion);
@@ -116,7 +223,6 @@ window.addEventListener('mousedown', handleGlobalMouse)
 window.addEventListener('mousemove', handleGlobalMouseMove);
 window.addEventListener('mouseup',   handleGlobalMouseUp);
 window.addEventListener('contextmenu', (event)=> event.preventDefault())
-
 
 export function checkFpsHit(){
     if (CurrentActiveCam !== 'player') return null;
@@ -141,21 +247,18 @@ export function initCube(sceneArg, worldArg) {
                     if (mesh.isMesh) {
                         // Глубокое клонирование материала
                         const clonedMaterial = mesh.material.clone();
-                        
                         // Сохраняем все важные свойства
                         if (mesh.material.emissive) {
                             clonedMaterial.emissive = mesh.material.emissive.clone();
                             clonedMaterial.emissiveIntensity = mesh.material.emissiveIntensity;
                         }
-                        
                         // Сохраняем текстуры
-                        if (mesh.material.map) clonedMaterial.map = mesh.material.map;
-                        
+                        if (mesh.material.map) clonedMaterial.map = mesh.material.map;                   
                         originalMaterials.set(mesh.uuid, clonedMaterial);
-
                         // Настройка свойств меша
                         mesh.castShadow = true;
                         mesh.material.emissiveIntensity = 0;
+                        mesh.geometry.computeVertexNormals()                        
                     }
                 });
                 Objects.push(child);
@@ -189,11 +292,11 @@ export function initCannon() {
     world.addBody(groundBody);
 }
 
+// функция получения кубов в слое (Размер одного кубика = 1)
 function getCubesInLayer(normal, clickedObject) {
     const layerCubes = [];
     const threshold = 0.9;
-//  const cubeSize = 1.0; // Размер одного кубика
-    
+
     const clickedPos = new THREE.Vector3();
     clickedObject.getWorldPosition(clickedPos);
 
@@ -207,60 +310,111 @@ function getCubesInLayer(normal, clickedObject) {
     Objects.forEach(cube => {
         const cubePos = new THREE.Vector3();
         cube.getWorldPosition(cubePos);
-
-        if (Math.round(cubePos[axis]) === layerCoord){
+        if (Math.abs(cubePos[axis] - layerCoord) < 0.1){
             layerCubes.push(cube)
         }       
-     
     });
     
+    console.log(`Слой по оси: ${axis}, координата: ${layerCoord}, кубиков: ${layerCubes.length}`)
     return { cubes: layerCubes };
 }
 
-function handleCubeClick(event){
-    console.log('hCubeClick: ', 'isRotating: '+isRotating,'Objects.length: '+Objects.length)
+function handleCubeClick(event) {
+    console.log('hCubeClick: ', 'isRotating: ' + isRotating, 'Objects.length: ' + Objects.length);
     if (!Objects.length) return;
 
-    const isRotationAction = event.button === 0
+    const isRotationAction = event.button === 0;
 
-    // устанавливаем мышь(mouse) в зависимости от камеры
-    if (CurrentActiveCam === 'player'){
-        mouse.copy(center)
+    // Устанавливаем мышь (mouse) в зависимости от камеры
+    if (CurrentActiveCam === 'player') {
+        mouse.copy(center);
     } else {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
     }
+    console.log("Координаты мыши: ", mouse);
 
-    raycaster.setFromCamera(mouse, camera);   
+    raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(Objects, true);
 
     if (intersects.length > 0) {
         const intersect = intersects[0];
 
-        // выделение/сброс выделения
+        // Выделение/сброс выделения
         if (selectedObject) {
             selectedObject.material.emissive.setHex(0x000000);
-            flash_on = false;
+            marker_on = false;
         }
-        
-        // выделение нового объекта
+
+        // Выделение нового объекта
         selectedObject = intersect.object;
         selectedObject.material.emissive.setHex(isRotationAction ? 0xff0000 : 0x0f00ff);
-        flash_on = !isRotationAction;
+        marker_on = !isRotationAction;
 
-        // вращение слоя 
-        console.log('проверка на истиность: ',isRotationAction && intersect.face && intersect.face.normal)
+        // Вращение слоя
         if (isRotationAction && intersect.face && intersect.face.normal) {
-            console.log('Начинаем вращение. Нормаль: ', intersect.face.normal)
-            startMousePosition.set(event.clientX, event.clientY)
-            rotateLayer(intersect.object, intersect.face.normal);
+            console.log('Начинаем вращение. Нормаль: ', intersect.face.normal);
+            // Преобразование локальной нормали в глобальную
+            const localNormal = intersect.face.normal.clone();
+            const worldNormal = localNormal.applyMatrix4(intersect.object.matrixWorld).normalize();
+
+            // Позиция клика
+            const clickedPos = intersect.point; // Используем точку пересечения
+
+            // Определяем ось вращения на основе позиции клика
+            let alignedNormal;
+            let axis;
+            let layerCoord;
+
+            // Определяем, какой слой выбран
+            if (Math.abs(clickedPos.y) > 0.9) {
+                // Верхний или нижний слой (y = ±1)
+                axis = new THREE.Vector3(0, Math.sign(clickedPos.y), 0); // [0, 1, 0] или [0, -1, 0]
+                layerCoord = Math.round(clickedPos.y);
+                alignedNormal = axis.clone();
+            } else if (Math.abs(clickedPos.x) > 0.9) {
+                // Боковой слой (x = ±1)
+                axis = new THREE.Vector3(Math.sign(clickedPos.x), 0, 0); // [1, 0, 0] или [-1, 0, 0]
+                layerCoord = Math.round(clickedPos.x);
+                alignedNormal = axis.clone();
+            } else if (Math.abs(clickedPos.z) > 0.9) {
+                // Передний или задний слой (z = ±1)
+                axis = new THREE.Vector3(0, 0, Math.sign(clickedPos.z)); // [0, 0, 1] или [0, 0, -1]
+                layerCoord = Math.round(clickedPos.z);
+                alignedNormal = axis.clone();
+            } else {
+                // Средний слой или неопределённый
+                // Используем нормаль, если клик не на грани
+                const absX = Math.abs(worldNormal.x);
+                const absY = Math.abs(worldNormal.y);
+                const absZ = Math.abs(worldNormal.z);
+                alignedNormal = new THREE.Vector3(
+                    absX > absY && absX > absZ ? Math.sign(worldNormal.x) : 0,
+                    absY > absX && absY > absZ ? Math.sign(worldNormal.y) : 0,
+                    absZ > absX && absZ > absY ? Math.sign(worldNormal.z) : 0
+                ).normalize();
+                axis = alignedNormal.clone();
+                layerCoord = Math.round(clickedPos.x * axis.x + clickedPos.y * axis.y + clickedPos.z * axis.z);
+            }
+
+            console.log("Инфо", {
+                "Глобальная нормаль: ": worldNormal.toArray(),
+                "Выравненная нормаль: ": alignedNormal.toArray(),
+                "Координаты нажатия: ": clickedPos.toArray(),
+                "Ось вращения: ": axis.toArray(),
+                "Координата слоя: ": layerCoord
+            });
+
+            startMousePosition.set(event.clientX, event.clientY);
+            rotateLayer(intersect.object, axis);
         }
-        
-        if (isRotationAction) flashobject();
+        if (isRotationAction) markerobject();
+    } else {
+        console.log("Пересечений с объектами не найдено");
     }
 }
 
-function flashobject() {
+function markerobject() {
     if (selectedObject && selectedObject.material && selectedObject.material.emissive) {
         if (CurrentActiveCam === 'observer'){
             let PosCube = new THREE.Vector3();
@@ -278,8 +432,8 @@ function flashobject() {
             cursorSelected.style.top  = `${y+50}px`;
             cursorSelected.style.display = 'block';
             
-            if (flash_on) {
-                requestAnimationFrame(flashobject);
+            if (marker_on) {
+                requestAnimationFrame(markerobject);
             }
         }
     }
@@ -289,35 +443,40 @@ function rotateLayer(object, normal) {
     if (isRotating || !object.parent) return;
     console.log('Вращение🔃: ', {
         object: object.name,
-        normal: {x: normal.x, y: normal.y, z: normal.z},
-        camMode: CurrentActiveCam
+        normal: { x: normal.x, y: normal.y, z: normal.z },
+        camMode: CurrentActiveCam,
+        CubesInLayer: cubesToRotate.length
     });
-    
+
     const layerData = getCubesInLayer(normal, object);
     cubesToRotate = layerData.cubes;
-    
+
     if (cubesToRotate.length === 0) return;
-    
+
     // Удаляем предыдущий arrowHelper, если он есть
     if (arrowHelper) {
         scene.remove(arrowHelper);
         arrowHelper = null;
     }
-    
-    // Создаем группу для вращения
+
+    // Удаляем предыдущие стрелки прогресса
+    progressArrows.forEach(arrow => scene.remove(arrow));
+    progressArrows = [];
+
+    // Создаём группу для вращения
     rotationGroup = new THREE.Group();
     const centerPoint = new THREE.Vector3();
-    
+
     cubesToRotate.forEach(cube => {
         const pos = new THREE.Vector3();
         cube.getWorldPosition(pos);
         centerPoint.add(pos);
     });
     centerPoint.divideScalar(cubesToRotate.length);
-    
+
     rotationGroup.position.copy(centerPoint);
     scene.add(rotationGroup);
-    
+
     cubesToRotate.forEach(cube => {
         const pos = new THREE.Vector3();
         cube.getWorldPosition(pos);
@@ -325,15 +484,19 @@ function rotateLayer(object, normal) {
         scene.remove(cube);
         rotationGroup.add(cube);
     });
-    
+
     rotationAxis.copy(normal).normalize();
     isRotating = true;
 
-    // Создаем новый arrowHelper
+    // Создаём начальные стрелки прогресса
+    updateProgressArrows(0);
+
+    // Создаём новый arrowHelper
     arrowHelper = new THREE.ArrowHelper(
         rotationAxis,
-        rotationGroup.position, 
-        2, 0xff0000
+        rotationGroup.position,
+        2,
+        0xff0000
     );
     scene.add(arrowHelper);
 }
@@ -378,11 +541,21 @@ function finishRotation() {
         const cube = tempContainer.children[0];
         const worldPos = new THREE.Vector3();
         cube.getWorldPosition(worldPos);
+        const worldQuater = cube.getWorldQuaternion(new THREE.Quaternion())
+
+        // Округляем позиции и кватернионы
+        worldPos.x = Math.round(worldPos.x * 1000) / 1000;
+        worldPos.y = Math.round(worldPos.y * 1000) / 1000;
+        worldPos.z = Math.round(worldPos.z * 1000) / 1000;
+        worldQuater.x = Math.round(worldQuater.x * 1000) / 1000
+        worldQuater.y = Math.round(worldQuater.y * 1000) / 1000
+        worldQuater.z = Math.round(worldQuater.z * 1000) / 1000
+        worldQuater.w = Math.round(worldQuater.w * 1000) / 1000
 
         tempContainer.remove(cube);
         scene.attach(cube);
         cube.position.copy(worldPos);
-        cube.quaternion.copy(tempContainer.quaternion);
+        cube.quaternion.copy(worldQuater);
     }
 
     scene.remove(tempContainer);
@@ -390,6 +563,9 @@ function finishRotation() {
         scene.remove(arrowHelper);
         arrowHelper = null;
     }
+    // Удаляем стрелки прогресса
+    progressArrows.forEach(arrow => scene.remove(arrow));
+    progressArrows = [];
     scene.remove(rotationGroup);
     isRotating = false;
     cubesToRotate = [];

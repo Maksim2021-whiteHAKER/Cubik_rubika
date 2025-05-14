@@ -2,7 +2,6 @@ import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from 'https://unpkg.com/three@0.122.0/examples/jsm/controls/OrbitControls.js';
 import { PointerLockControls } from 'https://unpkg.com/three@0.122.0/examples/jsm/controls/PointerLockControls.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { initCube, world, bodies} from './cube.js';
 import { initPlayer } from './player.js';
 
@@ -67,7 +66,7 @@ function initThree(){
     controls.enablePan = false;
     controls.dampingFactor = 0.2;
     controls.minDistance = 10;
-    controls.maxDistance = 500;
+    controls.maxDistance = 300;
     camera.rotation.set(-0.40, 0, 0);
 
     // захват точки(курсора)

@@ -181,15 +181,11 @@ import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cann
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { camera, controls, CurrentActiveCam } from './index.js';
 
-let Planegeometry, Planematerial, PlaneCube
 let scene;
 export let world;
 let selectedface = null;
 let selectedObject = null;
-let flash_speed = 2; // скорость мигания
-let emissiveMin = 0; // минимальная интенсивность
-let emissiveMax = 1; // максимальная интенсивность
-let flash_on = false; // флаг мерцания
+let marker_on = false; // флаг маркера
 const loaderGLTF = new GLTFLoader();
 export const bodies = []; // массив для физических тел
 const objects = []; // двумерный массив
@@ -295,14 +291,13 @@ window.addEventListener('mousemove', handleGlobalMouseMove);
 window.addEventListener('mouseup',   handleGlobalMouseUp);
 window.addEventListener('contextmenu', (event)=> event.preventDefault())
 
-
 export function checkFpsHit(){
     if (CurrentActiveCam !== 'player') return null;
     raycaster.setFromCamera(center, camera);
     return raycaster.intersectObjects(Objects, true)[0] || null        
 }
 
-export function initCube(sceneArg, rendererArg, controlsArg, controlsPointerArg, cameraArg, worldArg) {
+export function initCube(sceneArg, worldArg) {
     scene = sceneArg;
     world = worldArg;
     
@@ -367,10 +362,10 @@ export function initCannon() {
     world.addBody(groundBody);
 }
 
+// функция получения кубов в слое (Размер одного кубика = 1)
 function getCubesInLayer(normal, clickedObject) {
     const layerCubes = [];
     const threshold = 0.9;
-//  const cubeSize = 1.0; // Размер одного кубика
     
     const clickedPos = new THREE.Vector3();
     clickedObject.getWorldPosition(clickedPos);
@@ -418,13 +413,13 @@ function handleCubeClick(event){
         // выделение/сброс выделения
         if (selectedObject) {
             selectedObject.material.emissive.setHex(0x000000);
-            flash_on = false;
+            marker_on = false;
         }
         
         // выделение нового объекта
         selectedObject = intersect.object;
         selectedObject.material.emissive.setHex(isRotationAction ? 0xff0000 : 0x0f00ff);
-        flash_on = !isRotationAction;
+        marker_on = !isRotationAction;
 
         // вращение слоя 
         console.log('проверка на истиность: ',isRotationAction && intersect.face && intersect.face.normal)
@@ -434,11 +429,11 @@ function handleCubeClick(event){
             rotateLayer(intersect.object, intersect.face.normal);
         }
         
-        if (isRotationAction) flashobject();
+        if (isRotationAction) markerobject();
     }
 }
 
-function flashobject() {
+function markerobject() {
     if (selectedObject && selectedObject.material && selectedObject.material.emissive) {
         if (CurrentActiveCam === 'observer'){
             let PosCube = new THREE.Vector3();
@@ -456,8 +451,8 @@ function flashobject() {
             cursorSelected.style.top  = `${y+50}px`;
             cursorSelected.style.display = 'block';
             
-            if (flash_on) {
-                requestAnimationFrame(flashobject);
+            if (marker_on) {
+                requestAnimationFrame(markerobject);
             }
         }
     }
@@ -573,6 +568,7 @@ function finishRotation() {
     cubesToRotate = [];
     rotationGroup = null;
 }
+------------
 player.js
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
