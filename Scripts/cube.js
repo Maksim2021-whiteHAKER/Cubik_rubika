@@ -34,19 +34,18 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load(
-        "models/Cubik-Rubik_LITE_without_camera.glb",
+    loaderGLTF.load("models/Cubik-Rubik_LITE_without_camera_fixCenter.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
             scene.add(model);
 
-            console.log('***Структура модели***');
+            //console.log('***Структура модели***');
             model.traverse(child => {
                 if (child.isGroup || child.isMesh) {
                     const worldPos = new THREE.Vector3();
                     child.getWorldPosition(worldPos);
-                    console.log(`Объект: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}]`);
+                    //console.log(`Объект: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}]`);
                 }
             });
 
@@ -67,7 +66,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                             mesh.material.emissiveIntensity = 0;
                             mesh.geometry.computeVertexNormals();
                             if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
-                            console.log(`Mesh: ${mesh.name}, Geometry: ${mesh.geometry.type}, Material: ${mesh.material.name}`);
+                            //console.log(`Mesh: ${mesh.name}, Geometry: ${mesh.geometry.type}, Material: ${mesh.material.name}`);
                             // Принудительно включаем raycast
                             mesh.raycast = THREE.Mesh.prototype.raycast;
                         }
