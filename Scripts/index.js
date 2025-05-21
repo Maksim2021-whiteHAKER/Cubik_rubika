@@ -115,31 +115,51 @@ function initThree() {
     scene.add(floor);
 }
 
-function createArrow(position, direction, color = 0x00ff00, isRotate = false) {
-    let geometry;
-    if (isRotate) {
-        geometry = new THREE.SphereGeometry(0.2, 16, 16);
-    } else {
-        geometry = new THREE.ConeGeometry(0.3, 0.6, 8);
-    }
+function createArrow(position, direction, color = 0x00ff00, isRotate = false, faceColor = 0x00ff00) {
+    
+    const geometry = isRotate ? new THREE.SphereGeometry(0.2, 16, 16) : new THREE.ConeGeometry(0.3, 0.6, 8);
     const material = new THREE.MeshBasicMaterial({ color });
     const arrow = new THREE.Mesh(geometry, material);
     arrow.position.copy(position);
-
     // Сохраняем цвет
-    material.userData = {originalColor: color}
+    material.userData = { originalColor: color };
 
     if (!isRotate) {
-        // Фиксируем направление в мировой системе координат
+        // Направление стрелки в мировой системе координат
         const worldDirection = direction.clone().normalize();
         arrow.lookAt(position.clone().add(worldDirection.multiplyScalar(-1)));
-        if (color === 0x00ff00) { // зелёный (вниз)
-            arrow.rotateX(Math.PI);
-        } else if (color === 0xffff00) { // жёлтый (←)
-            arrow.rotateZ(Math.PI / 2);
-        } else if (color === 0x0000ff) { // синий (→)
-            arrow.rotateZ(-Math.PI / 2);
+
+        // сопоставление цвета грани на повороты
+        const rotationMap = {
+            0xff0000: {0x00ff00: [Math.PI, 0, 0], 0xffff00: [0, 0, -Math.PI], 0x0000ff: [Math.PI, 0, 0]}, // Красная грань
+            0x00ff00: {0x00ff00: [Math.PI, 0, 0], 0xffff00: [0, 0, Math.PI / 2], 0x0000ff: [0, 0, -Math.PI / 2]}, // Зеленая грань
+            0xffffff: { // белая грань
+                0xff0000: [Math.PI / 2, 0, -Math.PI / 2], // Красная стрелка ↑
+                0x00ff00: [Math.PI / 2, 0, -Math.PI / 2], // Зеленая стрелка ↓
+                0x0000ff: [-Math.PI / 2, 0, -Math.PI / 2],// Синяя   стрелка →
+                0xffff00: [Math.PI / 2, 0, -Math.PI / 2], // Желтая  стрелка ←
+            },
+            0xffff00: { // Желтая грань
+                0xff0000: [Math.PI / 2, 0, Math.PI / 2],
+                0x00ff00: [Math.PI / 2, 0, Math.PI / 2],
+                0x0000ff: [-Math.PI / 2, 0, Math.PI /2],
+                0xffff00: [Math.PI, 0, Math.PI / 2],
+            },
+            0x0000ff: { // Синяя грань
+                0x00ff00: [0, 0, Math.PI],
+                0x0000ff: [-Math.PI / 2, 0, Math.PI / 2],
+                0xffff00: [Math.PI / 2, 0, -Math.PI / 2],
+            },
+            0xffa500: { /* Оранжевая грань */ 0x00ff00: [Math.PI, 0, 0] }
+        };
+
+        const rot = rotationMap[faceColor]?.[color];
+        if (rot){
+            arrow.rotateX(rot[0]);
+            arrow.rotateY(rot[1]);
+            arrow.rotateZ(rot[2]);
         }
+
         // Блокируем вращение стрелки
         arrow.matrixAutoUpdate = false;
         arrow.updateMatrix();
@@ -148,7 +168,7 @@ function createArrow(position, direction, color = 0x00ff00, isRotate = false) {
     arrow.userData = { direction };
     if (isRotate) {
         arrow.userData.isRotate = true;
-        // Указываем направление вращения по часовой(true) или против(false)
+        // Указываем направление вращения: по часовой (true) или против (false)
         arrow.userData.rotationDirection = color === 0x00CED1 ? false : true;
     }
     scene.add(arrow);
@@ -176,13 +196,24 @@ function showArrows(cube) {
     const intersect = intersects[0];
     const normal = intersect.face.normal.clone().applyMatrix4(cube.matrixWorld).sub(cube.getWorldPosition(new THREE.Vector3())).normalize();
 
-    // Позиция центра грани
+    // Позиция центра кликнутой грани
     const position = cube.getWorldPosition(new THREE.Vector3()).add(normal.clone().multiplyScalar(cubeSize * 0.5));
 
-    // Вычисляем векторы "вверх" и "вправо" для грани
-    let upVector = new THREE.Vector3(0, 1, 0);
+    // Определяем цвет грани на основе нормали
+    let faceColor;
+    const absNormal = new THREE.Vector3(Math.abs(normal.x), Math.abs(normal.y), Math.abs(normal.z));
+    if (absNormal.x > 0.9) {
+        faceColor = normal.x > 0 ? 0xff0000 : 0xffa500; // Красная или оранжевая грань
+    } else if (absNormal.y > 0.9) {
+        faceColor = normal.y > 0 ? 0xffffff : 0xffff00; // Белая или жёлтая грань
+    } else if (absNormal.z > 0.9) {
+        faceColor = normal.z > 0 ? 0x00ff00 : 0x0000ff; // Зелёная или синяя грань
+    }
+
+    // Вычисляем векторы "вверх" и "вправо" на основе нормали кликнутой грани
+    let upVector = new THREE.Vector3(0, 1, 0); // Начальный "вверх"
     if (Math.abs(normal.dot(upVector)) > 0.9) {
-        upVector.set(0, 0, 1); // Если нормаль близка к Y, используем Z как вверх
+        upVector.set(0, 0, 1); // Если нормаль близка к Y, используем Z как "вверх"
     }
     const rightVector = new THREE.Vector3().crossVectors(normal, upVector).normalize();
     upVector.crossVectors(rightVector, normal).normalize();
@@ -190,11 +221,10 @@ function showArrows(cube) {
     // Смещение для "выдавливания" стрелок за грань
     const extrudeVector = normal.clone().multiplyScalar(extrudeOffset);
 
-    // Определяем, является ли кубик центральным (позиция 5 или (2,2))
-    const cubesObjects = getObjects()
-    const filteredCenter = cubesObjects.filter(item => item.name.includes("CENTER"))
-    console.log("Центы кубов: ", filteredCenter)
-    const isCenterCube = filteredCenter.some(centerCube => centerCube === cube || centerCube.uuid === cube.uuid);
+    // Определяем, является ли кликнутый кубик центральным
+    const cubesObjects = getObjects();
+    const centerCubes = cubesObjects.filter(item => item.name.includes("CENTER"));
+    const isCenterCube = centerCubes.some(center => center === cube || center.uuid === cube.uuid);
 
     // Стрелки для всех направлений (⬆⬇⬅➡)
     const directions = [
@@ -204,21 +234,21 @@ function showArrows(cube) {
         { dir: upVector.clone().negate(), pos: rightVector.clone().multiplyScalar(offset), color: 0xffff00 }, // ← (желтый)
     ];
 
-    directions.forEach(({ dir, pos, color }, idx) => {
+    directions.forEach(({ dir, pos, color }) => {
         const arrowPos = position.clone().add(extrudeVector).add(pos);
-        const arrow = createArrow(arrowPos, dir, color);
+        const arrow = createArrow(arrowPos, dir, color, false, faceColor);
         arrows.push(arrow);
     });
 
-    // Добавляем шары только для центрального кубика
+    // Добавляем шары только для центральных кубиков сторон
     if (isCenterCube) {
         const centerPos = position.clone().add(extrudeVector); // Центр грани
-        // Бирюзовый шар (против часовой) чуть выше центра
-        const turquoisePos = centerPos.clone().add(upVector.clone().multiplyScalar(sphereOffset+0.025))
+        // Бирюзовый шар (по часовой) чуть выше центра
+        const turquoisePos = centerPos.clone().add(upVector.clone().multiplyScalar(sphereOffset + 0.025));
         const counterclockwiseSphere = createArrow(turquoisePos, normal, 0x00CED1, true); // Бирюзовый шар
-        // Чёрный шар (по часовой) чуть ниже центра
-        const blackPos = centerPos.clone().add(upVector.clone().negate().multiplyScalar(sphereOffset+0.025))
-        const clockwiseSphere = createArrow(blackPos, normal, 0x000000, true); // Черный шар
+        // Чёрный шар (против часовой) чуть ниже центра
+        const blackPos = centerPos.clone().add(upVector.clone().negate().multiplyScalar(sphereOffset + 0.025));
+        const clockwiseSphere = createArrow(blackPos, normal, 0x000001, true); // Чёрный шар 
         arrows.push(clockwiseSphere, counterclockwiseSphere);
     }   
     console.log(`Total arrows created: ${arrows.length}`);
@@ -247,6 +277,18 @@ document.addEventListener('keydown', (event) => {
         controls.update();
     } else if (event.code === 'KeyT' && CurrentActiveCam === 'observer'){
         camera.position.set(1.20, 6, 21.74);
+        camera.lookAt(0, 5, 0);
+        controls.update();
+    } else if (event.code === 'KeyB' && CurrentActiveCam === 'observer'){
+        camera.position.set(-0.31, 14.50, -21.44);
+        camera.lookAt(0, 5, 0);
+        controls.update();
+    } else if (event.code === 'KeyI' && CurrentActiveCam === 'observer'){
+        camera.position.set(-21.20, 15, -0.82);
+        camera.lookAt(0, 5, 0);
+        controls.update();
+    } else if (event.code === 'KeyY' && CurrentActiveCam === 'observer'){
+        camera.position.set(0, -18.45, 0);
         camera.lookAt(0, 5, 0);
         controls.update();
     }
@@ -280,20 +322,24 @@ function setupTriggerInteraction(triggerZones) {
             const mouse = new THREE.Vector2();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
-
+    
             raycaster.setFromCamera(mouse, camera);
             const arrowIntersects = raycaster.intersectObjects(arrows, true);
+    
+            // Сбрасываем цвет всех стрелок до оригинального
             arrows.forEach(arrow => {
-                const originalColor = arrow.material.userData.originalColor || arrow.material.color.getHex()
-                arrow.material.color.set(originalColor)
+                const originalColor = arrow.material.userData.originalColor || arrow.material.color.getHex();
+                arrow.material.color.set(originalColor);
             });
-
+    
+            // Устанавливаем подсветку только для пересечённой стрелки
             if (arrowIntersects.length > 0) {
                 const arrow = arrowIntersects[0].object;
-                arrow.material.color.set(0xff00ff); // Подсветка только при наведении
+                arrow.material.color.set(0xff00ff); // Подсветка при наведении
             }
         }
     });
+    
 
     window.addEventListener('mouseup', (event) => {
         if (!selectedCube) return;

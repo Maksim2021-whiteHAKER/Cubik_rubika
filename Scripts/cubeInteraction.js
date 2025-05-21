@@ -96,7 +96,7 @@ export function createTriggerZones(cubeSize = 5.7) { // Устанавливае
             };
 
             zones.push(zone);
-            console.log(`Trigger: ${edge.triggeredFace}, Layer: ${index}, Position: [${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}]`);
+            //console.log(`Trigger: ${edge.triggeredFace}, Layer: ${index}, Position: [${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}]`);
         });
     });
 
