@@ -141,7 +141,7 @@ export function checkFpsHit(){
     return raycaster.intersectObjects(_objects, true)[0] || null        
 }
 
-export function rotateLayer(object, normal) {
+export function rotateLayer(object, normal, isCounterclockwise = false) {
     if (isRotating || !object.parent || !normal.lengthSq()) {
         console.log('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
         return;
@@ -149,7 +149,8 @@ export function rotateLayer(object, normal) {
     console.log('Вращение🔃: ', {
         object: object.name,
         normal: { x: normal.x, y: normal.y, z: normal.z },
-        camMode: CurrentActiveCam
+        camMode: CurrentActiveCam,
+        direction: isCounterclockwise ? 'против часовой' : 'по часовой'
     });
 
     const layerData = getCubesInLayer(normal, object);
@@ -195,7 +196,7 @@ export function rotateLayer(object, normal) {
     arrowHelper = new THREE.ArrowHelper(rotationAxis, rotationGroup.position, 2, 0xff0000);
     scene.add(arrowHelper);
 
-    const targetAngle = Math.PI / 2;
+    const targetAngle = isCounterclockwise ? -Math.PI / 2 : Math.PI / 2;
     const duration = 300;
     const startTime = performance.now();
 
