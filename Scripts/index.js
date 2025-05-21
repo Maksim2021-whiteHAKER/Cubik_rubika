@@ -18,7 +18,10 @@ let startObject = null;
 let startNormal = null;
 let startMousePosition = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
-let lastHighlightedZone = null;
+let arrows = []; // Массив для стрелок
+let selectedCube = null;
+
+addEventListener('contextmenu', (e) => {e.preventDefault()})
 
 texture_grass.onError = () => {
     console.warn('Не удалось загрузить текстуру травы');
@@ -47,7 +50,7 @@ function initThree() {
     });
 
     camera = observerCamera;
-    camera.position.set(18.74, 15.09, 18.81);
+    camera.position.set(15, 15, 15);
     camera.lookAt(0, 5, 0);
 
     scene = new THREE.Scene();
@@ -112,6 +115,121 @@ function initThree() {
     scene.add(floor);
 }
 
+function createArrow(position, direction, color = 0x00ff00, isRotate = false) {
+    let geometry;
+    if (isRotate) {
+        geometry = new THREE.SphereGeometry(0.2, 16, 16);
+    } else {
+        geometry = new THREE.ConeGeometry(0.3, 0.6, 8);
+    }
+    const material = new THREE.MeshBasicMaterial({ color });
+    const arrow = new THREE.Mesh(geometry, material);
+    arrow.position.copy(position);
+
+    // Сохраняем цвет
+    material.userData = {originalColor: color}
+
+    if (!isRotate) {
+        // Фиксируем направление в мировой системе координат
+        const worldDirection = direction.clone().normalize();
+        arrow.lookAt(position.clone().add(worldDirection.multiplyScalar(-1)));
+        if (color === 0x00ff00) { // зелёный (вниз)
+            arrow.rotateX(Math.PI);
+        } else if (color === 0xffff00) { // жёлтый (←)
+            arrow.rotateZ(Math.PI / 2);
+        } else if (color === 0x0000ff) { // синий (→)
+            arrow.rotateZ(-Math.PI / 2);
+        }
+        // Блокируем вращение стрелки
+        arrow.matrixAutoUpdate = false;
+        arrow.updateMatrix();
+    }
+
+    arrow.userData = { direction };
+    if (isRotate) {
+        arrow.userData.isRotate = true;
+        // Указываем направление вращения по часовой(true) или против(false)
+        arrow.userData.rotationDirection = color === 0x00CED1 ? false : true;
+    }
+    scene.add(arrow);
+    return arrow;
+}
+
+function showArrows(cube) {
+    // Удаляем старые стрелки
+    arrows.forEach(arrow => scene.remove(arrow));
+    arrows = [];
+
+    const cubeSize = 6.12 / 3; // Размер одного кубика
+    const offset = cubeSize * 0.5; // Отступ для стрелок
+    const extrudeOffset = cubeSize * 0.1; // Смещение стрелок наружу
+    const sphereOffset = cubeSize * 0.1; // Смещение шаров по вертикале
+
+    // Находим грань, на которую кликнули
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects([cube], true);
+    if (intersects.length === 0) return;
+
+    const intersect = intersects[0];
+    const normal = intersect.face.normal.clone().applyMatrix4(cube.matrixWorld).sub(cube.getWorldPosition(new THREE.Vector3())).normalize();
+
+    // Позиция центра грани
+    const position = cube.getWorldPosition(new THREE.Vector3()).add(normal.clone().multiplyScalar(cubeSize * 0.5));
+
+    // Вычисляем векторы "вверх" и "вправо" для грани
+    let upVector = new THREE.Vector3(0, 1, 0);
+    if (Math.abs(normal.dot(upVector)) > 0.9) {
+        upVector.set(0, 0, 1); // Если нормаль близка к Y, используем Z как вверх
+    }
+    const rightVector = new THREE.Vector3().crossVectors(normal, upVector).normalize();
+    upVector.crossVectors(rightVector, normal).normalize();
+
+    // Смещение для "выдавливания" стрелок за грань
+    const extrudeVector = normal.clone().multiplyScalar(extrudeOffset);
+
+    // Определяем, является ли кубик центральным (позиция 5 или (2,2))
+    const cubesObjects = getObjects()
+    const filteredCenter = cubesObjects.filter(item => item.name.includes("CENTER"))
+    console.log("Центы кубов: ", filteredCenter)
+    const isCenterCube = filteredCenter.some(centerCube => centerCube === cube || centerCube.uuid === cube.uuid);
+
+    // Стрелки для всех направлений (⬆⬇⬅➡)
+    const directions = [
+        { dir: rightVector.clone(), pos: upVector.clone().multiplyScalar(offset), color: 0xff0000 }, // ↑ (красный)
+        { dir: rightVector.clone().negate(), pos: upVector.clone().negate().multiplyScalar(offset), color: 0x00ff00 }, // ↓ (зелёный)
+        { dir: upVector.clone(), pos: rightVector.clone().negate().multiplyScalar(offset), color: 0x0000ff }, // → (синий)
+        { dir: upVector.clone().negate(), pos: rightVector.clone().multiplyScalar(offset), color: 0xffff00 }, // ← (желтый)
+    ];
+
+    directions.forEach(({ dir, pos, color }, idx) => {
+        const arrowPos = position.clone().add(extrudeVector).add(pos);
+        const arrow = createArrow(arrowPos, dir, color);
+        arrows.push(arrow);
+    });
+
+    // Добавляем шары только для центрального кубика
+    if (isCenterCube) {
+        const centerPos = position.clone().add(extrudeVector); // Центр грани
+        // Бирюзовый шар (против часовой) чуть выше центра
+        const turquoisePos = centerPos.clone().add(upVector.clone().multiplyScalar(sphereOffset+0.025))
+        const counterclockwiseSphere = createArrow(turquoisePos, normal, 0x00CED1, true); // Бирюзовый шар
+        // Чёрный шар (по часовой) чуть ниже центра
+        const blackPos = centerPos.clone().add(upVector.clone().negate().multiplyScalar(sphereOffset+0.025))
+        const clockwiseSphere = createArrow(blackPos, normal, 0x000000, true); // Черный шар
+        arrows.push(clockwiseSphere, counterclockwiseSphere);
+    }   
+    console.log(`Total arrows created: ${arrows.length}`);
+}
+
+function hideArrows() {
+    arrows.forEach(arrow => scene.remove(arrow));
+    arrows = [];
+    selectedCube = null;
+}
+
 document.addEventListener('keydown', (event) => {
     let off_on;
     if (event.code === 'KeyO') {
@@ -124,7 +242,11 @@ document.addEventListener('keydown', (event) => {
         }
         document.getElementById('OrbitConSet').innerHTML = off_on;
     } else if (event.code === 'KeyR' && CurrentActiveCam === 'observer') {
-        camera.position.set(10, 10, 10);
+        camera.position.set(15, 10, 15);
+        camera.lookAt(0, 5, 0);
+        controls.update();
+    } else if (event.code === 'KeyT' && CurrentActiveCam === 'observer'){
+        camera.position.set(1.20, 6, 21.74);
         camera.lookAt(0, 5, 0);
         controls.update();
     }
@@ -141,108 +263,58 @@ function setupTriggerInteraction(triggerZones) {
         const objects = getObjects();
         const intersects = raycaster.intersectObjects(objects, true);
 
-        console.log('mousedown: intersects=', intersects.length, 'Objects.length=', objects.length);
         if (intersects.length > 0) {
             const intersect = intersects[0];
             startObject = intersect.object;
-            startMousePosition.set(event.clientX, event.clientY);
-            isDragging = true;
-
-            const localNormal = intersect.face.normal.clone();
-            startNormal = localNormal.applyMatrix4(intersect.object.matrixWorld).normalize();
-            console.log('mousedown: object=', startObject.name, 'normal=', startNormal.toArray());
+            selectedCube = startObject.parent; // Получаем группу кубика
+            showArrows(selectedCube);
+            console.log('mousedown: object=', startObject.name, 'parent=', selectedCube.name);
         } else {
+            hideArrows();
             console.log('mousedown: no cube hit');
         }
     });
 
     window.addEventListener('mousemove', (event) => {
-        if (!isDragging || !startObject) return;
+        if (!isDragging && selectedCube) {
+            const mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+
+            raycaster.setFromCamera(mouse, camera);
+            const arrowIntersects = raycaster.intersectObjects(arrows, true);
+            arrows.forEach(arrow => {
+                const originalColor = arrow.material.userData.originalColor || arrow.material.color.getHex()
+                arrow.material.color.set(originalColor)
+            });
+
+            if (arrowIntersects.length > 0) {
+                const arrow = arrowIntersects[0].object;
+                arrow.material.color.set(0xff00ff); // Подсветка только при наведении
+            }
+        }
+    });
+
+    window.addEventListener('mouseup', (event) => {
+        if (!selectedCube) return;
 
         const mouse = new THREE.Vector2();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
 
-        // Визуализация луча для отладки
         raycaster.setFromCamera(mouse, camera);
-        const rayGeometry = new THREE.BufferGeometry().setFromPoints([
-            camera.position,
-            camera.position.clone().add(raycaster.ray.direction.clone().multiplyScalar(50))
-        ]);
-        const rayMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
-        const rayLine = new THREE.Line(rayGeometry, rayMaterial);
-        scene.add(rayLine);
-        setTimeout(() => scene.remove(rayLine), 100);
+        const arrowIntersects = raycaster.intersectObjects(arrows, true);
 
-        // Проверяем кубики
-        const cubeIntersects = raycaster.intersectObjects(getObjects(), true);
-
-        // Сбрасываем подсветку
-        if (lastHighlightedZone) {
-            lastHighlightedZone.material.color.set(0x00ffff);
-            lastHighlightedZone.material.opacity = 0.5;
-            lastHighlightedZone = null;
+        if (arrowIntersects.length > 0) {
+            const arrow = arrowIntersects[0].object;
+            let axis = arrow.userData.direction.clone();
+            const isCounterclockwise = arrow.userData.isRotate && !arrow.userData.rotationDirection
+            //console.log(`Rotate TRUE/FALSE ${isCounterclockwise ? 'ПРОТИВ' : 'ПО'}, axis=`, axis.toArray());           
+            rotateLayer(selectedCube, axis, isCounterclockwise);
         }
 
-        if (cubeIntersects.length > 0) {
-            const cubeHit = cubeIntersects[0];
-            console.log('mousemove: cube hit at distance=', cubeHit.distance, 'object=', cubeHit.object.name);
-
-            // Проверяем триггеры с увеличенным расстоянием
-            raycaster.far = cubeHit.distance + 2; // Увеличиваем до 2 единиц
-            const triggerIntersects = raycaster.intersectObjects(triggerZones, false);
-
-            console.log('mousemove: trigger intersects=', triggerIntersects.length);
-            if (triggerIntersects.length > 0) {
-                const trigger = triggerIntersects[0].object;
-                const { triggeredFace } = trigger.userData;
-
-                trigger.material.color.set(0xffff00);
-                trigger.material.opacity = 0.8;
-                lastHighlightedZone = trigger;
-
-                console.log('Trigger hit: face=', triggeredFace, 'position=', trigger.position.toArray(), 'distance=', triggerIntersects[0].distance);
-
-                let axis;
-                switch (triggeredFace) {
-                    case 'right': axis = new THREE.Vector3(1, 0, 0); break;
-                    case 'left': axis = new THREE.Vector3(-1, 0, 0); break;
-                    case 'up': axis = new THREE.Vector3(0, 1, 0); break;
-                    case 'down': axis = new THREE.Vector3(0, -1, 0); break;
-                    case 'front': axis = new THREE.Vector3(0, 0, 1); break;
-                    case 'back': axis = new THREE.Vector3(0, 0, -1); break;
-                    default: return;
-                }
-
-                console.log('Trigger hit: face=', triggeredFace, 'axis=', axis.toArray());
-                rotateLayer(startObject, axis);
-
-                isDragging = false;
-                startObject = null;
-                startNormal = null;
-            } else {
-                console.log('mousemove: no trigger hit');
-                // Логируем позиции триггеров для отладки
-                triggerZones.forEach(zone => {
-                    console.log(`Zone: ${zone.userData.triggeredFace}, Position: [${zone.position.x.toFixed(2)}, ${zone.position.y.toFixed(2)}, ${zone.position.z.toFixed(2)}], Distance from camera: ${camera.position.distanceTo(zone.position).toFixed(2)}`);
-                });
-            }
-            raycaster.far = Infinity;
-        } else {
-            console.log('mousemove: no cube hit');
-        }
-    });
-
-    window.addEventListener('mouseup', () => {
-        console.log('mouseup: stopping drag');
-        if (lastHighlightedZone) {
-            lastHighlightedZone.material.color.set(0x00ffff);
-            lastHighlightedZone.material.opacity = 0.5;
-            lastHighlightedZone = null;
-        }
-        isDragging = false;
-        startObject = null;
-        startNormal = null;
+        hideArrows();
+        console.log('mouseup: arrows cleared');
     });
 }
 
@@ -253,7 +325,6 @@ export function getCurrentCam() {
 function startworld() {
     requestAnimationFrame(startworld);
     try {
-        world.step(1/60);
         bodies.forEach(({ mesh, body }) => {
             mesh.position.copy(body.position);
             mesh.quaternion.copy(body.quaternion);
@@ -272,7 +343,6 @@ function startworld() {
             Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
         `;
 
-        const deltaTime = 1/60;
         renderer.render(scene, camera);
         stats.update();
     } catch (err) {
@@ -291,3 +361,4 @@ window.addEventListener('load', () => {
         startworld();
     });
 });
+

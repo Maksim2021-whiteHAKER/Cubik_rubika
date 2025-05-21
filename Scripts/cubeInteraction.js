@@ -27,7 +27,7 @@ export function createTriggerZones(cubeSize = 5.7) { // Устанавливае
         wireframe: true, // Показываем каркас для отладки
         transparent: true,
         opacity: 0.5, // Делаем полупрозрачным для отладки
-        visible: true, // Установите true для отладки, false для продакшена
+        visible: false, // Установите true для отладки, false для продакшена
         side: THREE.DoubleSide
     });
 
