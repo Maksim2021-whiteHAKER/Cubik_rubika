@@ -141,81 +141,89 @@ export function checkFpsHit(){
 }
 
 export function rotateLayer(object, normal, isCounterclockwise = false) {
-    if (isRotating || !object.parent || !normal.lengthSq()) {
-        console.log('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
-        return;
-    }
-    console.log('Вращение🔃: ', {
-        object: object.name,
-        normal: { x: normal.x, y: normal.y, z: normal.z },
-        camMode: CurrentActiveCam,
-        direction: isCounterclockwise ? 'против часовой' : 'по часовой'
-    });
-
-    const layerData = getCubesInLayer(normal, object);
-    cubesToRotate = layerData.cubes;
-
-    console.log('rotateLayer: cubes to rotate=', cubesToRotate.length);
-    if (cubesToRotate.length === 0) {
-        console.log('rotateLayer: no cubes to rotate');
-        return;
-    }
-
-    if (arrowHelper) {
-        scene.remove(arrowHelper);
-        arrowHelper = null;
-    }
-    progressArrows.forEach(arrow => scene.remove(arrow));
-    progressArrows = [];
-
-    rotationGroup = new THREE.Group();
-    const centerPoint = new THREE.Vector3();
-    cubesToRotate.forEach(cube => {
-        const pos = new THREE.Vector3();
-        cube.getWorldPosition(pos);
-        centerPoint.add(pos);
-    });
-    centerPoint.divideScalar(cubesToRotate.length);
-
-    rotationGroup.position.copy(centerPoint);
-    scene.add(rotationGroup);
-
-    cubesToRotate.forEach(cube => {
-        const pos = new THREE.Vector3();
-        cube.getWorldPosition(pos);
-        cube.position.copy(pos.sub(centerPoint));
-        scene.remove(cube);
-        rotationGroup.add(cube);
-    });
-
-    rotationAxis.copy(normal).normalize();
-    isRotating = true;
-
-    updateProgressArrows(0);
-    arrowHelper = new THREE.ArrowHelper(rotationAxis, rotationGroup.position, 2, 0xff0000);
-    scene.add(arrowHelper);
-
-    const targetAngle = isCounterclockwise ? -Math.PI / 2 : Math.PI / 2;
-    const duration = 300;
-    const startTime = performance.now();
-
-    function animateRotation(currentTime) {
-        if (!rotationGroup) return;
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const angle = targetAngle * progress;
-
-        rotationGroup.rotation.set(0, 0, 0);
-        rotationGroup.rotateOnAxis(rotationAxis, angle);
-
-        if (progress < 1) {
-            requestAnimationFrame(animateRotation);
-        } else {
-            finishRotation();
+    return new Promise((resolve) => {
+        if (isRotating || !object.parent || !normal.lengthSq()) {
+            console.log('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
+            resolve();
+            return;
         }
-    }
+        console.log('Вращение🔃: ', {
+            object: object.name,
+            normal: { x: normal.x, y: normal.y, z: normal.z },
+            camMode: CurrentActiveCam,
+            direction: isCounterclockwise ? 'против часовой' : 'по часовой'
+        });
 
-    requestAnimationFrame(animateRotation);
+        const layerData = getCubesInLayer(normal, object);
+        cubesToRotate = layerData.cubes;
+
+        console.log('rotateLayer: cubes to rotate=', cubesToRotate.length);
+        if (cubesToRotate.length === 0) {
+            console.log('rotateLayer: no cubes to rotate');
+            resolve();
+            return;
+        }
+
+        if (arrowHelper) {
+            scene.remove(arrowHelper);
+            arrowHelper = null;
+        }
+        progressArrows.forEach(arrow => scene.remove(arrow));
+        progressArrows = [];
+
+        rotationGroup = new THREE.Group();
+        const centerPoint = new THREE.Vector3();
+        cubesToRotate.forEach(cube => {
+            const pos = new THREE.Vector3();
+            cube.getWorldPosition(pos);
+            centerPoint.add(pos);
+        });
+        centerPoint.divideScalar(cubesToRotate.length);
+
+        rotationGroup.position.copy(centerPoint);
+        scene.add(rotationGroup);
+
+        cubesToRotate.forEach(cube => {
+            const pos = new THREE.Vector3();
+            cube.getWorldPosition(pos);
+            cube.position.copy(pos.sub(centerPoint));
+            scene.remove(cube);
+            rotationGroup.add(cube);
+        });
+
+        rotationAxis.copy(normal).normalize();
+        isRotating = true;
+
+        updateProgressArrows(0);
+        arrowHelper = new THREE.ArrowHelper(rotationAxis, rotationGroup.position, 2, 0xff0000);
+        scene.add(arrowHelper);
+
+        const targetAngle = isCounterclockwise ? -Math.PI / 2 : Math.PI / 2;
+        const duration = 300;
+        const startTime = performance.now();
+
+        function animateRotation(currentTime) {
+            if (!rotationGroup) {
+                resolve();
+                return;
+            }
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const angle = targetAngle * progress;
+
+            rotationGroup.rotation.set(0, 0, 0);
+            rotationGroup.rotateOnAxis(rotationAxis, angle);
+
+            if (progress < 1) {
+                requestAnimationFrame(animateRotation);
+            } else {
+                finishRotation();
+                resolve();
+            }
+        }
+
+        requestAnimationFrame(animateRotation);
+    });
 }
 
 function updateProgressArrows(currentAngle) {
@@ -297,4 +305,27 @@ function finishRotation() {
     isRotating = false;
     cubesToRotate = [];
     rotationGroup = null;
+}
+
+export async function scrumbleCube(numMoves = 20){
+    if (isRotating){
+        console.warn(`Перемешивание не может быть выполнено, т.к сейчас кубик вращается`);
+        return;
+    }
+
+    const axes = [
+        new THREE.Vector3(1, 0, 0),
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(0, 0, 1)
+    ];
+
+    for (let i = 0; i < numMoves; i++){
+        const cube = _objects[Math.floor(Math.random() * _objects.length)];
+        const axis = axes[Math.floor(Math.random() * axes.length)];
+        const isCounterclockwise = Math.random() > 0.5;
+
+        console.log(`Перемешивание: движение ${i+1}/${numMoves}: cube=${cube.name}, axis=${axis.toArray()}, direction=${isCounterclockwise ? 'против часовой' : 'по часовой'}`)
+        await rotateLayer(cube, axis, isCounterclockwise);
+    }
+    console.log(`Перемешивание куба завершено-успешно`)
 }
