@@ -20,6 +20,13 @@ body {
   font-family: Monospace;
 }
 
+body.page-error {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
 canvas {
   outline: none;
 }
@@ -43,15 +50,12 @@ canvas {
 
 .view-source-button {
   display: block;
-
   position: fixed;
   bottom: 1rem;
   right: 1rem;
   z-index: 10;
-
   padding: 0.75rem;
   border-radius: 50%;
-
   background-color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -101,4 +105,62 @@ canvas {
   font-family: Arial, sans-serif;
   font-size: 15px;
   z-index: 100;
+}
+
+#progressBar {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 20px;
+  background-color: #ccc;
+  border: 1px solid #000;
+  border-radius: 5px;
+  
+}
+
+#progressFill {
+  height: 100%;
+  background-color: #4caf50;
+  width: 0%;
+  transition: width 0.6s ease;
+  z-index: 2;
+}
+
+#progtext {
+  position: absolute;
+  border-style: 1px solid;
+  border-radius: 5px;
+  width: 200px;
+  height: 20px;
+  text-align: center;
+  top: 42px;
+  right: 10px;
+  transform: translateX(-50%);
+  z-index: 3;  
+}
+
+#FaceCanvas {
+  position: absolute;
+  border: none;
+  top: 200px;
+  left: 5px;
+}
+
+#eMessage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ff4444;
+  color: white;
+  padding: 25px;
+  border-radius: 5px;
+  z-index: 1000;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 25px;
+  max-width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
