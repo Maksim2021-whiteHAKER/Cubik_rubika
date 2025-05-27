@@ -7,6 +7,9 @@
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
+    <link rel="stylesheet" href="styles/error.css" type="text/css">
+    <script src="Scripts/checkProtocol.js"></script>
+</head>
     <body>
        <div id="menu_info">
         <h1 >Кубик-рубика версия 0.0.1.0</h1>
@@ -15,9 +18,9 @@
             Fov: <span id="CurntCamFOV"></span>
         </div>
         <div id="OrbitCon">
-           кнп. Щ(вкл/выкл) Орбита: <span id="OrbitConSet" false>выкл</span>
+           кнп. Щ(вкл/выкл) Орбита: <span id="OrbitConSet">выкл</span>
         </div>
+        <canvas id="FaceCanvas" width="300" height="300"></canvas>
        <script src="Scripts/index.js" type="module"></script>
     </body>
-</head>
 </html>

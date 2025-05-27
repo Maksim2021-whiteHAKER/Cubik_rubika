@@ -1,11 +1,10 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.122.0/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from '../Scripts/lib/OrbitControls.js';
 import { PointerLockControls } from 'https://unpkg.com/three@0.122.0/examples/jsm/controls/PointerLockControls.js';
-import { initCube, world, bodies, getObjects, scrumbleCube } from './cube.js';
+import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, historyrotation } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
-import { rotateLayer } from './cube.js';
 
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
@@ -15,11 +14,11 @@ let texture_grass = textureLoader.load("https://threejs.org/examples/textures/te
 document.getElementById('menu_settings').style.display = 'none';
 let isDragging = false;
 let startObject = null;
-let startNormal = null;
-let startMousePosition = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
 let arrows = []; // Массив для стрелок
 let selectedCube = null;
+//  элемент прогресса
+let progressBar, progress_text
 
 addEventListener('contextmenu', (e) => {e.preventDefault()})
 
@@ -113,6 +112,29 @@ function initThree() {
     floor.translateY(-2.7);
     floor.receiveShadow = true;
     scene.add(floor);
+
+    // Инициализация прогресса
+    progressBar = document.createElement('div')
+    progress_text = document.createElement('div')
+    progress_text.id = 'progtext'
+    document.body.appendChild(progress_text)
+    document.getElementById(progress_text.id).textContent = '0%'
+    progressBar.id = 'progressBar';
+    progressBar.style.overflow = 'hidden';
+    const progressFill = document.createElement('div')
+    progressFill.id = 'progressFill';  
+    progressBar.appendChild(progressFill);
+    document.body.appendChild(progressBar)
+}
+
+// функция для обновления прогресса
+export function updateProgressBar(percentage){
+    const progressFill = document.getElementById('progressFill');
+    console.log(`${percentage}%`)
+    if (progressFill){
+        progressFill.style.width = `${percentage}%`;       
+        progress_text.textContent = `${Math.round(percentage)}%`       
+    }
 }
 
 function createArrow(position, direction, color = 0x00ff00, isRotate = false, faceColor = 0x00ff00) {
@@ -272,7 +294,7 @@ document.addEventListener('keydown', (event) => {
         }
         document.getElementById('OrbitConSet').innerHTML = off_on;
     } else if (event.code === 'KeyR' && CurrentActiveCam === 'observer') {
-        camera.position.set(15, 10, 15);
+        camera.position.set(15, 15, 15);
         camera.lookAt(0, 5, 0);
         controls.update();
     } else if (event.code === 'KeyT' && CurrentActiveCam === 'observer'){
@@ -293,7 +315,18 @@ document.addEventListener('keydown', (event) => {
         controls.update();
     } else if (event.code === 'KeyS'){
         alert("Начато перемешивание куба");
-        scrumbleCube(20);
+        scrambleCube(20);
+    } else if (event.code === 'KeyC'){
+        alert("Начата сборка")
+        solveCube();
+    } else if (event.code === 'ArrowLeft' && CurrentActiveCam === 'observer'){
+        rotateWholeCube(new THREE.Vector3(0, 1, 0), true)
+    } else if (event.code === 'ArrowRight' && CurrentActiveCam === 'observer'){
+        rotateWholeCube(new THREE.Vector3(0, 1, 0), false)
+    } else if (event.code === 'ArrowUp'){
+        rotateWholeCube(new THREE.Vector3(1, 0, 0), false)
+    } else if (event.code === 'ArrowDown'){
+        rotateWholeCube(new THREE.Vector3(1, 0, 0), true)
     }
 });
 
@@ -408,6 +441,6 @@ window.addEventListener('load', () => {
         setupTriggerInteraction(triggerZones);
         initPlayer(scene, renderer, controls, controlsPointer);
         startworld();
-    });
+    });   
 });
 
