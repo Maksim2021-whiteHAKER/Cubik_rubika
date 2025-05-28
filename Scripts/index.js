@@ -19,7 +19,7 @@ const raycaster = new THREE.Raycaster();
 let arrows = []; // Массив для стрелок
 let selectedCube = null;
 //  элемент прогресса
-let progressBar, progress_text
+let progressBar, progress_text, helpMenu, mainmenu_game;
 
 addEventListener('contextmenu', (e) => {e.preventDefault()})
 
@@ -117,22 +117,31 @@ function initThree() {
     scene.add(floor);
 
     // Инициализация прогресса
-    progressBar = document.createElement('div')
-    progress_text = document.createElement('div')
-    progress_text.id = 'progtext'
-    document.body.appendChild(progress_text)
-    document.getElementById(progress_text.id).textContent = '0%'
-    progressBar.id = 'progressBar';
-    progressBar.style.overflow = 'hidden';
-    const progressFill = document.createElement('div')
-    progressFill.id = 'progressFill';  
-    progressBar.appendChild(progressFill);
-    document.body.appendChild(progressBar)
+    helpMenu = document.createElement('button')
+    helpMenu.id = 'helpM';
+    helpMenu.addEventListener('click', () => {
+        const helpModal = document.getElementById('helpModal');
+        if (helpModal) helpModal.style.display = 'block';
+    });
+
+    mainmenu_game = document.createElement('button')
+    mainmenu_game.id = 'mainMenu_g';
+    mainmenu_game.addEventListener('click', () => {
+        // Здесь ваша логика выхода в меню
+        if (confirm("Вы действительно хотите вернуться в главное меню?")) {
+            // Сброс игры, остановка таймера и показ главного меню
+            stopTimer();
+            congratsModal.style.display = 'none';
+            mainMenu.style.display = 'flex';
+        }
+    });
+    
 }
 
 // функция для обновления прогресса
 export function updateProgressBar(percentage){
     const progressFill = document.getElementById('progressFill');
+    const progress_text = document.getElementById('progtext')
     console.log(`${percentage}%`)
     if (progressFill){
         progressFill.style.width = `${percentage}%`;       
@@ -145,6 +154,7 @@ export function updateProgressBar(percentage){
             setTimeout(() => {
                 if (congratsModal) {
                     congratsModal.style.display = 'block';
+                    gameState.active = false;
                     stopTimer();
                 }
             }, 300);

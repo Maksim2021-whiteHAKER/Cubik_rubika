@@ -1,10 +1,13 @@
 import { scrambleCube } from "./cube.js";
+import { updateProgressBar } from "./index.js";
 
 // Элементы интерфейса
 const mainMenu = document.getElementById('mainMenu');
-export const congratsModal = document.getElementById('congratsModal');
 const helpModal = document.getElementById('helpModal');
 const creatorModal = document.getElementById('creatorModal');
+const resetButton = document.getElementById('resetBtn');
+const backToMenuButton = document.getElementById('BackToMenuBtn')
+export const congratsModal = document.getElementById('congratsModal');
 
 export let gameState = {
     active: false,
@@ -15,12 +18,50 @@ export let gameState = {
 }
 export let timerInterval;
 
+function resetGame() {
+    if (gameState.active) {
+        console.log("Сброс игры");
+        stopTimer();
+        updateProgressBar(0);
+        gameState.active = false;
+        gameState.solved = false;
+
+        // Очищаем стрелки
+        const arrows = document.querySelectorAll('.arrow');
+        arrows.forEach(arrow => arrow.remove());
+
+        // Перемешиваем кубик снова
+        setTimeout(() => {
+            scrambleCube(20);
+            gameState.active = true;
+            startGameTimer();
+        }, 300);
+    }
+}
+
+// Возврат в главное меню
+function goToMainMenu() {
+    console.log("Возвращаемся в главное меню");
+
+    stopTimer();
+    updateProgressBar(0);
+    gameState.active = false;
+    gameState.mode = null;
+
+    // Скрываем всё, кроме главного меню
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    mainMenu.style.display = 'flex';
+
+    // Очищаем состояние кубика
+    congratsModal.style.display = 'none';
+}
+
 // Функции управления модалками
 function showModal(modal){
     if (modal){
         // Скрываем все модалки перед показом новой
         document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-        modal.style.display = 'block';
+        modal.style.display = 'block';       
     }
 }
 
@@ -45,6 +86,26 @@ document.getElementById('freeMode').addEventListener('click', () => {
     startGameTimer();
     // Инициализация свободного режима
 });
+
+// Кнопка "Сброс"
+if (resetButton) {
+    resetButton.addEventListener('click', () => {
+        if (confirm("Вы действительно хотите начать игру заново?")) {
+            gameState.active = true;
+            congratsModal.style.display = 'none';
+            resetGame();
+        }
+    });
+}
+
+// Кнопка "В меню"
+if (backToMenuButton) {
+    backToMenuButton.addEventListener('click', () => {
+        if (confirm("Вы действительно хотите вернуться в главное меню?")) {
+            goToMainMenu();
+        }
+    });
+}
 
 // Обработчики для кнопок "Помощь" и "Создатель"
 document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));

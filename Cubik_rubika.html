@@ -26,8 +26,10 @@
     <div id="congratsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&otimes;</span>
-            <h2>🎉 Поздравляем 🎉</h2>
-            <p>Время сборки: <span id="solveTime">0</span>сек.</p>
+            <h2 id="congrats">🎉 Поздравляем 🎉</h2>
+            <p id="timesolve">Время сборки: <span id="solveTime">0</span>сек.</p>
+            <button id="resetBtn">Собрать заново</button>
+            <button id="BackToMenuBtn">Вернуться в меню</button>
         </div>
     </div>
     <div id="helpModal" class="modal">
@@ -36,7 +38,7 @@
             <h2>📚 Помощь по управлению</h2>
             <div class="help-content">
                 <div class="control-group">
-                    <h3>🛠 Основное управление 🛠</h3>
+                    <h3 id="maincontrol">🛠 Основное управление 🛠</h3>
                     <ul>
                         <li>ПКМ + тащить - вращение камеры если Орбита(вкл)</li>
                         <li>O/Щ - включить/выключить орбиту</li>
@@ -45,7 +47,7 @@
                     </ul>
                 </div>
                 <div class="control-group">
-                    <h3>🕹 Управление кубиком</h3>
+                    <h3 id="maincontrol">🕹 Управление кубиком</h3>
                     <ul>
                         <li>зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
                         <li>зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
@@ -61,13 +63,12 @@
     <div id="creatorModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&otimes;</span>
-            <h2>Создатель</h2>
+            <h2 id="creator">Создатель</h2>
             <div class="creator-info">
-
                 <div class="creator-details">
                     <p><strong>Имя: </strong>В. Максим (4 курс)</p>
                     <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER" target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
-                    <p><strong>Особенности проекта: </strong></p>
+                    <br><p><strong>Особенности проекта: </strong></p>
                     <ul>
                         <li>Создано с использованием THREEJS</li>
                         <li>в будущем возможно будут обновления</li>
@@ -79,13 +80,25 @@
 
     <div id="menu_info">
         <h1 >Кубик-рубика версия 0.0.1.2</h1>
+    </div>
+    <div id="menu_settings">
+        Fov: <span id="CurntCamFOV"></span>
+    </div>
+    <div id="OrbitCon">
+        кнп. Щ(вкл/выкл) Орбита: <span id="OrbitConSet">выкл</span>
+    </div>
+
+    <div id="uiOverlay">
+        <div id="progressBarContainer">
+            <div id="progressBar">
+                <div id="progressFill"></div>
+            </div>
+            <div id="progtext">0%</div>
         </div>
-        <div id="menu_settings">
-            Fov: <span id="CurntCamFOV"></span>
-        </div>
-        <div id="OrbitCon">
-           кнп. Щ(вкл/выкл) Орбита: <span id="OrbitConSet">выкл</span>
-        </div>
+    
+        <button id="helpM" aria-label="Help"></button>
+        <button id="mainMenu_g" aria-label="Main Menu"></button>
+    </div>
        <script src="Scripts/index.js" type="module"></script>
 </body>
 </html>
