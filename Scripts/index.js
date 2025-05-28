@@ -2,7 +2,7 @@ import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../Scripts/lib/OrbitControls.js';
 import { PointerLockControls } from 'https://unpkg.com/three@0.122.0/examples/jsm/controls/PointerLockControls.js';
-import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube } from './cube.js';
+import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, referenceCube, getstaticObjects } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
 import { gameState, congratsModal, stopTimer } from './menu.js';
@@ -222,7 +222,7 @@ function showArrows(cube) {
     const cubeSize = 6.12 / 3; // Размер одного кубика
     const offset = cubeSize * 0.5; // Отступ для стрелок
     const extrudeOffset = cubeSize * 0.1; // Смещение стрелок наружу
-    const sphereOffset = cubeSize * 0.1; // Смещение шаров по вертикале
+    const sphereOffset = cubeSize * 0.101; // Смещение шаров по вертикале
 
     // Находим грань, на которую кликнули
     const mouse = new THREE.Vector2();
@@ -261,7 +261,7 @@ function showArrows(cube) {
     const extrudeVector = normal.clone().multiplyScalar(extrudeOffset);
 
     // Определяем, является ли кликнутый кубик центральным
-    const cubesObjects = getObjects();
+    const cubesObjects = getstaticObjects();
     const centerCubes = cubesObjects.filter(item => item.name.includes("CENTER"));
     const isCenterCube = centerCubes.some(center => center === cube || center.uuid === cube.uuid);
 
@@ -292,6 +292,7 @@ function showArrows(cube) {
     }   
     console.log(`Total arrows created: ${arrows.length}`);
 }
+
 
 function hideArrows() {
     arrows.forEach(arrow => scene.remove(arrow));
@@ -356,14 +357,17 @@ function setupTriggerInteraction(triggerZones) {
         mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
 
         raycaster.setFromCamera(mouse, camera);
-        const objects = getObjects();
-        const intersects = raycaster.intersectObjects(objects, true);
+        // const objects = getObjects();
+        const objects = getstaticObjects();
+
+        const intersects = raycaster.intersectObjects(objects, true); // динамич
 
         if (intersects.length > 0) {
             const intersect = intersects[0];
             startObject = intersect.object;
             selectedCube = startObject.parent; // Получаем группу кубика
-            showArrows(selectedCube);
+                       
+            showArrows(selectedCube); 
             console.log('mousedown: object=', startObject.name, 'parent=', selectedCube.name);
         } else {
             hideArrows();

@@ -9,6 +9,7 @@ export let world;
 const loaderGLTF = new GLTFLoader();
 export const bodies = [];
 let _objects = []; // Внутренний массив
+let _staticobjects = [];
 export const originalMaterials = new Map();
 export const referencePositions = new Map(); // Позиции эталонный позиций и кватернионов
 // export const cubeState = new Map(); // Динамическая матрица состояния кубика
@@ -17,7 +18,7 @@ const raycaster = new THREE.Raycaster()
 let isCheckingPaused = false;
 export let isScrambling = false;
 
-let referenceCube = null;
+export let referenceCube = null;
 
 const validGroups = [
     'R1_GWR001', 'R2_WR002', 'R3_RWB003', 'R4_GR004', 'R5_CENTER_R005', 'R6_RB006', 'R7_GRY007', 'R8_RY008', 'R9_RBY009',
@@ -28,6 +29,10 @@ const validGroups = [
 // Getter для Objects
 export function getObjects() {
     return _objects;
+}
+
+export function getstaticObjects(){
+    return _staticobjects;
 }
 
 let rotationGroup = null;
@@ -55,6 +60,13 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             referenceCube.position.set(0, 5, 0)
             referenceCube.visible = false;
             scene.add(referenceCube)
+
+            _staticobjects.length = 0;
+            referenceCube.traverse(child => {
+                if (child.isGroup && validGroups.includes(child.name)) {
+                    _staticobjects.push(child);
+                }
+            });
 
             model.updateMatrixWorld(true)
             referenceCube.updateMatrixWorld(true)
