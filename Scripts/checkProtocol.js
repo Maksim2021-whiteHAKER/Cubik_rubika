@@ -13,5 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMes.textContent = 'Пожалуйста, запустите локальный сервер (например, FiveServer), чтобы приложение работало корректно. Это необходимо для безопасности CORS и загрузки ресурсов.';
         document.body.appendChild(errorMes);
         throw new Error('Приложение не может работать через file:// из-за ограничений CORS.');
+    } else {
+        const MenuScript = document.createElement('script')
+        MenuScript.src = 'Scripts/menu.js';
+        MenuScript.type = 'module';
+        document.body.appendChild(MenuScript);
     }
 });

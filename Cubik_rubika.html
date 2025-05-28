@@ -7,12 +7,78 @@
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
-    <link rel="stylesheet" href="styles/error.css" type="text/css">
+    <link rel="stylesheet" href="styles/mainMenu.css" type="text/css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="Scripts/checkProtocol.js"></script>
 </head>
-    <body>
-       <div id="menu_info">
-        <h1 >Кубик-рубика версия 0.0.1.0</h1>
+<body>
+    <!-- Главное меню -->
+     <div id="mainMenu" class="main-menu">
+        <h1 class="title"> Кубик-рубика 3D v12</h1>
+        <div class="menu_buttons">
+            <button id="normalMode" class="menu-btn">Обычный режим</button>
+            <button id="freeMode" class="menu-btn">Свободный режим</button>
+            <button id="helpBtn" class="menu-btn">Помощь</button>
+            <button id="creatorBtn" class="menu-btn">Создатель</button>
+        </div>
+    </div>
+    <!-- Модальные окна -->
+    <div id="congratsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&otimes;</span>
+            <h2>🎉 Поздравляем 🎉</h2>
+            <p>Время сборки: <span id="solveTime">0</span>сек.</p>
+        </div>
+    </div>
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&otimes;</span>
+            <h2>📚 Помощь по управлению</h2>
+            <div class="help-content">
+                <div class="control-group">
+                    <h3>🛠 Основное управление 🛠</h3>
+                    <ul>
+                        <li>ПКМ + тащить - вращение камеры если Орбита(вкл)</li>
+                        <li>O/Щ - включить/выключить орбиту</li>
+                        <li>Колесико мыши - зум</li>
+                        <li>R - сброс камеры</li>
+                    </ul>
+                </div>
+                <div class="control-group">
+                    <h3>🕹 Управление кубиком</h3>
+                    <ul>
+                        <li>зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
+                        <li>зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
+                        <li>Стрелки на клавиатуре - это поворот кубика полностью</li>
+                        <li>C - автосборка в "Свободном режиме"</li>
+                        <li>S - разборка кубика                </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>  
+
+    <div id="creatorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&otimes;</span>
+            <h2>Создатель</h2>
+            <div class="creator-info">
+
+                <div class="creator-details">
+                    <p><strong>Имя: </strong>В. Максим (4 курс)</p>
+                    <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER" target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
+                    <p><strong>Особенности проекта: </strong></p>
+                    <ul>
+                        <li>Создано с использованием THREEJS</li>
+                        <li>в будущем возможно будут обновления</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu_info">
+        <h1 >Кубик-рубика версия 0.0.1.2</h1>
         </div>
         <div id="menu_settings">
             Fov: <span id="CurntCamFOV"></span>
@@ -20,7 +86,6 @@
         <div id="OrbitCon">
            кнп. Щ(вкл/выкл) Орбита: <span id="OrbitConSet">выкл</span>
         </div>
-        <canvas id="FaceCanvas" width="300" height="300"></canvas>
        <script src="Scripts/index.js" type="module"></script>
-    </body>
+</body>
 </html>

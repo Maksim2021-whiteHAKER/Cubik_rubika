@@ -109,12 +109,14 @@ canvas {
 
 #progressBar {
   position: absolute;
-  top: 40px;
-  right: 10px;
+  top: 60px;
+  left: 50%;
+  right: 50%;
   transform: translateX(-50%);
-  width: 200px;
-  height: 20px;
+  width: 400px;
+  height: 40px;
   background-color: #ccc;
+  color: yellow;
   border: 1px solid #000;
   border-radius: 5px;
   
@@ -123,6 +125,7 @@ canvas {
 #progressFill {
   height: 100%;
   background-color: #4caf50;
+  color: yellow;
   width: 0%;
   transition: width 0.6s ease;
   z-index: 2;
@@ -130,13 +133,16 @@ canvas {
 
 #progtext {
   position: absolute;
+  color: purple;
   border-style: 1px solid;
   border-radius: 5px;
-  width: 200px;
-  height: 20px;
+  width: 400px;
+  height: 40px;
   text-align: center;
-  top: 42px;
-  right: 10px;
+  top: 60px;
+  right: 50%;
+  left: 50%;
+  font-size: 25px;
   transform: translateX(-50%);
   z-index: 3;  
 }

@@ -1,0 +1,175 @@
+.main-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; /* Изменено с 100% */
+    height: 100%; /* Ограничение максимальной ширины */
+    padding: 2rem;
+    background: rgba(0,0,0,0.9);
+    background-image: url("../textures/hypercube.jpg");
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    display: flex; /* Добавлено */
+    flex-direction: column; /* Вертикальное расположение */
+    align-items: center; /* Центрирование по горизонтали */
+    backdrop-filter: blur(5px); /* Увеличено значение blur */
+    border: 2px solid rgba(255,255,255,0.2);
+    box-shadow: 0 0 30px rgba(0,255,255,0.3);
+    z-index: 1000;
+}
+
+.title {
+    border: 1px solid black;
+    background-color: rgba(0,0,0,0.7);
+    text-align: center;
+    left: 50%;
+    right: 50%;
+    width: 50%;
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 15px 0 30px orange;
+}
+
+.menu-buttons {
+    width: 100%; /* Занимает всю ширину контейнера */
+    max-width: 400px; /* Максимальная ширина кнопок */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.menu-btn {
+    margin-top: 3%;
+    width: 100%; /* Кнопки занимают всю ширину контейнера */
+    box-sizing: border-box; /* Учитывает padding в ширине */
+    background: rgba(26,26,26,0.9);
+    color: #fff;
+    border: 2px solid #00ffff;
+    padding: 1.2rem 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    backdrop-filter: blur(2px);
+}
+
+.menu-btn:hover {
+    background: rgba(0,255,255,0.9);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,255,255,0.4);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1001;
+    animation: fadeIn 0.3 ease
+}
+
+.modal-content {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #1a1a1a;
+    border-radius: 15px;
+    color: #fff;
+    text-align: center;
+}
+
+.ui-element {
+    position: fixed;
+    padding: 0.5rem 1rem;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    border-radius: 5px;
+    z-index: 999;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #00ffff;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #ff0000;
+}
+
+/* Стили для модальных окон */
+.help-content {
+    text-align: left;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 0 1rem;
+}
+
+.control-group {
+    margin: 1.5rem 0;
+    background: rgba(255,255,255,0.05);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.control-group h3 {
+    color: #00ffff;
+    margin-bottom: 0.5rem;
+}
+
+.control-group ul {
+    list-style-type: square;
+    padding-left: 1.5rem;
+}
+
+.control-group li {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+}
+
+/* Стили для информации о создателе */
+.creator-info {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.creator-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #00ffff;
+    object-fit: cover;
+}
+
+.creator-details {
+    flex: 1;
+    text-align: left;
+}
+
+.creator-details a {
+    color: #00ffff;
+    text-decoration: none;
+}
+
+.creator-details a:hover {
+    text-decoration: underline;
+}
