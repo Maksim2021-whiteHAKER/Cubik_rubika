@@ -48,7 +48,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera.glb",
+    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);

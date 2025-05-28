@@ -82,7 +82,7 @@
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    max-width: 400px;
+    max-width: 750px;
     margin: 0 auto;
     padding: 2rem;
     background: #1a1a1a;
@@ -172,4 +172,67 @@
 
 .creator-details a:hover {
     text-decoration: underline;
+}
+
+#congrats {
+    /* border: 1px solid red; */
+    font-size: 35px;
+}
+
+#timesolve {
+    font-size: 40px;
+}
+
+#maincontrol {
+    text-align: center;
+    font-size: 20px;
+}
+
+li {
+    font-size: 17px;
+}
+
+#creator {
+    font-size: 35px;
+}
+
+p {
+    font-size: 20px;
+}
+
+#resetBtn{
+    margin-top: 3%;
+    width: 35%; /* Кнопки занимают всю ширину контейнера */
+    box-sizing: border-box; /* Учитывает padding в ширине */
+    background: rgba(26,26,26,0.9);
+    background-image: url("../textures/refresh.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #fff;
+    border: 2px solid #00ffff;
+    padding: 1.2rem 2rem;
+    font-size: 1.0rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    backdrop-filter: blur(2px);
+}
+
+#BackToMenuBtn {
+    margin-top: 3%;
+    width: 35%; /* Кнопки занимают всю ширину контейнера */
+    box-sizing: border-box; /* Учитывает padding в ширине */
+    background: rgba(26,26,26,0.9);
+    color: #fff;
+    border: 2px solid #00ffff;
+    padding: 1.2rem 2rem;
+    font-size: 1.0rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    backdrop-filter: blur(2px);
 }
