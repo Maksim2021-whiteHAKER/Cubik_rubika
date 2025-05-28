@@ -2,9 +2,10 @@ import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../Scripts/lib/OrbitControls.js';
 import { PointerLockControls } from 'https://unpkg.com/three@0.122.0/examples/jsm/controls/PointerLockControls.js';
-import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, historyrotation } from './cube.js';
+import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
+import { gameState, congratsModal, stopTimer } from './menu.js';
 
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
@@ -82,13 +83,15 @@ function initThree() {
         camera = cameraPlayer;
         CurrentActiveCam = 'player';
         console.log('Камера: Игрок');
+        updateCam();
     });
 
     controlsPointer.addEventListener('unlock', () => {
-        controls.enabled = true;
+        controls.enabled = false;
         camera = observerCamera;
         CurrentActiveCam = 'observer';
         console.log('Камера: Наблюдатель');
+        updateCam();
     });
 
     controls.update();
@@ -133,12 +136,26 @@ export function updateProgressBar(percentage){
     console.log(`${percentage}%`)
     if (progressFill){
         progressFill.style.width = `${percentage}%`;       
+        progress_text.style.color = '#ffff00'
         progress_text.textContent = `${Math.round(percentage)}%`       
+    
+        // Показываем модальное окно при достижении 100%
+        if (percentage >= 100) {
+            // Небольшая задержка для завершения анимации
+            setTimeout(() => {
+                if (congratsModal) {
+                    congratsModal.style.display = 'block';
+                    stopTimer();
+                }
+            }, 300);
+        }
+    } else {
+        console.error('Элементы прогресс-бара не найдены!');
     }
 }
 
 function createArrow(position, direction, color = 0x00ff00, isRotate = false, faceColor = 0x00ff00) {
-    
+    if (!gameState.active) return
     const geometry = isRotate ? new THREE.SphereGeometry(0.2, 16, 16) : new THREE.ConeGeometry(0.3, 0.6, 8);
     const material = new THREE.MeshBasicMaterial({ color });
     const arrow = new THREE.Mesh(geometry, material);
@@ -282,8 +299,9 @@ function hideArrows() {
     selectedCube = null;
 }
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener('keydown', async (event) => {
     let off_on;
+    if (!gameState.active) return
     if (event.code === 'KeyO') {
         if (controls.enabled) {
             controls.enabled = false;
@@ -313,25 +331,25 @@ document.addEventListener('keydown', (event) => {
         camera.position.set(0, -18.45, 0);
         camera.lookAt(0, 5, 0);
         controls.update();
-    } else if (event.code === 'KeyS'){
+    } else if (event.code === 'KeyS' && CurrentActiveCam === 'observer'){
         alert("Начато перемешивание куба");
         scrambleCube(20);
-    } else if (event.code === 'KeyC'){
-        alert("Начата сборка")
+    } else if (event.code === 'KeyC' && CurrentActiveCam === 'observer'){
         solveCube();
     } else if (event.code === 'ArrowLeft' && CurrentActiveCam === 'observer'){
-        rotateWholeCube(new THREE.Vector3(0, 1, 0), true)
+        await rotateWholeCube(new THREE.Vector3(0, 1, 0), true)
     } else if (event.code === 'ArrowRight' && CurrentActiveCam === 'observer'){
-        rotateWholeCube(new THREE.Vector3(0, 1, 0), false)
+        await rotateWholeCube(new THREE.Vector3(0, 1, 0), false)
     } else if (event.code === 'ArrowUp'){
-        rotateWholeCube(new THREE.Vector3(1, 0, 0), false)
+        await rotateWholeCube(new THREE.Vector3(1, 0, 0), false)
     } else if (event.code === 'ArrowDown'){
-        rotateWholeCube(new THREE.Vector3(1, 0, 0), true)
+        await rotateWholeCube(new THREE.Vector3(1, 0, 0), true)
     }
 });
 
 function setupTriggerInteraction(triggerZones) {
     window.addEventListener('mousedown', (event) => {
+        if (!gameState.active) return;
         if (event.button !== 0) return;
         const mouse = new THREE.Vector2();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -354,6 +372,7 @@ function setupTriggerInteraction(triggerZones) {
     });
 
     window.addEventListener('mousemove', (event) => {
+        if (!gameState.active) return
         if (!isDragging && selectedCube) {
             const mouse = new THREE.Vector2();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -378,6 +397,7 @@ function setupTriggerInteraction(triggerZones) {
     
 
     window.addEventListener('mouseup', (event) => {
+        if (!gameState.active) return
         if (!selectedCube) return;
 
         const mouse = new THREE.Vector2();

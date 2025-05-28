@@ -29,8 +29,8 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     playerLoader.load("/models/player_texture.glb", function (gltf) {
         playerModel = gltf.scene;
         playerModel.scale.set(1, 1, 1);
-        playerModel.position.set(10, -1.5, 0);
-        playerModel.rotateY(1.489);
+        playerModel.position.set(2, -1.5, -15);
+        playerModel.rotateY(Math.PI);
         sceneArg.add(playerModel);
               
         cameraPlayer.position.set(0, 0.8, 0);
@@ -59,7 +59,7 @@ function setupCameraControl(cameraPlayer, controlsPointer) {
         zoomEnable = true;
         currentCam = cameraPlayer;
         fpsCursor.style.display = 'block'
-        //document.getElementById('selected-cursor').style.display = 'none'
+        document.getElementById('selected-cursor').style.display = 'none'
     });
 
     controlsPointer.addEventListener('unlock', () => {
@@ -74,7 +74,7 @@ function setupCameraControl(cameraPlayer, controlsPointer) {
 }
 
 function handlePlayerMovement(event) {
-    if (event.code !== arrayKeys[0]) //{console.log('HandPlaMov: '+ event.code)}
+    if (event.code !== arrayKeys[0]) {console.log('HandPlaMov: '+ event.code)}
     if (!controlsPointerRef) return;
     
     switch (event.code) {
@@ -90,9 +90,9 @@ function handlePlayerMovement(event) {
         case 'KeyA':
             controlsPointerRef.moveRight(-playerSpeed);
             break;
-        case 'KeyF':
-            toggleCam();
-            break;
+        // case 'KeyF':
+        //     toggleCam();
+        //     break;
     }
 }
 

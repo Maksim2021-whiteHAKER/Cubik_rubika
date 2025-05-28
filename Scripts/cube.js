@@ -2,6 +2,7 @@ import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { camera, CurrentActiveCam, updateProgressBar } from './index.js';
+import { gameState } from './menu.js';
 
 let scene;
 export let world;
@@ -12,7 +13,9 @@ export const originalMaterials = new Map();
 export const referencePositions = new Map(); // Позиции эталонный позиций и кватернионов
 // export const cubeState = new Map(); // Динамическая матрица состояния кубика
 export let historyrotation = [];
-
+const raycaster = new THREE.Raycaster()
+let isCheckingPaused = false;
+export let isScrambling = false;
 
 let referenceCube = null;
 
@@ -169,10 +172,12 @@ export function getCubesInLayer(normal, clickedObject) {
     return { cubes: layerCubes };
 }
 
-export function checkFpsHit(){
+export function checkFpsHit(mousePos) {
     if (CurrentActiveCam !== 'player') return null;
-    raycaster.setFromCamera(center, camera);
-    return raycaster.intersectObjects(_objects, true)[0] || null        
+    // Используем координаты мыши вместо центра экрана
+    raycaster.setFromCamera(mousePos || new THREE.Vector2(0, 0), camera);
+    const intersects = raycaster.intersectObjects(_objects, true);
+    return intersects[0] || null;
 }
 
 export function rotateLayer(object, normal, isCounterclockwise = false) {
@@ -245,7 +250,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
         const duration = 300;
         const startTime = performance.now();
 
-        function animateRotation(currentTime) {
+        function animateRotation(currentTime) {            
             if (!rotationGroup) {
                 resolve();
                 return;
@@ -261,6 +266,11 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
                 requestAnimationFrame(animateRotation);
             } else {
                 finishRotation();
+                if (!isScrambling && isCubeSolved()){
+                    updateProgressBar(100)
+                    historyrotation = [];
+                    console.log('Куб собран')
+                }       
                 resolve();
             }
         }
@@ -269,7 +279,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
     });
 }
 
-export function rotateWholeCube(axis, isCounterclockwise = false) {
+export async function rotateWholeCube(axis, isCounterclockwise = false) {
     return new Promise((resolve) => {
         if (isRotating) {
             console.log('rotateWholeCube: blocked, rotation in progress');
@@ -322,6 +332,7 @@ export function rotateWholeCube(axis, isCounterclockwise = false) {
         const startTime = performance.now();
 
         function animateRotation(currentTime) {
+            isCheckingPaused = true; // ❗️Останавливаем проверку
             if (!rotationGroup) {
                 resolve();
                 return;
@@ -339,6 +350,11 @@ export function rotateWholeCube(axis, isCounterclockwise = false) {
                 requestAnimationFrame(animateRotation);
             } else {
                 finishWholeRotation(initialStates);
+                if (!isScrambling && isCubeSolved()){
+                    updateProgressBar(100)
+                    historyrotation = [];
+                    console.log('Куб собран')
+                }       
                 resolve();
             }
         }
@@ -504,6 +520,8 @@ export async function scrambleCube(numMoves = 20){
         console.warn(`Перемешивание не может быть выполнено, т.к сейчас кубик вращается`);
         return;
     }
+    isScrambling = true; // включаем перемешивание
+    updateProgressBar(0)
 
     const axes = [
         new THREE.Vector3(1, 0, 0),
@@ -520,12 +538,15 @@ export async function scrambleCube(numMoves = 20){
         await rotateLayer(cube, axis, isCounterclockwise);
     }
     console.log(`Перемешивание куба завершено-успешно`)
+    isScrambling = false
 }
 
 export async function solveCube() {
-    if (isRotating) { alert("Сборка не может быть выполнена, т.к сейчас кубик вращается"); return; }
+    if (isRotating) { alert("Сборка не может быть выполнена, т.к сейчас кубик вращается"); updateProgressBar(0); return; }
+    if (gameState.mode === 'normal') { alert("Недоступно в обычном режиме"); updateProgressBar(0); return;} 
 
     optimizeHistory()
+    alert("Начата сборка")
     
     // проходим по истории в обратном направлении
     for (let i = historyrotation.length - 1; i>=0; i--){
@@ -573,26 +594,37 @@ function optimizeHistory() {
     console.log(`История оптимизирована, длина: ${historyrotation.length}`);
 }
 
+export function checkCubeSolved(){
+    return isCubeSolved()
+}
 
-function isCubeSolved(){
-    const tolerance = 0.01; // Допустимая погрешность для позиций и кватернионов
-    let isSolved = true
+function isCubeSolved() {   
+    if (isCheckingPaused) {
+        console.log("Проверка временно приостановлена");
+        return false;
+    }
+
+    const tolerance = 0.01;
+    let isSolved = true;
 
     _objects.forEach(cube => {
-        const refData = referencePositions.get(cube.name)
-        if (!refData){
+        const refData = referencePositions.get(cube.name);
+        if (!refData) {
             console.warn(`Эталонные данные не найдены: ${cube.name}`);
             isSolved = false;
             return;
         }
+
         const currentPos = new THREE.Vector3();
         cube.getWorldPosition(currentPos);
+
         const currentQuat = cube.getWorldQuaternion(new THREE.Quaternion());
 
-        // Округляем для сравнения
+        // Округление для сравнения
         currentPos.x = Math.round(currentPos.x * 1000) / 1000;
         currentPos.y = Math.round(currentPos.y * 1000) / 1000;
         currentPos.z = Math.round(currentPos.z * 1000) / 1000;
+
         currentQuat.x = Math.round(currentQuat.x * 1000) / 1000;
         currentQuat.y = Math.round(currentQuat.y * 1000) / 1000;
         currentQuat.z = Math.round(currentQuat.z * 1000) / 1000;
@@ -601,24 +633,20 @@ function isCubeSolved(){
         const refPos = refData.position;
         const refQuat = refData.quaternion;
 
-        // Проверяем позиции
         if (
             Math.abs(currentPos.x - refPos.x) > tolerance ||
             Math.abs(currentPos.y - refPos.y) > tolerance ||
             Math.abs(currentPos.z - refPos.z) > tolerance
         ) {
-            console.log(`Кубик ${cube.name}: позиция не совпадает. Текущая: ${currentPos.toArray()}, Эталон: ${refPos.toArray()}`);
             isSolved = false;
         }
 
-        // Проверяем ориентацию
         if (
             Math.abs(currentQuat.x - refQuat.x) > tolerance ||
             Math.abs(currentQuat.y - refQuat.y) > tolerance ||
             Math.abs(currentQuat.z - refQuat.z) > tolerance ||
             Math.abs(currentQuat.w - refQuat.w) > tolerance
         ) {
-            console.log(`Кубик ${cube.name}: ориентация не совпадает. Текущая: ${[currentQuat.x, currentQuat.y, currentQuat.z, currentQuat.w]}, Эталон: ${[refQuat.x, refQuat.y, refQuat.z, refQuat.w]}`);
             isSolved = false;
         }
     });
