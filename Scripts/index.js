@@ -116,16 +116,15 @@ function initThree() {
     floor.receiveShadow = true;
     scene.add(floor);
 
+    const helpMenu = document.getElementById('helpM');
+    const mainmenu_game = document.getElementById('mainMenu_g')
+
     // Инициализация прогресса
-    helpMenu = document.createElement('button')
-    helpMenu.id = 'helpM';
     helpMenu.addEventListener('click', () => {
         const helpModal = document.getElementById('helpModal');
         if (helpModal) helpModal.style.display = 'block';
     });
 
-    mainmenu_game = document.createElement('button')
-    mainmenu_game.id = 'mainMenu_g';
     mainmenu_game.addEventListener('click', () => {
         // Здесь ваша логика выхода в меню
         if (confirm("Вы действительно хотите вернуться в главное меню?")) {
@@ -135,7 +134,7 @@ function initThree() {
             mainMenu.style.display = 'flex';
         }
     });
-    
+
 }
 
 // функция для обновления прогресса
