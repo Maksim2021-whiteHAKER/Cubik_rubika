@@ -82,7 +82,8 @@
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    max-width: 750px;
+    border: 1px solid #00ffff;
+    max-width: 850px;
     margin: 0 auto;
     padding: 2rem;
     background: #1a1a1a;
@@ -235,4 +236,12 @@ p {
     text-align: center;
     text-decoration: none;
     backdrop-filter: blur(2px);
+}
+
+#helpbyCont {
+    font-size: 30px;
+}
+
+#dls {
+    list-style-type: none;
 }
