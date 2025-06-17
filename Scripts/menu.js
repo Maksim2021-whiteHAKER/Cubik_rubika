@@ -87,6 +87,10 @@ document.getElementById('freeMode').addEventListener('click', () => {
     // Инициализация свободного режима
 });
 
+document.getElementById('trainingMode').addEventListener('click', ()=> {
+    alert('🛠Пока в разработке🛠')
+})
+
 // Кнопка "Сброс"
 if (resetButton) {
     resetButton.addEventListener('click', () => {
