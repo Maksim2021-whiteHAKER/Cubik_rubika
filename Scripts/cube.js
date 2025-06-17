@@ -55,21 +55,23 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             model.position.set(0,5,0)
             scene.add(model);
 
-            referenceCube = gltf.scene.clone();
-            referenceCube.scale.set(1, 1, 1)
-            referenceCube.position.set(0, 5, 0)
-            referenceCube.visible = false;
-            scene.add(referenceCube)
+            loaderGLTF.load("models/Cubik-Rubik_LITE_without_camera_fixCenter.glb", (refgltf) => {
+                referenceCube = refgltf.scene;
+                referenceCube.scale.set(1, 1, 1)
+                referenceCube.position.set(0, 5, 0)
+                referenceCube.visible = false;
+                scene.add(referenceCube)
+            
+                _staticobjects.length = 0;
+                referenceCube.traverse(child => {
+                    if (child.isGroup && validGroups.includes(child.name)) {
+                        _staticobjects.push(child);
+                    }
+                });
 
-            _staticobjects.length = 0;
-            referenceCube.traverse(child => {
-                if (child.isGroup && validGroups.includes(child.name)) {
-                    _staticobjects.push(child);
-                }
-            });
-
-            model.updateMatrixWorld(true)
-            referenceCube.updateMatrixWorld(true)
+                model.updateMatrixWorld(true)
+                referenceCube.updateMatrixWorld(true)
+            })
 
             console.log('***Структура модели***');
             model.traverse(child => {
