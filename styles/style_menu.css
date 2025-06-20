@@ -290,3 +290,23 @@ canvas {
 .face {
   margin: 0;
 }
+
+.debugCheckbtn {
+  position: absolute;
+  border: 0.5px solid lightblue;
+  top: 60px;
+  right: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color:springgreen;
+  cursor: pointer;
+  min-width: 150px;
+  border-radius: 15px;
+  color: purple;
+  z-index: 9;
+}
+
+.debugCheckbtn:hover {
+  background-color: green;
+  color: burlywood;
+}

@@ -105,9 +105,7 @@ if (resetButton) {
 // Кнопка "В меню"
 if (backToMenuButton) {
     backToMenuButton.addEventListener('click', () => {
-        if (confirm("Вы действительно хотите вернуться в главное меню?")) {
-            goToMainMenu();
-        }
+        goToMainMenu();
     });
 }
 
