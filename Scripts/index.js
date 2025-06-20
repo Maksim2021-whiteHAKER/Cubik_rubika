@@ -18,8 +18,7 @@ let startObject = null;
 const raycaster = new THREE.Raycaster();
 let arrows = []; // Массив для стрелок
 let selectedCube = null;
-//  элемент прогресса
-let progressBar, progress_text, helpMenu, mainmenu_game;
+
 
 addEventListener('contextmenu', (e) => {e.preventDefault()})
 
@@ -73,7 +72,7 @@ function initThree() {
     controls.enablePan = false;
     controls.dampingFactor = 0.2;
     controls.minDistance = 10;
-    controls.maxDistance = 300;
+    controls.maxDistance = 70;
 
     controlsPointer = new PointerLockControls(cameraPlayer, renderer.domElement);
     scene.add(controlsPointer.getObject());
@@ -127,12 +126,10 @@ function initThree() {
 
     mainmenu_game.addEventListener('click', () => {
         // Здесь ваша логика выхода в меню
-        if (confirm("Вы действительно хотите вернуться в главное меню?")) {
-            // Сброс игры, остановка таймера и показ главного меню
-            stopTimer();
-            congratsModal.style.display = 'none';
-            mainMenu.style.display = 'flex';
-        }
+        // Сброс игры, остановка таймера и показ главного меню
+        stopTimer();
+        congratsModal.style.display = 'none';
+        mainMenu.style.display = 'flex';
     });
 
 }
