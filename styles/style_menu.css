@@ -310,3 +310,50 @@ canvas {
   background-color: green;
   color: burlywood;
 }
+
+#pause-menu {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  right: 50%;
+  top: 50%;
+  border: 1px solid #00ffff;
+  max-width: 850px;
+  min-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 15px;
+  color: #fff;
+  text-align: center;
+  z-index: 1001;
+}
+
+#blurmenu {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+#theme-select {
+  color: black;
+  font-size: 16px;
+}
+
+#settings-info {
+  color: #0f0;
+  position: relative;
+  text-align: center;
+  /* border: 0.1px solid yellow; */
+  top: 5%;
+  font-size: 45px;
+}
+
+#name_textures {
+  color: #0f0;
+  font-size: 25px;
+}
+

@@ -2,7 +2,7 @@ import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { camera, CurrentActiveCam, updateProgressBar } from './index.js';
-import { gameState } from './menu.js';
+import { exitMenu, gameState } from './menu.js';
 
 let scene;
 export let world;
@@ -15,8 +15,8 @@ export const referencePositions = new Map(); // Позиции эталонны�
 // export const cubeState = new Map(); // Динамическая матрица состояния кубика
 export let historyrotation = [];
 const raycaster = new THREE.Raycaster()
-let isCheckingPaused = false;
 export let isScrambling = false;
+
 document.getElementById('debugCheckButton').addEventListener('click', debugCheckCube);
 
 export let referenceCube = null;
@@ -105,8 +105,8 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                     child.getWorldQuaternion(worldQuat);
                     if (child.isGroup && child.name !== 'Scene' ){
                         // console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}], Кватернион: [${worldQuat.x.toFixed(2)}, ${worldQuat.y.toFixed(2)}, ${worldQuat.z.toFixed(2)}, ${worldQuat.w.toFixed(2)}]`);
-                        console.log(`(без окр.) Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x}, ${worldPos.y}, ${worldPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
-                        // console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
+                        // console.log(`(без окр.) Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x}, ${worldPos.y}, ${worldPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
+                        console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
                     }
                 }
             });
@@ -318,8 +318,8 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
                 requestAnimationFrame(animateRotation);
             } else {
                 finishRotation();
-                if (!isScrambling && isCubeSolved()){
-                    updateProgressBar(100)
+                if (!isScrambling && isCubeSolved()){                  
+                    isCubeSolved()
                     historyrotation = [];
                     console.log('Куб собран')
                 }       
@@ -384,7 +384,6 @@ export async function rotateWholeCube(axis, isCounterclockwise = false) {
         const startTime = performance.now();
 
         function animateRotation(currentTime) {
-            isCheckingPaused = true; // ❗️Останавливаем проверку
             if (!rotationGroup) {
                 resolve();
                 return;
@@ -403,7 +402,7 @@ export async function rotateWholeCube(axis, isCounterclockwise = false) {
             } else {
                 finishWholeRotation(initialStates);
                 if (!isScrambling && isCubeSolved()){
-                    updateProgressBar(100)
+                    isCubeSolved();
                     historyrotation = [];
                     console.log('Куб собран')
                 }       
@@ -595,10 +594,11 @@ export async function scrambleCube(numMoves = 20){
 
 export async function solveCube() {
     if (isRotating) { alert("Сборка не может быть выполнена, т.к сейчас кубик вращается"); updateProgressBar(0); return; }
-    if (gameState.mode === 'normal') { alert("Недоступно в обычном режиме"); updateProgressBar(0); return;} 
+    if (gameState.mode === 'normal' && exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
 
     // optimizeHistory()
-    alert("Начата сборка")
+    
+    exitMenu === false ? alert("Начата сборка") : 0;
     
     // проходим по истории в обратном направлении
     for (let i = historyrotation.length - 1; i>=0; i--){
@@ -616,7 +616,7 @@ export async function solveCube() {
     }
     if (isCubeSolved()){
         console.log("Кубик собран, очищаем историю вращений");
-        updateProgressBar(100);
+        exitMenu === false ? updateProgressBar(100) : updateProgressBar(0);
         historyrotation = [];
     } else {
         console.warn("Кубик не собран после выполнения истории");
@@ -651,11 +651,6 @@ export function checkCubeSolved(){
 }
 
 function isCubeSolved(debugMode = false) {
-    if (isCheckingPaused) {
-        console.log("Проверка временно приостановлена");
-        return debugMode ? { isSolved: false, unsolvedObjects: ["Проверка приостановлена"] } : false;
-    }
-
     if (_objects.length !== _staticobjects.length) {
         console.warn(`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`);
         return debugMode ? { isSolved: false, unsolvedObjects: [`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`] } : false;
@@ -670,7 +665,6 @@ function isCubeSolved(debugMode = false) {
         'Mid8_CENTER_Y008',
         'R5_CENTER_R005',
         'O5_CENTER_O005',
-        ''
     ];  
 
     let isSolved = true;
@@ -723,7 +717,7 @@ function isCubeSolved(debugMode = false) {
 
         // Проверка количества дочерних объектов
         if (dynamicCube.children.length !== staticCube.children.length) {
-            console.warn(`Разное количество детей для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
+            console.warn(`Разное количество дочерних объектов для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
             isSolved = false;
             unsolvedObjects.push(`Разное количество дочерних объектов для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
         }
@@ -731,6 +725,8 @@ function isCubeSolved(debugMode = false) {
 
     if (isSolved) {
         console.log('✅ Кубик собран по позициям и кватернионам!');
+        console.log('exitMenu:', exitMenu)
+        exitMenu === false ? updateProgressBar(100) : updateProgressBar(0); 
     } else {
         console.warn('❌ Кубик не собран.');
     }
@@ -750,73 +746,4 @@ function debugCheckCube() {
         console.warn(result.unsolvedObjects);
         alert(`❌ Куб НЕ собран:\n${result.unsolvedObjects.join('\n')}`);
     }
-}
-
-function compareModels(dynamicObjects, staticObjects) {
-    // dynamicObjects = _objects
-    // staticObjects = _staticobjects
-    if (dynamicObjects.length !== staticObjects.length) {
-        console.warn(`Разная длина массивов: dynamic=${dynamicObjects.length}, static=${staticObjects.length}`);
-        return false;
-    }
-
-    let isEqual = true;
-
-    dynamicObjects.forEach((dynamicCube, index) => {
-        const staticCube = staticObjects[index];
-
-        // Проверка имени
-        if (dynamicCube.name !== staticCube.name) {
-            console.warn(`Имена не совпадают: dynamic=${dynamicCube.name}, static=${staticCube.name} на индексе ${index}`);
-            isEqual = false;
-            return;
-        }
-
-        // Проверка позиций
-        const dynamicPos = new THREE.Vector3();
-        dynamicCube.getWorldPosition(dynamicPos);
-        const staticPos = new THREE.Vector3();
-        staticCube.getWorldPosition(staticPos);
-
-        const posTolerance = 0.01;
-        if (
-            Math.abs(dynamicPos.x - staticPos.x) > posTolerance ||
-            Math.abs(dynamicPos.y - staticPos.y) > posTolerance ||
-            Math.abs(dynamicPos.z - staticPos.z) > posTolerance
-        ) {
-            console.warn(`Позиции не совпадают для ${dynamicCube.name}:`);
-            console.warn(`Dynamic: [${dynamicPos.x.toFixed(3)}, ${dynamicPos.y.toFixed(3)}, ${dynamicPos.z.toFixed(3)}]`);
-            console.warn(`Static: [${staticPos.x.toFixed(3)}, ${staticPos.y.toFixed(3)}, ${staticPos.z.toFixed(3)}]`);
-            isEqual = false;
-        }
-
-        // Проверка кватернионов
-        const dynamicQuat = dynamicCube.getWorldQuaternion(new THREE.Quaternion());
-        const staticQuat = staticCube.getWorldQuaternion(new THREE.Quaternion());
-        const angleTolerance = 0.01; // Радианы
-        const angleDiff = dynamicQuat.angleTo(staticQuat);
-        if (angleDiff > angleTolerance) {
-            console.warn(`Кватернионы не совпадают для ${dynamicCube.name}:`);
-            console.warn(`Dynamic: [${dynamicQuat.x.toFixed(3)}, ${dynamicQuat.y.toFixed(3)}, ${dynamicQuat.z.toFixed(3)}, ${dynamicQuat.w.toFixed(3)}]`);
-            console.warn(`Static: [${staticQuat.x.toFixed(3)}, ${staticQuat.y.toFixed(3)}, ${staticQuat.z.toFixed(3)}, ${staticQuat.w.toFixed(3)}]`);
-            isEqual = false;
-        }
-
-        // Проверка количества дочерних объектов
-        if (dynamicCube.children.length !== staticCube.children.length) {
-            console.warn(`Разное количество детей для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
-            isEqual = false;
-        }
-    });
-
-    let isSolved = isEqual
-
-    if (isEqual) {
-        console.log('✅ Модели одинаковы по именам, позициям, кватернионам и структуре.');
-        return { isSolved }
-    } else {
-        console.warn('❌ Модели различаются.');
-    }
-
-    return isEqual;
 }
