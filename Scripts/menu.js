@@ -105,9 +105,9 @@ document.getElementById('freeMode').addEventListener('click', () => {
     startGameTimer();
 });
 
-document.getElementById('trainingMode').addEventListener('click', ()=> {
-    alert('🛠Пока в разработке🛠')
-})
+// document.getElementById('trainingMode').addEventListener('click', ()=> {
+//     alert('🛠Пока в разработке🛠')
+// })
 
 // Кнопка "Сброс"
 if (resetButton) {
