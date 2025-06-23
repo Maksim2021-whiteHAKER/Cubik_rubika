@@ -5,7 +5,7 @@ import { PointerLockControls } from 'https://unpkg.com/three@0.122.0/examples/js
 import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, referenceCube, getstaticObjects } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
-import { gameState, congratsModal, stopTimer } from './menu.js';
+import { gameState, congratsModal, stopTimer, togglePauseMenu } from './menu.js';
 
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
@@ -124,14 +124,7 @@ function initThree() {
         if (helpModal) helpModal.style.display = 'block';
     });
 
-    mainmenu_game.addEventListener('click', () => {
-        // Здесь ваша логика выхода в меню
-        // Сброс игры, остановка таймера и показ главного меню
-        stopTimer();
-        congratsModal.style.display = 'none';
-        mainMenu.style.display = 'flex';
-    });
-
+    mainmenu_game.addEventListener('click', togglePauseMenu);
 }
 
 // функция для обновления прогресса
@@ -221,6 +214,8 @@ function createArrow(position, direction, color = 0x00ff00, isRotate = false, fa
 }
 
 function showArrows(cube) {
+    const blurM = document.getElementById('blurmenu')
+    if (blurM && blurM.style.display === 'block') { return; }
     // Удаляем старые стрелки
     arrows.forEach(arrow => scene.remove(arrow));
     arrows = [];
@@ -307,6 +302,8 @@ function hideArrows() {
 }
 
 document.addEventListener('keydown', async (event) => {
+    const blurM = document.getElementById('blurmenu')
+    if (blurM && blurM.style.display === 'block') { return; }
     let off_on;
     if (!gameState.active) return
     if (event.code === 'KeyO') {
@@ -436,6 +433,7 @@ export function getCurrentCam() {
 
 function startworld() {
     requestAnimationFrame(startworld);
+
     try {
         bodies.forEach(({ mesh, body }) => {
             mesh.position.copy(body.position);

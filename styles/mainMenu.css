@@ -41,7 +41,7 @@
     gap: 1rem;
 }
 
-.menu-btn {
+.menu-btn, .resetAndExit, .resume {
     margin-top: 3%;
     width: 100%; /* Кнопки занимают всю ширину контейнера */
     box-sizing: border-box; /* Учитывает padding в ширине */
@@ -58,7 +58,7 @@
     backdrop-filter: blur(2px);
 }
 
-.menu-btn:hover {
+.menu-btn:hover, .resetAndExit:hover, .resume:hover {
     background: rgba(0,255,255,0.9);
     color: #000;
     transform: translateY(-2px);
@@ -66,7 +66,7 @@
 }
 
 /* Modal Styles */
-.modal {
+.modal, .modal_con, .modal_set {
     display: none;
     position: fixed;
     top: 0;
@@ -175,7 +175,7 @@
     text-decoration: underline;
 }
 
-#congrats {
+#congrats, #pause {
     /* border: 1px solid red; */
     font-size: 35px;
 }
@@ -244,4 +244,30 @@ p {
 
 #dls {
     list-style-type: none;
+}
+
+.modal-content_set {
+    /* border: 1px solid white; */
+    position: relative;
+    top: 10%;
+    transform: translateY(-50%);
+}
+
+.modal_set {
+    position: absolute;
+    background-color: rgba(0,125,255,0.7);
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    min-height: 600px;
+    max-width: 1000px;
+    max-height: 700px;
+}
+
+.select {
+    position: relative;
+    left: 10%;
+    
 }
