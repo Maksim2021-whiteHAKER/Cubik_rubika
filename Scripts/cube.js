@@ -1,7 +1,7 @@
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
-import { camera, CurrentActiveCam, updateProgressBar } from './index.js';
+import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
 import { exitMenu, gameState } from './menu.js';
 
 let scene;
@@ -9,7 +9,8 @@ export let world;
 const loaderGLTF = new GLTFLoader();
 export const bodies = [];
 let _objects = []; // Внутренний массив
-let _staticobjects = [];
+let _staticobjects = []; // эталлоные объекты
+let _referenceDynamicObjects = []; // эталонные объекты для динамики
 export const originalMaterials = new Map();
 export const referencePositions = new Map(); // Позиции эталонный позиций и кватернионов
 // export const cubeState = new Map(); // Динамическая матрица состояния кубика
@@ -36,6 +37,10 @@ export function getstaticObjects(){
     return _staticobjects;
 }
 
+export function getReferenceDynamicObjects(){
+    return _referenceDynamicObjects;
+}
+
 let rotationGroup = null;
 let cubesToRotate = [];
 let arrowHelper = null;
@@ -49,7 +54,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_roundedFixPos.glb",
+    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_roundedFixPos250.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
@@ -64,13 +69,16 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                 scene.add(referenceCube)
             
                 _staticobjects.length = 0;
+                _referenceDynamicObjects.length = 0;
                 referenceCube.traverse(child => {
                     if (child.isGroup && validGroups.includes(child.name)) {
                         _staticobjects.push(child);
+                        _referenceDynamicObjects.push(child);
                     }
                 });
 
                 _staticobjects.sort((a, b) => a.name.localeCompare(b.name))
+                _referenceDynamicObjects.sort((a, b) => a.name.localeCompare(b.name));
 
                 model.updateMatrixWorld(true)
                 referenceCube.updateMatrixWorld(true)
@@ -437,15 +445,6 @@ function finishWholeRotation(initialStates) {
         cube.getWorldPosition(worldPos);
         const worldQuat = cube.getWorldQuaternion(new THREE.Quaternion());
 
-        // Округляем координаты и кватернионы
-        // worldPos.x = Math.round(worldPos.x * 1000) / 1000;
-        // worldPos.y = Math.round(worldPos.y * 1000) / 1000;
-        // worldPos.z = Math.round(worldPos.z * 1000) / 1000;
-        // worldQuat.x = Math.round(worldQuat.x * 1000) / 1000;
-        // worldQuat.y = Math.round(worldQuat.y * 1000) / 1000;
-        // worldQuat.z = Math.round(worldQuat.z * 1000) / 1000;
-        // worldQuat.w = Math.round(worldQuat.w * 1000) / 1000;
-
         tempContainer.remove(cube);
         scene.attach(cube);
         cube.position.copy(worldPos);
@@ -532,14 +531,6 @@ function finishRotation() {
         const worldPos = new THREE.Vector3();
         cube.getWorldPosition(worldPos);
         const worldQuater = cube.getWorldQuaternion(new THREE.Quaternion());
-
-        // worldPos.x = Math.round(worldPos.x * 1000) / 1000;
-        // worldPos.y = Math.round(worldPos.y * 1000) / 1000;
-        // worldPos.z = Math.round(worldPos.z * 1000) / 1000;
-        // worldQuater.x = Math.round(worldQuater.x * 1000) / 1000;
-        // worldQuater.y = Math.round(worldQuater.y * 1000) / 1000;
-        // worldQuater.z = Math.round(worldQuater.z * 1000) / 1000;
-        // worldQuater.w = Math.round(worldQuater.w * 1000) / 1000;
 
         tempContainer.remove(cube);
         scene.attach(cube);
@@ -655,6 +646,7 @@ function isCubeSolved(debugMode = false) {
         console.warn(`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`);
         return debugMode ? { isSolved: false, unsolvedObjects: [`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`] } : false;
     }
+    if (isMouseDown === true) return;
 
     // Список центральных кубиков, для которых игнорируем проверку кватернионов
     const centerCubes = [

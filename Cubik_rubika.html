@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Кубик-рубика v14</title>
+    <title>Кубик-рубика v15</title>
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
@@ -16,12 +16,13 @@
     <div id="errormes"></div>
     <!-- Главное меню -->
      <div id="mainMenu" class="main-menu">
-        <h1 class="title"> Кубик-рубика 3D v14</h1>
+        <h1 class="title"> Кубик-рубика 3D v15</h1>
         <div class="menu_buttons">
             <!-- <button id="trainingMode" class="menu-btn">Обучение</button> -->
             <button id="normalMode" class="menu-btn">Обычный режим</button>
             <button id="freeMode" class="menu-btn">Свободный режим</button>
             <button id="helpBtn" class="menu-btn">Помощь</button>
+            <button id="settingsBtn" class="menu-btn">Настройки</button>
             <button id="creatorBtn" class="menu-btn">Создатель</button>
         </div>
     </div>
@@ -49,16 +50,14 @@
                         <li>Щ/o - включить/выключить орбиту</li>
                         <li>Колесико мыши - зум (обрита вкл)</li>
                         <li>K\r - сброс камеры</li>
+                        <li>C\с - автосборка в "Свободном режиме"</li>
+                        <li>Ы\s - разборка кубика</li>
                     </ul>
                 </div>
+                <!-- Управление кубиком -->
                 <div class="control-group">
-                    <h3 id="maincontrol">🕹 Управление кубиком 🕹</h3>
-                    <ul>
-                        <li>зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
-                        <li>зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
-                        <li>Стрелки на клавиатуре - это поворот кубика полностью</li>
-                        <li>C\с - автосборка в "Свободном режиме"</li>
-                        <li>Ы\s - разборка кубика                </li>
+                    <h3 id="cube-control-title">🕹 Управление кубиком 🕹</h3>
+                    <ul id="cube-control-list">
                     </ul>
                 </div>
             </div>
@@ -71,7 +70,7 @@
             <h2 id="creator">Создатель</h2>
             <div class="creator-info">
                 <div class="creator-details">
-                    <p><strong>Имя: </strong>В. Максим (4 курс)</p>
+                    <p><strong>Имя: </strong>Владимиров Максим (4 курс)</p>
                     <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER" target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
                     <br><p><strong>Особенности проекта: </strong></p>
                     <ul>
@@ -83,7 +82,7 @@
         </div>
     </div>
 
-    <div id="settingsModal" class="modal_set">
+    <div id="settingsModal" class="modal">
         <div class="modal-content_set">
             <span class="close-btn">&otimes;</span>
             <h2 id="settings-info">Настройки</h2>
@@ -92,15 +91,22 @@
                 <select id="theme-select">
                     <option value="defaultTexture">По умолчанию</option>
                     <option value="carsTexture">Машины</option>
-                    <option value="gemsTexture">₽₽₽</option>
-                    <!-- <option value="girlsTexture">🔥</option> -->
+                    <option value="gemsTexture">Драгоценый куб ₽₽₽</option>
+                    <option value="girlsTexture">🔥</option>
+                </select>
+            </div>
+            <div class="select">
+                <h3 id="name_mode">Режим управления вращения</h3>
+                <select id="theme-select_2">
+                    <option value="control_arrows">Триггерами на кубе</option>
+                    <option value="control_mouse_move">Движением мыши</option>
                 </select>
             </div>
         </div>
     </div>
 
     <div id="menu_info">
-        <h1 >Кубик-рубика версия 0.0.1.4</h1>
+        <h1 >Кубик-рубика версия 0.0.1.5</h1>
     </div>
     <div id="menu_settings">
         Fov: <span id="CurntCamFOV"></span>
