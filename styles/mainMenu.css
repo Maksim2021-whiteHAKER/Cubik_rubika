@@ -66,7 +66,7 @@
 }
 
 /* Modal Styles */
-.modal, .modal_con, .modal_set {
+.modal, .modal_con {
     display: none;
     position: fixed;
     top: 0;
@@ -109,6 +109,7 @@
     cursor: pointer;
     color: #00ffff;
     transition: color 0.3s;
+    z-index: 1001;
 }
 
 .close-btn:hover {
@@ -184,7 +185,7 @@
     font-size: 40px;
 }
 
-#maincontrol {
+#maincontrol, #cube-control-title {
     text-align: center;
     font-size: 20px;
 }
@@ -247,27 +248,20 @@ p {
 }
 
 .modal-content_set {
-    /* border: 1px solid white; */
     position: relative;
-    top: 10%;
-    transform: translateY(-50%);
-}
-
-.modal_set {
-    position: absolute;
-    background-color: rgba(0,125,255,0.7);
-    left: 50%;
-    right: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 300px;
-    min-height: 600px;
-    max-width: 1000px;
-    max-height: 700px;
+    transform: translateY(-50%);
+    border: 1px solid #00ffff;
+    max-width: 850px;
+    max-height: 850px;
+    margin: 0 auto;
+    padding: 3rem;
+    background: #1a1a1a;
+    border-radius: 15px;
+    color: #fff;
+    text-align: center;
 }
 
 .select {
-    position: relative;
-    left: 10%;
-    
+    position: relative;    
 }

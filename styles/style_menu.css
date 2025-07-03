@@ -27,6 +27,14 @@ body.page-error {
   min-height: 100vh;
 }
 
+body.control-mouse-move {
+  cursor: url('../textures/grab50.png') 25 25, auto;
+}
+
+body.control-mouse-move.dragging {
+  cursor: url('../textures/grabbing50.png') 25 25, auto;
+}
+
 canvas {
   outline: none;
 }
@@ -338,17 +346,21 @@ canvas {
   pointer-events: auto;
 }
 
-#theme-select {
+#theme-select, #theme-select_2 {
   color: black;
   font-size: 16px;
+}
+
+#theme-select_2 {
+  position: relative;
+  top: 15px;
 }
 
 #settings-info {
   color: #0f0;
   position: relative;
   text-align: center;
-  /* border: 0.1px solid yellow; */
-  top: 5%;
+  top: -20px;
   font-size: 45px;
 }
 
@@ -357,3 +369,9 @@ canvas {
   font-size: 25px;
 }
 
+#name_mode {
+  position: relative;
+  font-size: 25px;
+  color: #0f0;
+  top: 15px;
+}

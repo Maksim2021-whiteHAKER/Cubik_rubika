@@ -1,9 +1,10 @@
 import { scrambleCube, solveCube } from "./cube.js";
-import { updateProgressBar } from "./index.js";
+import { getControlMode, updateProgressBar } from "./index.js";
 
 // Элементы интерфейса
 const mainMenu = document.getElementById('mainMenu');
 const helpModal = document.getElementById('helpModal');
+const settingsModal = document.getElementById('settingsModal');
 const creatorModal = document.getElementById('creatorModal');
 const resetButton = document.getElementById('resetBtn');
 const backToMenuButton = document.getElementById('BackToMenuBtn')
@@ -15,8 +16,20 @@ pauseMenu.id = 'pause-menu';
 pauseMenu.innerHTML = `
     <h2 id="pause">Пауза</h2>
     <button id="resumeBtn" class="resume">Вернуться</button>
-    <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>
-`;
+    <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>`;
+const helpTempletes = {
+    control_arrows: `
+    <li>зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
+    <li>зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
+    <li>Стрелки на клавиатуре - это поворот кубика полностью</li>`,
+    control_mouse_move: `
+     <li>зажать ПКМ и двигать мышь - вращение грани в направлении движения</li>
+     <li>движение мыши по оси X/Y - поворот по вертикали/горизонтали</li>
+     <li id='dls'>🕹🔴однако на грани сверху управление инвертировано вверх = низ, низ = вверх.</li>
+    `
+}
+
+updateHelpContent();
 export let exitMenu = false;
 document.body.appendChild(blurMenu)
 document.body.appendChild(pauseMenu)
@@ -35,6 +48,26 @@ export let gameState = {
 export let timerInterval;
 export let pausedDuration = 0; // общая длительность пауз
 let pauseStart = 0; // время начала текущей паузы
+
+function updateCursorMode(){
+    if (getControlMode() === 'control_mouse_move'){
+        document.body.classList.add('control-mouse-move');
+    } else {
+        document.body.classList.remove('control-mouse-move');
+        document.body.classList.remove('gragging');
+    }
+}
+
+export function updateHelpContent(){
+    const controlMode = getControlMode();
+    const list = document.getElementById('cube-control-list')
+    const title = document.getElementById('cube-control-title')
+    title.textContent = controlMode === 'control_mouse_move'
+        ? '🕹Управление кубиком (мышь)🕹' 
+        : '🕹Управление кубиком (стрелки)🕹';
+    list.innerHTML = helpTempletes[controlMode] || helpTempletes[control_arrows];
+}
+
 
 function resetGame() {
     if (gameState.active) {
@@ -65,6 +98,7 @@ function goToMainMenu() {
     updateProgressBar(0);
     gameState.active = false;
     gameState.mode = null;
+    exitMenu = false;
 
     // Скрываем всё, кроме главного меню
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
@@ -85,7 +119,7 @@ function showModal(modal){
 }
 
 function hideModals() {
-    document.querySelectorAll('.modal', '.modal_set').forEach(m => m.style.display = 'none');
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
 }
 
 // Обработчики кнопок главного меню
@@ -130,6 +164,13 @@ if (backToMenuButton) {
 // Обработчики для кнопок "Помощь" и "Создатель"
 document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));
 document.getElementById('creatorBtn').addEventListener('click', () => showModal(creatorModal));
+document.getElementById('settingsBtn').addEventListener('click', () => showModal(settingsModal));
+document.getElementById('theme-select_2').addEventListener('change', () => {
+    updateCursorMode()
+    updateHelpContent()
+    // const mode = document.getElementById('theme-select_2').value;
+    // localStorage.setItem('')
+})
 
 document.getElementById('resetAndExitBtn').addEventListener('click', () => {
     exitMenu = true
