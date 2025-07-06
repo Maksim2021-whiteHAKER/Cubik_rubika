@@ -2,7 +2,7 @@ import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
 import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
-import { exitMenu, gameState } from './menu.js';
+import { exitMenu, gameState, state_sounds } from './menu.js';
 
 let scene;
 export let world;
@@ -336,6 +336,12 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
         }
 
         requestAnimationFrame(animateRotation);
+
+        const audio = document.getElementById('rotation_sound');
+        audio.currentTime = 0;
+        if (state_sounds === 2 || state_sounds === 3){
+            audio.play().catch(e => console.error('не удалось загрузить музыку'));
+        }
     });
 }
 

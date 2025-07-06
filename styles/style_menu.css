@@ -170,8 +170,7 @@ canvas {
   pointer-events: none;
 }
 
-#helpM,
-#mainMenu_g {
+#helpM, #mainMenu_g, #sound_setting {
     position: absolute;
     top: 60px;
     width: 40px;
@@ -193,8 +192,12 @@ canvas {
 }
 
 #mainMenu_g {
-    left: calc(50% - 250px); /* 200px - половина ширины прогрессбара + 50px отступ */
+    right: calc(50% + 210px); /* 200px - половина ширины прогрессбара + 50px отступ */
     background-image: url("../textures/icons8-home-page-100.png");
+}
+
+#sound_setting {
+  left: calc(50% + 255px);
 }
 
 #FaceCanvas {
@@ -347,30 +350,41 @@ canvas {
 }
 
 #theme-select, #theme-select_2 {
-  color: black;
+  position: relative;
+  top: -15px;
+  color: #99ff4e;
   font-size: 16px;
 }
 
 #theme-select_2 {
-  position: relative;
   top: 15px;
 }
 
 #settings-info {
-  color: #0f0;
-  position: relative;
-  text-align: center;
-  top: -20px;
-  font-size: 45px;
+  color: #00ffff;
+  font-size: 32px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
 }
 
 #name_textures {
+  position: relative;
+  top: -15px;
   color: #0f0;
   font-size: 25px;
 }
 
 #name_mode {
   position: relative;
+  text-align: center;
+  font-size: 25px;
+  color: #0f0;
+  top: 15px;
+}
+
+#name_sound {
+  position: relative;
+  text-align: center;
   font-size: 25px;
   color: #0f0;
   top: 15px;

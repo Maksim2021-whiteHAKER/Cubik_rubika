@@ -46,6 +46,7 @@
                     <ul>
                         <li id="dls">🔴ПКМ - правая кнопка мыши, ЛКМ - левая кнопка мыши</li>
                         <li id="dls">🔴Раскладка для горячих клавиш кнопка одна (rus/eng)</li>
+                        <li id="dls">✅ Кубик считается собраным если (верху(⬜), передняя(🟩), боковая(🟥))</li>
                         <li>ПКМ + тащить - вращение камеры (орбита вкл)</li>
                         <li>Щ/o - включить/выключить орбиту</li>
                         <li>Колесико мыши - зум (обрита вкл)</li>
@@ -82,12 +83,12 @@
         </div>
     </div>
 
-    <div id="settingsModal" class="modal">
+    <div id="settingsModal" class="modal_set">
         <div class="modal-content_set">
             <span class="close-btn">&otimes;</span>
             <h2 id="settings-info">Настройки</h2>
+            <h3 id="name_textures">Текстуры</h3>
             <div class="select">
-                <h3 id="name_textures">Текстуры</h3>
                 <select id="theme-select">
                     <option value="defaultTexture">По умолчанию</option>
                     <option value="carsTexture">Машины</option>
@@ -101,6 +102,21 @@
                     <option value="control_arrows">Триггерами на кубе</option>
                     <option value="control_mouse_move">Движением мыши</option>
                 </select>
+            </div>
+            <audio id="background_music" src="sounds/playing_the_gusli.mp3" autoplay loop onerror="console.error('не удалось загрузить музыку')"></audio>
+            <audio id="rotation_sound" src="sounds/rotate.mp3" preload="auto"></audio>
+            <h3 id="name_sound">Звук</h3>
+            <div class="slider">
+                <label class="range-label" for="music_range">Музыка</label>
+                <div class="slider-wrapper">
+                    <span id="prog_music" class="slider-value">50%</span>
+                    <input class="range" id="music_range" type="range" min="0" max="100" value="50" step="1">
+                </div>
+                <label class="range-label" for="sound_range">Звук</label>
+                <div class="slider-wrapper">
+                    <span id="prog_sound" class="slider-value">50%</span>
+                    <input class="range" id="sound_range" type="range" min="0" max="100" value="50" step="1">
+                </div>
             </div>
         </div>
     </div>
@@ -123,7 +139,8 @@
             <div id="progtext">0%</div>
         </div>    
         <button id="helpM" aria-label="Help"></button>
-        <button id="mainMenu_g" aria-label="Main Menu"></button>
+        <button id="mainMenu_g" aria-label="Main_menu"></button>
+        <button id="sound_setting" aria-label="sound_setting"></button>
     </div>
 
     <!-- <div id="matrix-view">
