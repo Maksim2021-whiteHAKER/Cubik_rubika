@@ -11,6 +11,8 @@ const backToMenuButton = document.getElementById('BackToMenuBtn')
 export const congratsModal = document.getElementById('congratsModal');
 const pauseMenu = document.createElement('div');
 const blurMenu = document.createElement('div');
+const music = document.getElementById('background_music');
+const musicBtn = document.getElementById('sound_setting')
 blurMenu.id = 'blurmenu';
 pauseMenu.id = 'pause-menu';
 pauseMenu.innerHTML = `
@@ -31,6 +33,21 @@ const helpTempletes = {
 
 updateHelpContent();
 export let exitMenu = false;
+let sounds = {
+    PAUSED: 0,
+    ONLY_MUSIC: 1,
+    ONLY_SOUND: 2,
+    BOTH_ON: 3
+};
+const sound_pic = {
+    PAUSED: '../textures/volume_mute.png',
+    ONLY_MUSIC: '../textures/volume_only_music.png',
+    ONLY_SOUND: '../textures/volume_only_sound.png',
+    BOTH_ON: '../textures/volume_both.png'
+}
+musicBtn.style.backgroundImage = `url(${sound_pic.BOTH_ON})`
+export let state_sounds = sounds.BOTH_ON;
+
 document.body.appendChild(blurMenu)
 document.body.appendChild(pauseMenu)
 
@@ -68,6 +85,22 @@ export function updateHelpContent(){
     list.innerHTML = helpTempletes[controlMode] || helpTempletes[control_arrows];
 }
 
+function updateSliderValue(rangeId, labelId){
+    const range = document.getElementById(rangeId);
+    const label = document.getElementById(labelId);
+
+    range.addEventListener('input', function(){
+        const volume = this.value / 100;
+        if (rangeId === 'music_range'){
+            music.volume = volume;
+            
+        }        
+        label.textContent = this.value + '%'
+    })
+}
+
+updateSliderValue('music_range', 'prog_music')
+updateSliderValue('sound_range', 'prog_sound')
 
 function resetGame() {
     if (gameState.active) {
@@ -119,7 +152,7 @@ function showModal(modal){
 }
 
 function hideModals() {
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    document.querySelectorAll(['.modal','.modal_set']).forEach(m => m.style.display = 'none');
 }
 
 // Обработчики кнопок главного меню
@@ -165,6 +198,28 @@ if (backToMenuButton) {
 document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));
 document.getElementById('creatorBtn').addEventListener('click', () => showModal(creatorModal));
 document.getElementById('settingsBtn').addEventListener('click', () => showModal(settingsModal));
+document.getElementById('sound_setting').addEventListener('click', () => {
+    state_sounds = (state_sounds + 1) % 4;
+
+    switch(state_sounds){
+        case sounds.PAUSED:
+            musicBtn.style.backgroundImage = `url(${sound_pic.PAUSED})`;
+            music.pause();
+            break;
+        case sounds.ONLY_MUSIC:
+            musicBtn.style.backgroundImage = `url(${sound_pic.ONLY_MUSIC})`;
+            music.play().catch(e => console.error('Ошибка воиспроизведения: ', e));
+            break;
+        case sounds.ONLY_SOUND:
+            musicBtn.style.backgroundImage = `url(${sound_pic.ONLY_SOUND})`;
+            music.pause();           
+            break;           
+        case sounds.BOTH_ON:
+            musicBtn.style.backgroundImage = `url(${sound_pic.BOTH_ON})`;
+            music.play().catch(e => console.error('Ошибка воиспроизведения: ', e));
+            break;
+    }
+})
 document.getElementById('theme-select_2').addEventListener('change', () => {
     updateCursorMode()
     updateHelpContent()
@@ -191,7 +246,7 @@ document.querySelectorAll('.close-btn').forEach(btn => {
 
 // Закрытие по клику вне окна
 window.addEventListener('click', (event) => {
-    if (event.target.classList.contains('modal') && !event.target.closest('#pause-menu')) {
+    if ((event.target.classList.contains('modal') || event.target.classList.contains('modal_set')) && !event.target.closest('#pause-menu')) {
         hideModals();
     }
 });

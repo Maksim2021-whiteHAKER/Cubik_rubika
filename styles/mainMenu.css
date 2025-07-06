@@ -78,6 +78,19 @@
     animation: fadeIn 0.3 ease
 }
 
+.modal_set {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1001;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+}
+
 .modal-content {
     position: relative;
     top: 50%;
@@ -251,17 +264,113 @@ p {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    border: 1px solid #00ffff;
-    max-width: 850px;
-    max-height: 850px;
+    max-width: 500px;
+    width: 90%;
     margin: 0 auto;
-    padding: 3rem;
+    padding: 2.5rem 3rem;
     background: #1a1a1a;
-    border-radius: 15px;
+    border-radius: 20px;
+    border: 1px solid #00ffff;
     color: #fff;
     text-align: center;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
 }
 
-.select {
-    position: relative;    
+.select h3, .slider h3 {
+    color: #00ffff;
+    font-size: 18px;
+    margin-bottom: 0.8rem;
+    text-align: left;
+}
+
+/* === Выпадающие списки === */
+.select select {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid #00ffff;
+    background-color: #222;
+    color: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2300ffff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.2rem center;
+    background-size: 12px;
+    transition: all 0.2s ease;
+    margin-bottom: 1.5rem;
+}
+
+.select select:hover,
+.select select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+}
+
+.slider {
+    margin-top: 2rem;    
+    justify-items: center;
+    text-align: left;    
+}
+
+.slider-wrapper {
+    position: relative;
+    border: 1px solid #00ffff;
+    margin: 1rem 0;
+}
+
+.slider-value {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00ffff;
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.2s;
+    opacity: 0;
+}
+
+.slider-wrapper:hover .slider-value {
+    opacity: 1;
+}
+
+.range {
+    height: 30px;    
+    width: 330px;
+    appearance: none;
+    border-radius: 30px;
+    box-shadow: 0 0 6px #ccc;
+    overflow: hidden;
+    outline: none;
+}
+
+.range-label {
+    color: #00ffff;   
+    font-size: 15px;
+}
+
+.range::-webkit-slider-thumb { 
+    height: 50px; 
+    width: 50px;
+    background: #0f9000;
+    appearance: none; 
+    cursor: pointer;
+    border-radius: 50px;
+    box-shadow: -200 0 0 185px #9183f0;
+    border: 0;
+    z-index: 1001;
+}
+
+.range::-moz-range-thumb {
+    height: 60px;
+    width: 60px;
+    appearance: none;
+    background: #534b84;
 }
