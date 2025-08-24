@@ -58,7 +58,25 @@
     backdrop-filter: blur(2px);
 }
 
-.menu-btn:hover, .resetAndExit:hover, .resume:hover {
+.menu-btn-accept {
+    display: none;
+    margin-top: 1.5%;
+    width: 50%; /* Кнопки занимают всю ширину контейнера */
+    box-sizing: border-box; /* Учитывает padding в ширине */
+    background: rgba(26,26,26,0.9);
+    color: #fff;
+    border: 2px solid #00ffff;
+    padding: 1.2rem 2rem;
+    font-size: 0.89rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    backdrop-filter: blur(2px);
+}
+
+.menu-btn:hover, .resetAndExit:hover, .resume:hover, .menu-btn-accept:hover {
     background: rgba(0,255,255,0.9);
     color: #000;
     transform: translateY(-2px);
@@ -146,7 +164,7 @@
 
 .control-group h3 {
     color: #00ffff;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.01rem;
 }
 
 .control-group ul {
@@ -279,14 +297,14 @@ p {
 .select h3, .slider h3 {
     color: #00ffff;
     font-size: 18px;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.05rem;
     text-align: left;
 }
 
 /* === Выпадающие списки === */
 .select select {
     width: 100%;
-    padding: 0.8rem 1.2rem;
+    padding: 0.4rem 1.2rem;
     font-size: 16px;
     border-radius: 10px;
     border: 2px solid #00ffff;
@@ -299,7 +317,8 @@ p {
     background-position: right 1.2rem center;
     background-size: 12px;
     transition: all 0.2s ease;
-    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.2rem;
 }
 
 .select select:hover,
@@ -373,4 +392,15 @@ p {
     width: 60px;
     appearance: none;
     background: #534b84;
+}
+
+.form-texture {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    align-content: center;
+    align-items: center;
+    border: 1px solid orange;
+    
 }

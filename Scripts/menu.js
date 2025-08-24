@@ -1,5 +1,6 @@
-import { scrambleCube, solveCube } from "./cube.js";
+import { applyColorTheme, scrambleCube, solveCube } from "./cube.js";
 import { getControlMode, updateProgressBar } from "./index.js";
+import { applyTextures } from "./texturing.js";
 
 // Элементы интерфейса
 const mainMenu = document.getElementById('mainMenu');
@@ -7,12 +8,15 @@ const helpModal = document.getElementById('helpModal');
 const settingsModal = document.getElementById('settingsModal');
 const creatorModal = document.getElementById('creatorModal');
 const resetButton = document.getElementById('resetBtn');
-const backToMenuButton = document.getElementById('BackToMenuBtn')
+const backToMenuButton = document.getElementById('BackToMenuBtn');
+const acceptStyleButton = document.getElementById('accept_style');
 export const congratsModal = document.getElementById('congratsModal');
 const pauseMenu = document.createElement('div');
 const blurMenu = document.createElement('div');
 const music = document.getElementById('background_music');
-const musicBtn = document.getElementById('sound_setting')
+const musicBtn = document.getElementById('sound_setting');
+const selector_theme = document.getElementById('theme-select');
+const selector_color_theme = document.getElementById('color-theme-select')
 blurMenu.id = 'blurmenu';
 pauseMenu.id = 'pause-menu';
 pauseMenu.innerHTML = `
@@ -194,13 +198,27 @@ if (backToMenuButton) {
     });
 }
 
+if (selector_color_theme){
+    selector_color_theme.addEventListener('change', ()=> {
+        const selectedTheme = selector_color_theme.value;       
+        try {
+            applyColorTheme(selectedTheme);
+            console.log(`Цветовая схема "${selectedTheme}" применена через меню.`);
+        } catch (error){
+            console.error("Ошибка применения цветовой темы: ", error)
+        }
+    })
+} else {
+    console.warn('Элемент выбора цветовой темы не найден в DOM.');
+    // Если элемента нет, можно создать его программно или убедиться, что он есть в HTML
+}
+
 // Обработчики для кнопок "Помощь" и "Создатель"
 document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));
 document.getElementById('creatorBtn').addEventListener('click', () => showModal(creatorModal));
 document.getElementById('settingsBtn').addEventListener('click', () => showModal(settingsModal));
 document.getElementById('sound_setting').addEventListener('click', () => {
     state_sounds = (state_sounds + 1) % 4;
-
     switch(state_sounds){
         case sounds.PAUSED:
             musicBtn.style.backgroundImage = `url(${sound_pic.PAUSED})`;
@@ -220,6 +238,27 @@ document.getElementById('sound_setting').addEventListener('click', () => {
             break;
     }
 })
+
+selector_theme.addEventListener('change', async () => {
+    const theme = selector_theme.value;
+    try {
+        await applyTextures(theme, selector_theme, selector_color_theme);
+        console.log(`Текстуры "${theme}" успешно применены`);
+    } catch (error) {
+        console.error('Ошибка применения текстур:', error);
+    }
+});
+
+acceptStyleButton.addEventListener('click', async () => {
+    const theme = selector_theme.value;
+    try {
+        await applyTextures(theme);
+        alert(`Тема "${theme}" применена!`);
+    } catch (error) {
+        console.error('Ошибка применения текстур:', error);
+    }
+});
+
 document.getElementById('theme-select_2').addEventListener('change', () => {
     updateCursorMode()
     updateHelpContent()

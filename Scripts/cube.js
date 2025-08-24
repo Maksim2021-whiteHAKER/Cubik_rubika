@@ -26,7 +26,126 @@ const validGroups = [
     'R1_GWR001', 'R2_WR002', 'R3_RWB003', 'R4_GR004', 'R5_CENTER_R005', 'R6_RB006', 'R7_GRY007', 'R8_RY008', 'R9_RBY009',
     'Mid1_GW001', 'Mid2_CENTER_W002', 'Mid3_WB003', 'Mid4_CENTER_G004', 'Mid5_CENTER_Black005', 'Mid6_CENTER_B006', 'Mid7_YG007', 'Mid8_CENTER_Y008', 'Mid9_YB009',
     'O1_GOW001', 'O2_OW002', 'O3_OBW003', 'O4_GO004', 'O5_CENTER_O005', 'O6_OB006', 'O7_GYO007', 'O8_YO008', 'O9_OYB009'
-];
+]
+
+// 1. Определение тем
+const colorThemes = {
+    'classic':{
+        'red': 0xff0000,
+        'green': 0x00ff00,
+        'blue': 0x0000ff,
+        'white': 0xffffff,
+        'yellow': 0xffff00,
+        'orange':0xffa500,
+        'black': 0x111111
+    },
+
+    'neon':{
+        'red': 0xFF0F3A,       //# Ярче оригинального (смещен в пурпурный спектр)
+        'green': 0x3AFF0F,     //# Более кислотный оттенок (смещен в желтый)
+        'blue': 0x0F7BFF,      //# Электрический синий (чистый тон)
+        'white': 0xFFFFFF,     //# Максимальная яркость
+        'yellow': 0xFFFF0F,    //# Чистый желтый без примесей
+        'orange': 0xFF4F0F,    //# Насыщенный "огненный" оранж
+        'black': 0x0A0A0A      //# Глубокий черный для контраста
+    },
+
+    'monochrome':{
+        'black': 0x080808,
+        'red': 0x2E2E2E,
+        'orange': 0x505050,
+        'green': 0x787878,
+        'blue': 0xA0A0A0,
+        'yellow': 0xC8C8C8,
+        'white': 0xF0F0F0
+    },
+    'non_cassat': {
+        'black': 0xf0f0f0,  // Очень светлый серый
+        'red': 0xf0f0f0,
+        'orange': 0xf0f0f0,
+        'green': 0xf0f0f0,
+        'blue': 0xf0f0f0,
+        'yellow': 0xf0f0f0,
+        'white': 0xf0f0f0
+    }
+
+}
+
+let currentTheme = 'classic';
+
+/**
+ * Применяет выбраную цветовую схему ко всем цветовым плоскостям кубика.
+ * @param {string} themeName Название темы из объекта colorThemes.
+ */
+
+export function applyColorTheme(themeName) {
+    const theme = colorThemes[themeName];
+    if (!theme) {
+        console.warn(`Тема "${themeName}" не найдена.`);
+        return;
+    }
+
+    currentTheme = themeName;
+    console.log(`Применение цветовой темы: ${themeName}`);
+
+    const objects = getObjects(); // Получаем массив динамических объектов (_objects)
+
+    objects.forEach(group => { // Проходим по каждой группе (мини-кубику)
+        group.traverse(mesh => { // Проходим по каждому мешу внутри группы
+             if (mesh.isMesh) {
+                 // 2. Идентификация цвета
+                 // Предполагаем, что имя материала в .glb соответствует цвету.
+                 // Это самый надежный способ, если вы экспортировали модель с такими именами.
+                 const materialName = mesh.material.name ? mesh.material.name.toLowerCase() : '';
+                 let colorKey = null;
+
+                 // Сопоставляем имя материала с ключом темы
+                 // Вам нужно проверить console.log из initCube, чтобы точно знать имена материалов
+                 if (materialName.includes('red') || materialName.includes('красн')) {
+                     colorKey = 'red';
+                 } else if (materialName.includes('green') || materialName.includes('зелен') || materialName.includes('GREEN.003')) {
+                     colorKey = 'green';
+                 } else if (materialName.includes('blue') || materialName.includes('син') || materialName.includes('BLUE.006')) {
+                     colorKey = 'blue';
+                 } else if (materialName.includes('white') || materialName.includes('бел') || materialName.includes('WHITE.005')) {
+                     colorKey = 'white';
+                 } else if (materialName.includes('yellow') || materialName.includes('желт') || materialName.includes('YELLOW.002')) {
+                     colorKey = 'yellow';
+                 } else if (materialName.includes('orange') || materialName.includes('оранж') || materialName.includes('ORANGE.007')) {
+                     colorKey = 'orange';
+                 } else if (materialName.includes('black') || materialName.includes('черн') || materialName.includes('BLACK.004')) {
+                     colorKey = 'black';
+                 } else {
+                     // Если имя материала не распознано, можно пропустить или вывести предупреждение
+                     console.warn(`Не удалось определить цвет для материала: ${materialName} у меша ${mesh.name}`);
+                     return; // Пропускаем этот меш
+                 }
+
+                 // 3. Применение цвета
+                 if (colorKey && theme[colorKey] !== undefined) {
+                     // Получаем новый цвет из темы
+                     const newColorHex = theme[colorKey];
+
+                     // Меняем цвет у оригинального материала меша (видимый цвет)
+                     mesh.material.color.set(newColorHex);
+                     mesh.material.needsUpdate = true; // Сообщаем Three.js об изменении
+
+                     // Меняем цвет в сохраненном оригинальном материале
+                     // Это важно, если вы используете originalMaterials для сброса эффектов или
+                     // если они используются где-то еще. Также обеспечивает корректную работу
+                     // при последующих переключениях тем.
+                     const originalMat = originalMaterials.get(mesh.uuid);
+                     if (originalMat) {
+                         originalMat.color.set(newColorHex);
+                         originalMat.needsUpdate = true;
+                     }
+                     // console.log(`Меняем цвет меша ${mesh.name} (${materialName}) на ${colorKey}: #${newColorHex.toString(16).padStart(6, '0')}`);
+                 }
+             }
+        });
+    });
+    console.log(`Цветовая тема "${themeName}" применена.`);
+}
 
 // Getter для Objects
 export function getObjects() {
@@ -54,7 +173,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_roundedFixPos250.glb",
+    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_full.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
@@ -72,6 +191,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                 _referenceDynamicObjects.length = 0;
                 referenceCube.traverse(child => {
                     if (child.isGroup && validGroups.includes(child.name)) {
+                        child.userData.index = _staticobjects.length;
                         _staticobjects.push(child);
                         _referenceDynamicObjects.push(child);
                     }
@@ -117,6 +237,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                         console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
                     }
                 }
+                
             });
 
             _objects.length = 0;
@@ -139,7 +260,9 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                             mesh.raycast = THREE.Mesh.prototype.raycast;
                         }
                     });
+                    child.userData.index = _objects.length;
                     _objects.push(child);
+
                     // эталонны
                     const worldPos = new THREE.Vector3();
                     const worldQuat = new THREE.Quaternion(); 
@@ -159,7 +282,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                     console.log(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x}, ${worldPos.y}, ${worldPos.z}]`);
                     child.children.forEach(color => {
                         const colormat = color.material
-                        // console.log(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
+                        console.log(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
                     })
                 }
             });
