@@ -336,8 +336,16 @@ p {
 .slider-wrapper {
     position: relative;
     border: 1px solid #00ffff;
-    margin: 1rem 0;
+    margin: 0.6rem 0;
+    width: 100%; /* Растягиваем на всю ширину родительского контейнера */
+    box-sizing: border-box; /* Учитываем границы и отступы в общей ширине */    
 }
+
+.slider-wrapper .range {
+    width: 100%;
+    margin: 0;
+}
+
 
 .slider-value {
     position: absolute;
@@ -404,3 +412,381 @@ p {
     border: 1px solid orange;
     
 }
+
+/* Добавьте эти стили в ваш существующий CSS */
+@media (max-width: 768px) {
+    #cameraInfo {
+        font-size: 12px;
+        padding: 5px;
+    }
+    
+    #progressBar {
+        width: 80%;
+    }
+    
+    .modal {
+        width: 90%;
+        max-width: 90%;
+    }
+    
+    #mobile-controls {
+        bottom: 10px;
+    }
+    
+    .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+}
+
+/* Улучшение для touch-устройств */
+button, .control-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Предотвращение масштабирования при двойном тапе */
+* {
+    touch-action: manipulation;
+}
+
+/* Мобильные элементы управления */
+#mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    z-index: 100;
+}
+
+.mobile-control-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 50px;
+    user-select: none;
+    border: 2px solid #ecf0f1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-control-btn:active {
+    background-color: rgba(41, 128, 185, 0.9);
+    transform: scale(0.95);
+}
+
+#rotate-controls {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rotate-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(231, 76, 60, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    user-select: none;
+    border: 2px solid #ecf0f1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rotate-btn:active {
+    background-color: rgba(192, 57, 43, 0.9);
+    transform: scale(0.95);
+}
+
+#mobile-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(52, 73, 94, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    z-index: 100;
+    border: 2px solid #ecf0f1;
+}
+
+#control-mode {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: rgba(52, 73, 94, 0.8);
+    border-radius: 10px;
+    font-size: 14px;
+    border: 2px solid #ecf0f1;
+}
+
+/* Адаптация для маленьких экранов */
+@media (max-width: 480px) {
+    .mobile-control-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+    }
+    
+    .rotate-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+    
+    #mobile-menu-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .main-menu {
+      width: 90%;
+      max-width: unset;
+      padding: 1.5rem;
+    }
+    
+    .title {
+      font-size: 2rem;
+      width: 80%;
+    }
+    
+    .menu-buttons {
+      max-width: 100%;
+    }
+    
+    .menu-btn, .resetAndExit, .resume {
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .menu-btn-accept {
+      width: 70%;
+      padding: 1rem 1.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .modal-content {
+      width: 90%;
+      max-width: unset;
+      padding: 1.5rem;
+    }
+    
+    .modal-content_set {
+      width: 85%;
+      padding: 1.5rem 2rem;
+    }
+    
+    .creator-info {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .creator-avatar {
+      width: 100px;
+      height: 100px;
+    }
+    
+    #creator {
+      font-size: 28px;
+    }
+    
+    p {
+      font-size: 16px;
+    }
+    
+    .control-group h3 {
+      font-size: 18px;
+    }
+    
+    .control-group li {
+      font-size: 14px;
+    }
+    
+    /* Настройки */
+    .select select {
+      font-size: 14px;
+      padding: 0.3rem 1rem;
+    }
+    
+    .range {
+      width: 250px;
+    }
+    
+    .range-label {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .main-menu {
+      padding: 1rem;
+    }
+    
+    .title {
+      font-size: 1.8rem;
+      width: 90%;
+    }
+    
+    .menu-btn, .resetAndExit, .resume {
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+    }
+    
+    .modal-content {
+      padding: 1rem;
+    }
+    
+    .modal-content_set {
+      padding: 1rem 1.5rem;
+    }
+    
+    #resetBtn, #BackToMenuBtn {
+      width: 80%;
+      margin-top: 1rem;
+    }
+    
+    .range {
+      width: 200px;
+    }
+    
+    .select h3, .slider h3 {
+      font-size: 16px;
+    }
+  }
+
+  /* Горизонтальная ориентация для модальных окон */
+@media (max-height: 500px) and (orientation: landscape) {
+    .main-menu {
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+    
+    .title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .menu-buttons {
+      gap: 0.5rem;
+    }
+    
+    .menu-btn, .resetAndExit, .resume {
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+    }
+    
+    .modal-content {
+      padding: 1rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-content_set {
+      padding: 1rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .creator-info {
+      gap: 0.5rem;
+    }
+    
+    .creator-avatar {
+      width: 80px;
+      height: 80px;
+    }
+    
+    #creator {
+      font-size: 24px;
+    }
+    
+    p {
+      font-size: 14px;
+    }
+    
+    .control-group {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+    }
+    
+    .control-group h3 {
+      font-size: 16px;
+    }
+    
+    .control-group li {
+      font-size: 12px;
+    }
+    
+    /* Настройки в горизонтальной ориентации */
+    .select select {
+      font-size: 12px;
+      padding: 0.2rem 0.8rem;
+    }
+    
+    .range {
+      width: 200px;
+    }
+    
+    .range-label {
+      font-size: 12px;
+    }
+  }
+  
+  /* Очень маленькая высота для модальных окон */
+  @media (max-height: 400px) and (orientation: landscape) {
+    .main-menu {
+      padding: 0.5rem;
+    }
+    
+    .title {
+      font-size: 1.2rem;
+    }
+    
+    .menu-btn, .resetAndExit, .resume {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    #creator {
+      font-size: 20px;
+    }
+    
+    p {
+      font-size: 12px;
+    }
+    
+    /* Упрощаем интерфейс настроек */
+    .select h3, .slider h3 {
+      margin-bottom: 0.2rem;
+    }
+    
+    .range {
+      width: 150px;
+    }
+  }

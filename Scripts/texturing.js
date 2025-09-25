@@ -1,6 +1,6 @@
 // texturing.js
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
-import { getObjects, originalMaterials } from './cube.js';
+import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
 
 class CubeTextureManager {
     constructor() {
@@ -80,14 +80,21 @@ class CubeTextureManager {
                 if (mesh.isMesh){
                     const materialName = mesh.material.name?.toLowerCase() || '';
                     const colorMatches = this.doesMaterialMatchSide(materialName, side);
-
                     if (colorMatches){
                         const newMaterial = mesh.material.clone();
+
+                        newMaterial.map = null;
+                        newMaterial.needsUpdate = true;
+
                         newMaterial.map = texture;
                         newMaterial.needsUpdate = true;
 
                         const originalMat = originalMaterials.get(mesh.uuid);
                         if (originalMat){
+                            
+                            originalMat.map = null;
+                            originalMat.needsUpdate = true;
+
                             originalMat.map = texture;
                             originalMat.needsUpdate = true;
                         }
@@ -125,9 +132,16 @@ class CubeTextureManager {
                     const originalMat = originalMaterials.get(mesh.uuid);
                     if (originalMat){
                         const cleanMaterial = originalMat.clone();
+
                         cleanMaterial.map = null;
                         cleanMaterial.needsUpdate = true;
                         mesh.material = cleanMaterial;
+
+                        originalMat.map = null;
+                        originalMat.needsUpdate = true;
+                    } else {
+                        mesh.material.map = null;
+                        mesh.material.needsUpdate = true; // Сообщаем Three.js об изменении
                     }
                 }
             });
@@ -142,6 +156,7 @@ const textureManager = new CubeTextureManager();
 export async function applyTextures(theme, texture_select, selector){
     await textureManager.applyTextures(theme);    
     if (texture_select) {
+
         // Получаем элемент texture_select
         const textureSelect = typeof texture_select === 'string'
         ? document.querySelector(texture_select) : texture_select;
@@ -153,17 +168,22 @@ export async function applyTextures(theme, texture_select, selector){
 
         const textureValue = textureSelect.value;
         const isDefaultSelected = textureValue === 'default';
-        const nonCassatOption = selector.querySelector('option[value="non_cassat"]');
+        let nonCassatOptionIndex = -1; // = selector.querySelector('option[value="non_cassat"]');
+        for (let i = 0; i < selector.options.length; i++){
+            if (selector.options[i].value === 'non_cassat'){
+                nonCassatOptionIndex = i;
+                break;
+            }
+        }
+        const nonCassatOptionExists = nonCassatOptionIndex !== -1;
 
         if (!isDefaultSelected){
-            if (!nonCassatOption) {
-                const option = document.createElement("option");
-                option.value = 'non_cassat';
-                option.text = "без наложения цвета";
-                
+            if (!nonCassatOptionExists) {
+                console.log('applyTextures: Добавляем опцию "без наложения цвета"');
+                const option = new Option("без наложения цвета", "non_cassat");               
                 // Добавляем опцию в конец списка
                 if (selector.options.length > 0) {
-                    selector.add(option, selector.options[selector.options.length - 1]);
+                    selector.add(option, selector.options.length);
                 } else {
                     selector.add(option);
                 }
@@ -171,11 +191,14 @@ export async function applyTextures(theme, texture_select, selector){
                 console.log('без наложения уже есть')
             }
         } else {
-            if (nonCassatOption) {
+            if (nonCassatOptionExists) {
+                console.log('applyTextures: Удаляем опцию "без наложения цвета"');
                 if (selector.value === "non_cassat") {
                     selector.value = 'default';
+                    applyColorTheme('classic');
+                    console.log('applyTextures: Цветовая тема "classic" принудительно применена после удаления "non_cassat".')                    
                 }
-                selector.removeChild(nonCassatOption);
+                selector.remove(nonCassatOptionIndex);
             }
         }
     }

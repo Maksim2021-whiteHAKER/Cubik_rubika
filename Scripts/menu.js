@@ -70,6 +70,91 @@ export let timerInterval;
 export let pausedDuration = 0; // общая длительность пауз
 let pauseStart = 0; // время начала текущей паузы
 
+function updateFormStyle(textureValue, themeValue){
+    const formStyle = document.getElementById('form_style');
+    if (!formStyle) return;
+
+    switch(textureValue){
+        case 'default':
+            switch (themeValue) {
+                case 'classic':
+                    formStyle.src = '../textures/form_style/default.png';
+                    break;
+                case 'neon':
+                    formStyle.src = '../textures/form_style/def_neon.png';
+                    break;
+                case 'monochrome':
+                    formStyle.src = '../textures/form_style/def_monochrome.png';
+                    break;
+                default:
+                    console.log('Неизвестная тема:', themeValue);
+                    formStyle.src = '../textures/form_style/default.png';
+                    break;
+            }
+            break;
+        case 'cars':
+            switch (themeValue){
+                case 'classic':
+                    formStyle.src = '../textures/form_style/cars.png';
+                    break;
+                case 'neon':
+                    formStyle.src = '../textures/form_style/cars_neon.png';
+                    break;
+                case 'monochrome':
+                    formStyle.src = '../textures/form_style/cars_monochrome.png';
+                    break;
+                case 'non_cassat':
+                    formStyle.src = '../textures/form_style/cars_noncassat.png';
+                    break
+                default:
+                    console.log('Неизвестная тема:', themeValue);
+                    formStyle.src = '../textures/form_style/default.png';
+                    break;
+            }
+            break;
+        case 'gems':
+            switch (themeValue){
+                case 'classic':
+                    formStyle.src = '../textures/form_style/gems.png';
+                    break;
+                case 'neon':
+                    formStyle.src = '../textures/form_style/gems_neon.png';
+                    break;
+                case 'monochrome':
+                    formStyle.src = '../textures/form_style/gems_monochrome.png';
+                    break;
+                case 'non_cassat':
+                    formStyle.src = '../textures/form_style/gems_noncassat.png';
+                    break;
+                default:
+                    console.log('Неизвестная тема:', themeValue);
+                    formStyle.src = '../textures/form_style/default.png';
+                    break;
+            }
+            break;
+        case 'girls':
+            switch (themeValue){
+                case 'classic':
+                    formStyle.src = '../textures/form_style/girls.png';
+                    break;
+                case 'neon':
+                    formStyle.src = '../textures/form_style/girls_neon.png';
+                    break;
+                case 'monochrome':
+                    formStyle.src = '../textures/form_style/girls_monochrome.png';
+                    break;
+                case 'non_cassat':                        
+                    formStyle.src = '../textures/form_style/girls_noncassat.png';
+                    break;
+                default:
+                    console.log('Неизвестная тема:', themeValue);
+                    formStyle.src = '../textures/form_style/default.png';
+                    break;
+                }
+                break;
+    }
+}
+
 function updateCursorMode(){
     if (getControlMode() === 'control_mouse_move'){
         document.body.classList.add('control-mouse-move');
@@ -204,9 +289,11 @@ if (selector_color_theme){
         try {
             applyColorTheme(selectedTheme);
             console.log(`Цветовая схема "${selectedTheme}" применена через меню.`);
+
+            updateFormStyle(selector_theme.value, selectedTheme)
         } catch (error){
             console.error("Ошибка применения цветовой темы: ", error)
-        }
+        }    
     })
 } else {
     console.warn('Элемент выбора цветовой темы не найден в DOM.');
@@ -244,6 +331,7 @@ selector_theme.addEventListener('change', async () => {
     try {
         await applyTextures(theme, selector_theme, selector_color_theme);
         console.log(`Текстуры "${theme}" успешно применены`);
+        updateFormStyle(theme, selector_color_theme.value)
     } catch (error) {
         console.error('Ошибка применения текстур:', error);
     }
