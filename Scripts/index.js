@@ -51,6 +51,100 @@ let selectedCubeForMouse = null;
 const rotationDelay = 150;
 const MOUSE_CONTROL_SENSITIVITY = 5;
 
+// переменные для телефона
+let isTouchDevice = 'ontouchstart' in window;
+let touchStartX, touchStartY;
+let currentTouches = [];
+
+function createMobileControls(){
+    if (!isTouchDevice) return;
+
+    const mobileControls = document.createElement('div');
+    mobileControls.id = 'mobile-controls'
+    mobileControls.innerHTML = `
+        <div class="mobile-control-btn" id="mobile-up">▼</div>
+        <div class="mobile-control-btn" id="mobile-left">◄</div>
+        <div class="mobile-control-btn" id="mobile-down">▲</div>
+        <div class="mobile-control-btn" id="mobile-right">►</div>
+        <div class="mobile-control-btn" id="mobile-rotate-x">X</div>
+        <div class="mobile-control-btn" id="mobile-rotate-y">Y</div>
+        <div class="mobile-control-btn" id="mobile-rotate-z">Z</div>
+    `;
+    document.body.appendChild(mobileControls);
+
+    document.getElementById('mobile-up').addEventListener('touchstart', () => handleMobileControl('up'));
+    document.getElementById('mobile-left').addEventListener('touchstart', () => handleMobileControl('left'));
+    document.getElementById('mobile-down').addEventListener('touchstart', () => handleMobileControl('down'));
+    document.getElementById('mobile-right').addEventListener('touchstart', () => handleMobileControl('right'));
+    document.getElementById('mobile-rotate-x').addEventListener('touchstart', () => handleMobileControl('rotate-x'));
+    document.getElementById('mobile-rotate-y').addEventListener('touchstart', () => handleMobileControl('rotate-y'));
+    document.getElementById('mobile-rotate-z').addEventListener('touchstart', () => handleMobileControl('rotate-z'));
+
+    // Добавьте стили для мобильных элементов управления
+    const style = document.createElement('style');
+    style.textContent = `
+        #mobile-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+        }
+        
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(52, 152, 219, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            user-select: none;
+            touch-action: none;
+        }
+        
+        @media (max-width: 768px) {
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function handleMobileControl(direction) {
+    if (!gameState.active) return;
+
+    switch (direction) {
+        case 'up':
+            rotateWholeCube(new THREE.Vector3(1, 0, 0), false);
+            break;
+        case 'down':
+            rotateWholeCube(new THREE.Vector3(1, 0, 0), true);
+            break;
+        case 'left':
+            rotateWholeCube(new THREE.Vector3(0, 1, 0), true);
+            break;
+        case 'right':
+            rotateWholeCube(new THREE.Vector3(0, 1, 0), false);
+            break;
+        case 'rotate-x':
+            rotateWholeCube(new THREE.Vector3(1, 0, 0), Math.random() > 0.5);
+            break;
+        case 'rotate-y':
+            rotateWholeCube(new THREE.Vector3(0, 1, 0), Math.random() > 0.5);
+            break;
+        case 'rotate-z':
+            rotateWholeCube(new THREE.Vector3(0, 0, 1), Math.random() > 0.5);
+            break;
+    }
+}
 
 function resetMouse(){
     startX = 0;
@@ -139,6 +233,8 @@ function initThree() {
     controlsPointer = new PointerLockControls(cameraPlayer, renderer.domElement);
     scene.add(controlsPointer.getObject());
 
+    createMobileControls()
+
     controlsPointer.addEventListener('lock', () => {
         controls.enabled = false;
         camera = cameraPlayer;
@@ -204,7 +300,7 @@ export function updateProgressBar(percentage){
         if (percentage >= 100) {
             // Небольшая задержка для завершения анимации
             setTimeout(() => {
-                if (congratsModal) {
+                if (congratsModal && gameState.mode === 'normal') {
                     congratsModal.style.display = 'block';
                     gameState.active = false;
                     stopTimer();
@@ -471,6 +567,88 @@ function setupTriggerInteraction(triggerZones) {
             document.body.classList.remove('dragging')
         }
     });
+
+    window.addEventListener('touchstart', (event) => {
+        if (!gameState.active) return;
+        
+        const touch = event.touches[0];
+        const mouse = new THREE.Vector2();
+        mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+
+        raycaster.setFromCamera(mouse, camera);
+        const staticObjects = getstaticObjects();
+
+        const intersects = raycaster.intersectObjects(staticObjects, true);
+
+        if (intersects.length > 0) {
+            const intersect = intersects[0];
+            startObject = intersect.object;
+            selectedCube = startObject.parent;
+
+            if (getControlMode() === 'control_mouse_move') {
+                isMouseDown = true;
+                rotationInProgress = false;
+                selectedCubeForMouse = selectedCube;
+                startX = touch.clientX;
+                startY = touch.clientY;
+                document.body.classList.add('dragging');
+            } else {
+                showArrows(selectedCube);
+            }
+        } else {
+            hideArrows();
+        }
+        
+        currentTouches = Array.from(event.touches);
+    });
+
+    window.addEventListener('touchmove', (event) => {
+        if (!gameState.active) return;
+        
+        const touch = event.touches[0];
+        const mouse = new THREE.Vector2();
+        mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+
+        if (getControlMode() === 'control_arrows') {
+            control_arrows_mode({ clientX: touch.clientX, clientY: touch.clientY });
+        } else if (getControlMode() === 'control_mouse_move' && isMouseDown) {
+            control_mouseRotation_mode({ clientX: touch.clientX, clientY: touch.clientY });
+        }
+        
+        currentTouches = Array.from(event.touches);
+    });
+
+    window.addEventListener('touchend', (event) => {
+        if (!gameState.active) return;
+        
+        if (getControlMode() === 'control_arrows' && selectedCube) {
+            const touch = event.changedTouches[0];
+            const mouse = new THREE.Vector2();
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+
+            raycaster.setFromCamera(mouse, camera);
+            const arrowIntersects = raycaster.intersectObjects(arrows, true);
+
+            if (arrowIntersects.length > 0) {
+                const arrow = arrowIntersects[0].object;
+                let axis = arrow.userData.direction.clone();
+                const isCounterclockwise = arrow.userData.isRotate && !arrow.userData.rotationDirection;
+                rotateLayer(selectedCube, axis, isCounterclockwise);
+            }
+
+            hideArrows();
+        } else {
+            isMouseDown = false;
+            rotationInProgress = false;
+            selectedCubeForMouse = null;
+            document.body.classList.remove('dragging');
+        }
+        
+        currentTouches = Array.from(event.touches);
+    });    
 }
 
 function control_arrows_mode(event) {
@@ -572,9 +750,9 @@ function startworld() {
         };
         cameraInfoDiv.innerHTML = `
             Camera: ${CurrentActiveCam}<br>
-            Position: [${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}]<br>
-            Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
-        `;
+            `;
+            // Position: [${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}]<br>
+            // Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
 
         renderer.render(scene, camera);
         stats.update();

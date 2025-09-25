@@ -28,7 +28,6 @@ const validGroups = [
     'O1_GOW001', 'O2_OW002', 'O3_OBW003', 'O4_GO004', 'O5_CENTER_O005', 'O6_OB006', 'O7_GYO007', 'O8_YO008', 'O9_OYB009'
 ]
 
-// 1. Определение тем
 const colorThemes = {
     'classic':{
         'red': 0xff0000,
@@ -59,16 +58,16 @@ const colorThemes = {
         'yellow': 0xC8C8C8,
         'white': 0xF0F0F0
     },
-    'non_cassat': {
-        'black': 0xf0f0f0,  // Очень светлый серый
-        'red': 0xf0f0f0,
-        'orange': 0xf0f0f0,
-        'green': 0xf0f0f0,
-        'blue': 0xf0f0f0,
-        'yellow': 0xf0f0f0,
-        'white': 0xf0f0f0
-    }
+}
 
+const NO_COLOR_OVERLAY_THEME = {
+    'black': 0xf0f0f0,  // Очень светлый серый
+    'red': 0xf0f0f0,
+    'orange': 0xf0f0f0,
+    'green': 0xf0f0f0,
+    'blue': 0xf0f0f0,
+    'yellow': 0xf0f0f0,
+    'white': 0xf0f0f0
 }
 
 let currentTheme = 'classic';
@@ -79,11 +78,20 @@ let currentTheme = 'classic';
  */
 
 export function applyColorTheme(themeName) {
-    const theme = colorThemes[themeName];
-    if (!theme) {
-        console.warn(`Тема "${themeName}" не найдена.`);
-        return;
+    let theme;
+    let itSpecialMode = false;
+    
+    if (themeName === 'non_cassat'){
+        theme = NO_COLOR_OVERLAY_THEME;
+        itSpecialMode = true;
+    } else {
+        theme = colorThemes[themeName];
+        if (!theme) {
+            console.warn(`Тема "${themeName}" не найдена.`);
+            return;
+        }
     }
+    
 
     currentTheme = themeName;
     console.log(`Применение цветовой темы: ${themeName}`);
