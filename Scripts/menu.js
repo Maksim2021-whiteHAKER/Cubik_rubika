@@ -44,12 +44,13 @@ let sounds = {
     BOTH_ON: 3
 };
 const sound_pic = {
-    PAUSED: '../textures/volume_mute.png',
-    ONLY_MUSIC: '../textures/volume_only_music.png',
-    ONLY_SOUND: '../textures/volume_only_sound.png',
-    BOTH_ON: '../textures/volume_both.png'
+    PAUSED: '🔇',
+    ONLY_MUSIC: '🎼',
+    ONLY_SOUND: '🔊',
+    BOTH_ON: '🎶'
 }
-musicBtn.style.backgroundImage = `url(${sound_pic.BOTH_ON})`
+musicBtn.innerHTML = sound_pic.BOTH_ON
+musicBtn.style.fontSize = '28px';
 export let state_sounds = sounds.BOTH_ON;
 
 document.body.appendChild(blurMenu)
@@ -308,19 +309,19 @@ document.getElementById('sound_setting').addEventListener('click', () => {
     state_sounds = (state_sounds + 1) % 4;
     switch(state_sounds){
         case sounds.PAUSED:
-            musicBtn.style.backgroundImage = `url(${sound_pic.PAUSED})`;
+            musicBtn.innerHTML = sound_pic.PAUSED;
             music.pause();
             break;
         case sounds.ONLY_MUSIC:
-            musicBtn.style.backgroundImage = `url(${sound_pic.ONLY_MUSIC})`;
+            musicBtn.innerHTML = sound_pic.ONLY_MUSIC;
             music.play().catch(e => console.error('Ошибка воиспроизведения: ', e));
             break;
         case sounds.ONLY_SOUND:
-            musicBtn.style.backgroundImage = `url(${sound_pic.ONLY_SOUND})`;
+            musicBtn.innerHTML = sound_pic.ONLY_SOUND;
             music.pause();           
             break;           
         case sounds.BOTH_ON:
-            musicBtn.style.backgroundImage = `url(${sound_pic.BOTH_ON})`;
+            musicBtn.innerHTML = sound_pic.BOTH_ON;
             music.play().catch(e => console.error('Ошибка воиспроизведения: ', e));
             break;
     }
