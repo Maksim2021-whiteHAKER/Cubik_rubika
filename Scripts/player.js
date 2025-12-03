@@ -74,7 +74,7 @@ function setupCameraControl(cameraPlayer, controlsPointer) {
 }
 
 function handlePlayerMovement(event) {
-    if (event.code !== arrayKeys[0]) {console.log('HandPlaMov: '+ event.code)}
+    // if (event.code !== arrayKeys[0]) {console.log('HandPlaMov: '+ event.code)}
     if (!controlsPointerRef) return;
     
     switch (event.code) {

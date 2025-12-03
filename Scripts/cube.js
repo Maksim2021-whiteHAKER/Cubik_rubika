@@ -213,7 +213,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             })
 
             // Модель - динамика
-            console.log('***Структура модели***');
+            // console.log('***Структура модели***');
             model.traverse(child => {
                 if (child.isGroup || child.isMesh) {
                     const worldPos = new THREE.Vector3();
@@ -242,7 +242,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                     if (child.isGroup && child.name !== 'Scene' ){
                         // console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}], Кватернион: [${worldQuat.x.toFixed(2)}, ${worldQuat.y.toFixed(2)}, ${worldQuat.z.toFixed(2)}, ${worldQuat.w.toFixed(2)}]`);
                         // console.log(`(без окр.) Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x}, ${worldPos.y}, ${worldPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
-                        console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
+                        // console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
                     }
                 }
                 
@@ -287,22 +287,22 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                     });
 
                     // console.log(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}]`);
-                    console.log(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x}, ${worldPos.y}, ${worldPos.z}]`);
+                    // console.log(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x}, ${worldPos.y}, ${worldPos.z}]`);
                     child.children.forEach(color => {
                         const colormat = color.material
-                        console.log(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
+                        // console.log(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
                     })
                 }
             });
 
             _objects.sort((a, b) => a.name.localeCompare(b.name))
-            console.log('Модель - динамика',_objects)
-            console.log('Эталлоны ',_staticobjects)
+            // console.log('Модель - динамика',_objects)
+            // console.log('Эталлоны ',_staticobjects)
 
-            console.log('***Эталонные позиции***');
+            // console.log('***Эталонные позиции***');
             referencePositions.forEach((data, name) => {
                 // console.log(`ЭП Гр.: ${name} Позиция: [${data.position.x.toFixed(2)}, ${data.position.y.toFixed(2)}, ${data.position.z.toFixed(2)}] Кватернион: [${data.quaternion.x.toFixed(2)}, ${data.quaternion.y.toFixed(2)}, ${data.quaternion.z.toFixed(2)}, ${data.quaternion.w.toFixed(2)}]`);
-                console.log(`ЭП Гр.: ${name} Позиция: [${data.position.x}, ${data.position.y}, ${data.position.z}] Кватернион: [${data.quaternion.x}, ${data.quaternion.y}, ${data.quaternion.z}, ${data.quaternion.w}]`);
+                // console.log(`ЭП Гр.: ${name} Позиция: [${data.position.x}, ${data.position.y}, ${data.position.z}] Кватернион: [${data.quaternion.x}, ${data.quaternion.y}, ${data.quaternion.z}, ${data.quaternion.w}]`);
             });
             console.log('initCube: Objects filled, length=', _objects.length);
             _objects.forEach((obj, i) => {
@@ -316,7 +316,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             });
             world.addBody(body);
             bodies.push({ mesh: model, body });
-            console.log(`bodies initialized, lenght: ${bodies.length}`)
+            // console.log(`bodies initialized, lenght: ${bodies.length}`)
 
             
             if (onLoadCallback) onLoadCallback();
