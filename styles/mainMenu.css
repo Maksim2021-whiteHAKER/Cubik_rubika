@@ -335,7 +335,7 @@ p {
 
 .slider-wrapper {
     position: relative;
-    border: 1px solid #00ffff;
+    /* border: 1px solid #00ffff; */
     margin: 0.6rem 0;
     width: 100%; /* Растягиваем на всю ширину родительского контейнера */
     box-sizing: border-box; /* Учитываем границы и отступы в общей ширине */    

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Кубик-рубика v15</title>
+    <title>Кубик-рубика v15+</title>
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
@@ -16,7 +16,7 @@
     <div id="errormes"></div>
     <!-- Главное меню -->
      <div id="mainMenu" class="main-menu">
-        <h1 class="title"> Кубик-рубика 3D v15</h1>
+        <h1 class="title"> Кубик-рубика 3D v15+</h1>
         <div class="menu_buttons">
             <!-- <button id="trainingMode" class="menu-btn">Обучение</button> -->
             <button id="normalMode" class="menu-btn">Обычный режим</button>
@@ -87,15 +87,16 @@
         <div class="modal-content_set">
             <span class="close-btn">&otimes;</span>
             <h2 id="settings-info">Настройки</h2>
-            <h3 id="name_textures">Текстуры</h3>
+            <p id="infomore" style="display: none; color: yellow;">функционал ограничен github pages</p>
+            <h3 style="top: 6px;" id="name_textures">Текстуры</h3>
             <div class="select">
-                <select id="theme-select">
+                <select style="top: 5px;" id="theme-select">
                     <option value="default">По умолчанию</option>
                     <option value="cars">Машины</option>
                     <option value="gems">Драгоценый куб ₽₽₽</option>
-                    <!-- <option value="girls">🔥</option> -->
+                    <option value="girls">🔥</option>
                 </select>
-                <h3 style="text-align: center;" id="name_textures">цветовая тема</h3>
+                <h3 style="text-align: center; top: 2px;" id="name_textures">Цветовая тема</h3>
                 <select id="color-theme-select">
                     <option value="classic">Классическая</option>
                     <option value="neon">Неон</option>

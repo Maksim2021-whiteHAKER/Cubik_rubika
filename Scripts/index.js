@@ -151,31 +151,6 @@ function resetMouse(){
     startY = 0;
 }
 
-function tryRotate(cube, axis, isCounterclockWise){
-    if (rotationInProgress) return;
-    // блокировка дальнейших вызовов на время задержки
-    rotationInProgress = true;
-
-    // вызов поворота
-    rotateLayer(cube, axis, isCounterclockWise);
-    syncStaticCube(cube)
-
-    // разблокировка через задержку
-    setTimeout(() => {
-        rotationInProgress = false;
-    }, rotationDelay);
-}
-
-function syncStaticCube(dynamicCube){
-    const _refDynamicObject = getReferenceDynamicObjects()
-    const staticCube = _refDynamicObject.find(cube => cube.name === dynamicCube.name);
-    if (!staticCube) return;
-
-    staticCube.position.copy(dynamicCube.position);
-    staticCube.quaternion.copy(dynamicCube.quaternion);
-    staticCube.updateMatrixWorld(true);
-}
-
 addEventListener('contextmenu', (e) => {e.preventDefault()})
 
 texture_grass.onError = () => {

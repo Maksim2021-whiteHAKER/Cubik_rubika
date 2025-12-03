@@ -1,6 +1,10 @@
 // texturing.js
 import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
 import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
+import { selector_theme } from './menu.js';
+
+const infomore = document.getElementById('infomore');
+// console.log(`infomore: ${infomore.innerHTML}`)
 
 class CubeTextureManager {
     constructor() {
@@ -17,14 +21,23 @@ class CubeTextureManager {
         });
     }
 
+    async checkTextureExists(texturePath) {
+        try {
+            const response = await fetch(texturePath, { method: 'HEAD' }); // HEAD - запрашивает только заголовки
+            // console.log(`Проверка ${texturePath}: Статус ${response.status}`); // Для отладки
+            return response.ok; // Возвращает true, если статус 200-299 (OK), false для 404 и других ошибок
+        } catch (error) {
+            // console.error(`Ошибка при проверке ${texturePath}:`, error); // Для отладки
+            return false; // Ошибка сети или другая проблема - файл считается несуществующим
+        }
+    }
+
     // Применение текстур по теме
     async applyTextures(theme) {
         this.currentTheme = theme;
         
         const configTheme = {
-            'default': {
-                clear: true
-            }, 
+            'default': { clear: true }, 
             'girls': {
                 'front': 'textures/cube/anime_green_side512.jpg',
                 'back': 'textures/cube/anime_blue_side512.jpg',
@@ -64,7 +77,15 @@ class CubeTextureManager {
 
         // применяем текстуры для каждой стороны
         for (const [side, TexturePath] of Object.entries(config)){
-            await this.applyTexturesToSide(side, TexturePath);
+            console.log('testing: ', TexturePath, ' ', selector_theme.value, ' infomore: ', infomore)
+            if (await this.checkTextureExists(TexturePath)){
+                await this.applyTexturesToSide(side, TexturePath);
+            } else {
+                infomore.style.display = 'block';
+                selector_theme.value = 'default';
+                console.warn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
+                return;
+            } // if TP === false, return
         }
     }
 
