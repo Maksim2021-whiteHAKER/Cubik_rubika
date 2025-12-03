@@ -79,77 +79,77 @@ function updateFormStyle(textureValue, themeValue){
         case 'default':
             switch (themeValue) {
                 case 'classic':
-                    formStyle.src = '../textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.png';
                     break;
                 case 'neon':
-                    formStyle.src = '../textures/form_style/def_neon.png';
+                    formStyle.src = 'textures/form_style/def_neon.png';
                     break;
                 case 'monochrome':
-                    formStyle.src = '../textures/form_style/def_monochrome.png';
+                    formStyle.src = 'textures/form_style/def_monochrome.png';
                     break;
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = '../textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.png';
                     break;
             }
             break;
         case 'cars':
             switch (themeValue){
                 case 'classic':
-                    formStyle.src = '../textures/form_style/cars.png';
+                    formStyle.src = 'textures/form_style/cars.png';
                     break;
                 case 'neon':
-                    formStyle.src = '../textures/form_style/cars_neon.png';
+                    formStyle.src = 'textures/form_style/cars_neon.png';
                     break;
                 case 'monochrome':
-                    formStyle.src = '../textures/form_style/cars_monochrome.png';
+                    formStyle.src = 'textures/form_style/cars_monochrome.png';
                     break;
                 case 'non_cassat':
-                    formStyle.src = '../textures/form_style/cars_noncassat.png';
+                    formStyle.src = 'textures/form_style/cars_noncassat.png';
                     break
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = '../textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.png';
                     break;
             }
             break;
         case 'gems':
             switch (themeValue){
                 case 'classic':
-                    formStyle.src = '../textures/form_style/gems.png';
+                    formStyle.src = 'textures/form_style/gems.png';
                     break;
                 case 'neon':
-                    formStyle.src = '../textures/form_style/gems_neon.png';
+                    formStyle.src = 'textures/form_style/gems_neon.png';
                     break;
                 case 'monochrome':
-                    formStyle.src = '../textures/form_style/gems_monochrome.png';
+                    formStyle.src = 'textures/form_style/gems_monochrome.png';
                     break;
                 case 'non_cassat':
-                    formStyle.src = '../textures/form_style/gems_noncassat.png';
+                    formStyle.src = 'textures/form_style/gems_noncassat.png';
                     break;
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = '../textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.png';
                     break;
             }
             break;
         case 'girls':
             switch (themeValue){
                 case 'classic':
-                    formStyle.src = '../textures/form_style/girls.png';
+                    formStyle.src = 'textures/form_style/girls.png';
                     break;
                 case 'neon':
-                    formStyle.src = '../textures/form_style/girls_neon.png';
+                    formStyle.src = 'textures/form_style/girls_neon.png';
                     break;
                 case 'monochrome':
-                    formStyle.src = '../textures/form_style/girls_monochrome.png';
+                    formStyle.src = 'textures/form_style/girls_monochrome.png';
                     break;
                 case 'non_cassat':                        
-                    formStyle.src = '../textures/form_style/girls_noncassat.png';
+                    formStyle.src = 'textures/form_style/girls_noncassat.png';
                     break;
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = '../textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.png';
                     break;
                 }
                 break;
