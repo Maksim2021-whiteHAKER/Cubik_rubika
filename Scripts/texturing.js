@@ -77,7 +77,7 @@ class CubeTextureManager {
 
         // применяем текстуры для каждой стороны
         for (const [side, TexturePath] of Object.entries(config)){
-            console.log('testing: ', TexturePath, ' ', selector_theme.value, ' infomore: ', infomore)
+            // console.log('testing: ', TexturePath, ' ', selector_theme.value, ' infomore: ', infomore)
             if (await this.checkTextureExists(TexturePath)){
                 await this.applyTexturesToSide(side, TexturePath);
             } else {
