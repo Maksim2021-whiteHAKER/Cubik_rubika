@@ -35,6 +35,14 @@ body.control-mouse-move.dragging {
   cursor: url('../textures/grabbing50.png') 25 25, auto;
 }
 
+body.control-touch-move {
+  cursor: url('../textures/fingerPrint64.png') 25 25, move;
+}
+
+body.control-touch-move.dragging {
+  cursor: url('../textures/fingerPrint64_active.png') 25 25, auto;
+}
+
 canvas {
   outline: none;
 }
