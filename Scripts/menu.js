@@ -1,5 +1,5 @@
 import { applyColorTheme, scrambleCube, solveCube } from "./cube.js";
-import { getControlMode, updateProgressBar } from "./index.js";
+import { getControlMode, updateProgressBar, getDeviceType } from "./index.js";
 import { applyTextures } from "./texturing.js";
 
 // Элементы интерфейса
@@ -23,12 +23,18 @@ pauseMenu.innerHTML = `
     <h2 id="pause">Пауза</h2>
     <button id="resumeBtn" class="resume">Вернуться</button>
     <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>`;
+
 const helpTempletes = {
-    control_arrows: `
+    'touch': `
+        <li>Двигайте пальцем по экрану - вращение грани в направлении движения</li>
+        <li>Движение пальца по оси X/Y - поворот по вертикали/горизонтали</li>
+        <li>На грани сверху управление может быть инвертировано.</li>
+    `,
+    'control_arrows': `
     <li>зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
     <li>зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
     <li>Стрелки на клавиатуре - это поворот кубика полностью</li>`,
-    control_mouse_move: `
+    'control_mouse_move': `
      <li>зажать ПКМ и двигать мышь - вращение грани в направлении движения</li>
      <li>движение мыши по оси X/Y - поворот по вертикали/горизонтали</li>
      <li id='dls'>🕹🔴однако на грани сверху управление инвертировано вверх = низ, низ = вверх.</li>
@@ -50,7 +56,7 @@ const sound_pic = {
     BOTH_ON: '🎶'
 }
 musicBtn.innerHTML = sound_pic.BOTH_ON
-musicBtn.style.fontSize = '28px';
+musicBtn.style.fontSize = '20px';
 export let state_sounds = sounds.BOTH_ON;
 
 document.body.appendChild(blurMenu)
@@ -157,22 +163,35 @@ function updateFormStyle(textureValue, themeValue){
 }
 
 function updateCursorMode(){
+    document.body.classList.remove('control-mouse-move');
+    document.body.classList.remove('control-touch-move');
+
     if (getControlMode() === 'control_mouse_move'){
         document.body.classList.add('control-mouse-move');
-    } else {
-        document.body.classList.remove('control-mouse-move');
-        document.body.classList.remove('gragging');
+    } else if (getControlMode() === 'control_touch_move'){
+        document.body.classList.add('control-touch-move');
     }
+
 }
 
 export function updateHelpContent(){
+    const deviceType = getDeviceType();
     const controlMode = getControlMode();
+
     const list = document.getElementById('cube-control-list')
     const title = document.getElementById('cube-control-title')
-    title.textContent = controlMode === 'control_mouse_move'
-        ? '🕹Управление кубиком (мышь)🕹' 
-        : '🕹Управление кубиком (стрелки)🕹';
-    list.innerHTML = helpTempletes[controlMode] || helpTempletes[control_arrows];
+    
+    title.textContent = deviceType === 'touch' ? '🕹Управление кубиком (сенсор)🕹' 
+    : (controlMode === 'control_mouse_move' ? '🕹Управление кубиком (мышь)🕹' : '🕹Управление кубиком (стрелки)🕹');
+
+    let templateKey; // шаблон подсказки
+    if (deviceType === 'touch'){
+        templateKey = 'touch';
+    } else {
+        templateKey = controlMode === 'control_mouse_move' ? 'control_mouse_move' : 'control_arrows';
+    }
+
+    list.innerHTML = helpTempletes[templateKey] || 'Инструкции не доступны.';
 }
 
 function updateSliderValue(rangeId, labelId){
@@ -185,12 +204,23 @@ function updateSliderValue(rangeId, labelId){
             music.volume = volume;
             
         }        
-        label.textContent = this.value + '%'
+        label.textContent = this.value + '%';
     })
 }
 
 updateSliderValue('music_range', 'prog_music')
 updateSliderValue('sound_range', 'prog_sound')
+
+export function updateSettingTitle(){
+    const settingsInfoElement = document.getElementById('settings-info');
+    if (!settingsInfoElement) {console.warn("Элемент #settings-info не найден для обновления заголовка."); return;}
+
+    const isTouchDevice = navigator.maxTouchPoints > 0;
+
+    const emojiDev = isTouchDevice ? '📱' : '💻';
+
+    settingsInfoElement.textContent = `Настройки ${emojiDev}`
+}
 
 function resetGame() {
     if (gameState.active) {
@@ -304,7 +334,10 @@ if (selector_color_theme){
 // Обработчики для кнопок "Помощь" и "Создатель"
 document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));
 document.getElementById('creatorBtn').addEventListener('click', () => showModal(creatorModal));
-document.getElementById('settingsBtn').addEventListener('click', () => showModal(settingsModal));
+document.getElementById('settingsBtn').addEventListener('click', () => {
+    showModal(settingsModal)
+    updateSettingTitle();
+});
 document.getElementById('sound_setting').addEventListener('click', () => {
     state_sounds = (state_sounds + 1) % 4;
     switch(state_sounds){

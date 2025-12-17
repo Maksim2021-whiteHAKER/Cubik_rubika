@@ -52,9 +52,70 @@ const rotationDelay = 150;
 const MOUSE_CONTROL_SENSITIVITY = 5;
 
 // переменные для телефона
-let isTouchDevice = 'ontouchstart' in window;
 let touchStartX, touchStartY;
 let currentTouches = [];
+
+export function getDeviceType(){
+    if (navigator.maxTouchPoints > 0){
+        return 'touch' // сенсорное уст.
+    }
+    return 'desktop'
+}
+
+export const isTouchDevice = getDeviceType() === 'touch';
+
+function updateControlModeSelector(){
+    const controlModeSelect = document.getElementById('theme-select_2');
+    if (!controlModeSelect) {console.warn('элемент controlModeSelect не найден'); return;}
+
+    const deviceType = getDeviceType();
+    const allowedTouchModes = ['control_touch_trigger', 'control_touch_move'];
+    
+    if (deviceType === 'touch'){
+        // селектор изменен на сенсор
+        
+        let triggerOpt = Array.from(controlModeSelect.options).find(opt => opt.value === allowedTouchModes[0]);
+        let newOptionMove = Array.from(controlModeSelect.options).find(opt => opt.value === allowedTouchModes[1]);
+        
+        if (!triggerOpt){
+            triggerOpt = document.createElement('option');
+            triggerOpt.value = allowedTouchModes[0];
+            triggerOpt.textContent = 'Сенсорное управление(Триггер)';
+            controlModeSelect.add(triggerOpt);
+        }
+       
+        if (!newOptionMove){
+            newOptionMove = document.createElement('option');
+            newOptionMove.value = allowedTouchModes[1];
+            newOptionMove.textContent = 'Сенсорное управление(Палец)';
+            controlModeSelect.add(newOptionMove)
+        }
+
+        Array.from(controlModeSelect.options).forEach(option => {
+            if (!allowedTouchModes.includes(option.value)){
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        });
+
+        if (!allowedTouchModes.includes(controlModeSelect.value)){       
+            controlModeSelect.value = allowedTouchModes[0];
+        }
+        
+    } else {
+        // компьютер
+        const delOptionTrigger = Array.from(controlModeSelect.options).find(opt => opt.value === allowedTouchModes[0])
+        const delOptionMove = Array.from(controlModeSelect.options).find(opt => opt.value === allowedTouchModes[1])
+        if (delOptionTrigger) controlModeSelect.remove(delOptionTrigger.index)
+        if (delOptionMove) controlModeSelect.remove(delOptionMove.index)
+
+        Array.from(controlModeSelect.options).forEach(option => {
+            option.disabled = false;
+        })
+    }
+    controlModeSelect.dispatchEvent(new Event('change'));
+}
 
 function createMobileControls(){
     if (!isTouchDevice) return;
@@ -66,9 +127,6 @@ function createMobileControls(){
         <div class="mobile-control-btn" id="mobile-left">◄</div>
         <div class="mobile-control-btn" id="mobile-down">▲</div>
         <div class="mobile-control-btn" id="mobile-right">►</div>
-        <div class="mobile-control-btn" id="mobile-rotate-x">X</div>
-        <div class="mobile-control-btn" id="mobile-rotate-y">Y</div>
-        <div class="mobile-control-btn" id="mobile-rotate-z">Z</div>
     `;
     document.body.appendChild(mobileControls);
 
@@ -76,9 +134,6 @@ function createMobileControls(){
     document.getElementById('mobile-left').addEventListener('touchstart', () => handleMobileControl('left'));
     document.getElementById('mobile-down').addEventListener('touchstart', () => handleMobileControl('down'));
     document.getElementById('mobile-right').addEventListener('touchstart', () => handleMobileControl('right'));
-    document.getElementById('mobile-rotate-x').addEventListener('touchstart', () => handleMobileControl('rotate-x'));
-    document.getElementById('mobile-rotate-y').addEventListener('touchstart', () => handleMobileControl('rotate-y'));
-    document.getElementById('mobile-rotate-z').addEventListener('touchstart', () => handleMobileControl('rotate-z'));
 
     // Добавьте стили для мобильных элементов управления
     const style = document.createElement('style');
@@ -149,6 +204,31 @@ function handleMobileControl(direction) {
 function resetMouse(){
     startX = 0;
     startY = 0;
+}
+
+function tryRotate(cube, axis, isCounterclockWise){
+    if (rotationInProgress) return;
+    // блокировка дальнейших вызовов на время задержки
+    rotationInProgress = true;
+
+    // вызов поворота
+    rotateLayer(cube, axis, isCounterclockWise);
+    syncStaticCube(cube)
+
+    // разблокировка через задержку
+    setTimeout(() => {
+        rotationInProgress = false;
+    }, rotationDelay);
+}
+
+function syncStaticCube(dynamicCube){
+    const _refDynamicObject = getReferenceDynamicObjects()
+    const staticCube = _refDynamicObject.find(cube => cube.name === dynamicCube.name);
+    if (!staticCube) return;
+
+    staticCube.position.copy(dynamicCube.position);
+    staticCube.quaternion.copy(dynamicCube.quaternion);
+    staticCube.updateMatrixWorld(true);
 }
 
 addEventListener('contextmenu', (e) => {e.preventDefault()})
@@ -323,7 +403,11 @@ function createArrow(position, direction, color = 0x00ff00, isRotate = false, fa
     return arrow;
 }
 
-function showArrows(cube) {
+function showArrows(cube, mouseCoords) {
+    if (!mouseCoords){
+        console.warn("showArrows: координаты не переданы, невозможно определить грань.");
+        return;
+    }
     const blurM = document.getElementById('blurmenu')
     if (blurM && blurM.style.display === 'block') { return; }
     // Удаляем старые стрелки
@@ -336,10 +420,9 @@ function showArrows(cube) {
     const sphereOffset = cubeSize * 0.101; // Смещение шаров по вертикале
 
     // Находим грань, на которую кликнули
+    const {x, y} = mouseCoords;
     const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
-    raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouseCoords, camera);
     const intersects = raycaster.intersectObjects([cube], true);
     if (intersects.length === 0) return;
 
@@ -488,9 +571,8 @@ function setupTriggerInteraction(triggerZones) {
                 startX = event.clientX;
                 startY = event.clientY;
                 document.body.classList.add('dragging');
-
             } else {                                 
-                showArrows(selectedCube); 
+                showArrows(selectedCube, mouse); 
             }
             console.log('mousedown: object=', startObject.name, 'parent=', selectedCube.name);
         } else {
@@ -540,6 +622,7 @@ function setupTriggerInteraction(triggerZones) {
             rotationInProgress = false;
             selectedCubeForMouse = null;
             document.body.classList.remove('dragging')
+            hideArrows();
         }
     });
 
@@ -547,11 +630,11 @@ function setupTriggerInteraction(triggerZones) {
         if (!gameState.active) return;
         
         const touch = event.touches[0];
-        const mouse = new THREE.Vector2();
-        mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+        const mouseCoords = new THREE.Vector2(
+            (touch.clientX / window.innerWidth) * 2 - 1, 
+            -((touch.clientY / window.innerHeight) * 2 - 1))
 
-        raycaster.setFromCamera(mouse, camera);
+        raycaster.setFromCamera(mouseCoords, camera);
         const staticObjects = getstaticObjects();
 
         const intersects = raycaster.intersectObjects(staticObjects, true);
@@ -561,15 +644,17 @@ function setupTriggerInteraction(triggerZones) {
             startObject = intersect.object;
             selectedCube = startObject.parent;
 
-            if (getControlMode() === 'control_mouse_move') {
+            if (getControlMode() === 'control_touch_trigger') {
+                showArrows(selectedCube, mouseCoords);
+            } else if (getControlMode() === 'control_touch_move'){
                 isMouseDown = true;
                 rotationInProgress = false;
                 selectedCubeForMouse = selectedCube;
                 startX = touch.clientX;
                 startY = touch.clientY;
+                console.log(document.body)
                 document.body.classList.add('dragging');
-            } else {
-                showArrows(selectedCube);
+                hideArrows();
             }
         } else {
             hideArrows();
@@ -586,10 +671,11 @@ function setupTriggerInteraction(triggerZones) {
         mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
 
-        if (getControlMode() === 'control_arrows') {
+        if (getControlMode() === 'control_touch_trigger') {
             control_arrows_mode({ clientX: touch.clientX, clientY: touch.clientY });
-        } else if (getControlMode() === 'control_mouse_move' && isMouseDown) {
-            control_mouseRotation_mode({ clientX: touch.clientX, clientY: touch.clientY });
+        } else if (getControlMode() === 'control_touch_move' && isMouseDown) {
+            control_mouseRotation_mode({clientX: touch.clientX, clientY: touch.clientY});
+            hideArrows()
         }
         
         currentTouches = Array.from(event.touches);
@@ -598,7 +684,7 @@ function setupTriggerInteraction(triggerZones) {
     window.addEventListener('touchend', (event) => {
         if (!gameState.active) return;
         
-        if (getControlMode() === 'control_arrows' && selectedCube) {
+        if ((getControlMode() === 'control_touch_trigger') && selectedCube) {
             const touch = event.changedTouches[0];
             const mouse = new THREE.Vector2();
             mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
@@ -615,13 +701,13 @@ function setupTriggerInteraction(triggerZones) {
             }
 
             hideArrows();
-        } else {
+        } else if (getControlMode() === 'control_touch_move') {
             isMouseDown = false;
             rotationInProgress = false;
             selectedCubeForMouse = null;
             document.body.classList.remove('dragging');
-        }
-        
+            hideArrows();
+        }         
         currentTouches = Array.from(event.touches);
     });    
 }
@@ -736,6 +822,11 @@ function startworld() {
     }
 }
 
+function initializeControlMode() {
+    updateControlModeSelector();
+}
+
+
 window.addEventListener('load', () => {
     initThree();
     initCube(scene, world, () => {
@@ -744,6 +835,7 @@ window.addEventListener('load', () => {
         triggerZones.forEach(zone => scene.add(zone));
         setupTriggerInteraction(triggerZones);
         initPlayer(scene, renderer, controls, controlsPointer);
+        initializeControlMode();
         startworld();
     });   
 });
