@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Кубик-рубика v16</title>
+    <title>Кубик-рубика v16+</title>
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
@@ -16,7 +16,7 @@
     <div id="errormes"></div>
     <!-- Главное меню -->
      <div id="mainMenu" class="main-menu">
-        <h1 class="title"> Кубик-рубика 3D v16</h1>
+        <h1 class="title"> Кубик-рубика 3D v16+</h1>
         <div class="menu_buttons">
             <!-- <button id="trainingMode" class="menu-btn">Обучение</button> -->
             <button id="normalMode" class="menu-btn">Обычный режим</button>
@@ -24,6 +24,7 @@
             <button id="helpBtn" class="menu-btn">Помощь</button>
             <button id="settingsBtn" class="menu-btn">Настройки</button>
             <button id="creatorBtn" class="menu-btn">Создатель</button>
+            <button id="supportBtn" class="menu-btn">Поддержать автора</button>
         </div>
     </div>
     <!-- Модальные окна -->
@@ -130,8 +131,31 @@
         </div>
     </div>
 
-    <div id="menu_info">
-        <h1 >Кубик-рубика версия 0.0.1.5</h1>
+    <div id="supportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&otimes;</span>
+            <h2 id="supportId" style="font-size: 25px;">ПОДДЕРЖКА АВТОРА</h2>
+            <div class="creator-info">
+                <div class="creator-details">
+                    <p><strong>Автор:</strong> Maksim Vladimirovich</p> <!-- Ваше имя -->
+                    <p><strong>GitHub:</strong> <a href="https://github.com/Maksim2021-whiteHAKER" target="_blank" style="color: #00aaff;">Maksim2021-whiteHAKER</a></p> <!-- Ссылка на GitHub -->
+
+                    <!-- Раздел "Поддержка проекта" -->
+                    <h3 style="margin-top: 15px;">Как вы можете поддержать проект:</h3>
+                    <ul style="list-style-type: disc; margin-left: 20px;">
+                        <li>Поставить звезду на <a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank" style="color: #00aaff;">GitHub</a> ⭐</li> <!-- Ссылка на GitHub репозиторий -->                       
+                        <li>Финансовая поддержка через кошелёк(wallet)<a href="https://yoomoney.ru/to/410015336126322" target="_blank" rel="noopener noreferrer" style="color: #00aaff;">YooMoney</a> 💰</li>
+                        <li>Финансовая поддержка: <a href="https://boosty.to/ghostwarriorxz/donate" target="_blank" style="color: #00aaff;">Boosty</a> 💰</li>
+                        <li>Financial support(foreing users) <a href="https://www.donationalerts.com/r/ghostwarriorxz" target="_blank" style="color: #FF0FA0;">donationalerts</a> 💰</li>               
+                        <li>Сообщить об ошибках или предложить идеи (<a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika/issues" target="_blank" style="color: #00aaff;">Issues на GitHub</a>)</li>
+                        <li>Рассказать друзьям о приложении! 🗣️</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><em>Спасибо за использование приложения! Любая поддержка мотивирует на развитие проекта дальше.</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
     <div id="menu_settings">
         Fov: <span id="CurntCamFOV"></span>
