@@ -42,7 +42,7 @@
 }
 
 .menu-btn, .resetAndExit, .resume {
-    margin-top: 3%;
+    margin-top: 1.5%;
     width: 100%; /* Кнопки занимают всю ширину контейнера */
     box-sizing: border-box; /* Учитывает padding в ширине */
     background: rgba(26,26,26,0.9);

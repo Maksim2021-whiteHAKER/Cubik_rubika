@@ -7,6 +7,7 @@ const mainMenu = document.getElementById('mainMenu');
 const helpModal = document.getElementById('helpModal');
 const settingsModal = document.getElementById('settingsModal');
 const creatorModal = document.getElementById('creatorModal');
+const supportModal = document.getElementById('supportModal');
 const resetButton = document.getElementById('resetBtn');
 const backToMenuButton = document.getElementById('BackToMenuBtn');
 const acceptStyleButton = document.getElementById('accept_style');
@@ -25,15 +26,21 @@ pauseMenu.innerHTML = `
     <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>`;
 
 const helpTempletes = {
-    'touch': `
+    'touch_move': `
         <li>Двигайте пальцем по экрану - вращение грани в направлении движения</li>
         <li>Движение пальца по оси X/Y - поворот по вертикали/горизонтали</li>
         <li>На грани сверху управление может быть инвертировано.</li>
     `,
+    'touch_trigger':`
+        <li>нажать на экран и держать, навести палец точно на стрелки и отпустить - поворот грани </li>
+        <li>нажать на экран и держать, навести палец на шар и отпустить - поворот передней грани </li>
+        <li>Стрелки - это поворот кубика полностью</li>`
+    ,
     'control_arrows': `
     <li>зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
     <li>зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
-    <li>Стрелки на клавиатуре - это поворот кубика полностью</li>`,
+    <li>Стрелки на клавиатуре - это поворот кубика полностью</li>`
+    ,
     'control_mouse_move': `
      <li>зажать ПКМ и двигать мышь - вращение грани в направлении движения</li>
      <li>движение мыши по оси X/Y - поворот по вертикали/горизонтали</li>
@@ -180,17 +187,29 @@ export function updateHelpContent(){
 
     const list = document.getElementById('cube-control-list')
     const title = document.getElementById('cube-control-title')
-    
-    title.textContent = deviceType === 'touch' ? '🕹Управление кубиком (сенсор)🕹' 
-    : (controlMode === 'control_mouse_move' ? '🕹Управление кубиком (мышь)🕹' : '🕹Управление кубиком (стрелки)🕹');
-
     let templateKey; // шаблон подсказки
-    if (deviceType === 'touch'){
-        templateKey = 'touch';
-    } else {
-        templateKey = controlMode === 'control_mouse_move' ? 'control_mouse_move' : 'control_arrows';
-    }
 
+    switch (controlMode){
+        case 'control_arrows':
+            title.textContent = '🕹Управление кубиком (стрелки)🕹';
+            templateKey = 'control_arrows';
+            break;
+        case 'control_mouse_move':
+            title.textContent = '🕹Управление кубиком (мышь)🕹';
+            templateKey = 'control_mouse_move';
+            break;
+        case 'control_touch_move': 
+            title.textContent = '🕹Управление кубиком (сенсор)🕹';
+            templateKey = 'touch_move';
+            break;
+        case 'control_touch_trigger': 
+            title.textContent = '🕹Управление кубиком (сенсор-стрелки)🕹'
+            templateKey = 'touch_trigger';
+            break;
+        default:
+            title.textContent = '🕹Управление кубиком (неизвестно)🕹';
+    }
+    
     list.innerHTML = helpTempletes[templateKey] || 'Инструкции не доступны.';
 }
 
@@ -334,6 +353,7 @@ if (selector_color_theme){
 // Обработчики для кнопок "Помощь" и "Создатель"
 document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));
 document.getElementById('creatorBtn').addEventListener('click', () => showModal(creatorModal));
+document.getElementById('supportBtn').addEventListener('click', () => showModal(supportModal));
 document.getElementById('settingsBtn').addEventListener('click', () => {
     showModal(settingsModal)
     updateSettingTitle();
