@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Кубик-рубика v16+</title>
+    <title>Кубик-рубика v17</title>
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
@@ -12,11 +12,26 @@
     <script src="Scripts/checkProtocol.js"></script>
 </head>
 <body>
-    <button id="debugCheckButton" class="debugCheckbtn" >Проверить кубик</button>
+    <button id="debugCheckButton" class="debugCheckbtn">Проверить кубик</button>
     <div id="errormes"></div>
+
     <!-- Главное меню -->
      <div id="mainMenu" class="main-menu">
-        <h1 class="title"> Кубик-рубика 3D v16+</h1>
+        <div class="title">
+            <h1 id="title">Кубик-рубика 3D</h1>
+            <span id="ver">0.0.1.7</span>
+        </div>
+
+        <!-- Селектор языка -->
+        <div id="languageSliderContainer">
+            <div id="languageSlider">
+                <button id="sliderPrev">&#8249;</button>
+                <div id="sliderFlags"></div>
+                <button id="sliderNext">&#8250;</button>
+            </div>
+        </div>
+
+
         <div class="menu_buttons">
             <!-- <button id="trainingMode" class="menu-btn">Обучение</button> -->
             <button id="normalMode" class="menu-btn">Обычный режим</button>
@@ -32,7 +47,7 @@
         <div class="modal-content">
             <span class="close-btn"></span>
             <h2 id="congrats">🎉 Поздравляем 🎉</h2>
-            <p id="timesolve">Время сборки: <span id="solveTime">00:00:00</span> ч/м/с</p>
+            <p id="timesolve">Время сборки / Time solve: <BR> <span id="solveTime">00:00:00</span> ч/м/с || h/m/s</p>
             <button id="resetBtn">Собрать заново</button>
             <button id="BackToMenuBtn">Вернуться в меню</button>
         </div>
@@ -46,14 +61,14 @@
                     <h3 id="maincontrol">🛠 Основное управление 🛠</h3>
                     <ul>
                         <li id="dls">🔴ПКМ - правая кнопка мыши, ЛКМ - левая кнопка мыши</li>
-                        <li id="dls">🔴Раскладка для горячих клавиш кнопка одна (rus/eng)</li>
-                        <li id="dls">✅ Кубик считается собраным если (верху(⬜), передняя(🟩), боковая(🟥))</li>
-                        <li>ПКМ + тащить - вращение камеры (орбита вкл)</li>
-                        <li>Щ/o - включить/выключить орбиту</li>
-                        <li>Колесико мыши - зум (обрита вкл)</li>
-                        <li>K\r - сброс камеры</li>
-                        <li>C\с - автосборка в "Свободном режиме"</li>
-                        <li>Ы\s - разборка кубика</li>
+                        <li id="dls2">🔴Раскладка для горячих клавиш кнопка одна (rus/eng)</li>
+                        <li id="dls3">✅ Кубик считается собраным если (верху(⬜), передняя(🟩), боковая(🟥))</li>
+                        <li id="mcText4">ПКМ + тащить - вращение камеры (орбита вкл)</li>
+                        <li id="mcText5">Щ/o - включить/выключить орбиту</li>
+                        <li id="mcText6">Колесико мыши - зум (обрита вкл)</li>
+                        <li id="mcText7">K/r - сброс камеры</li>
+                        <li id="mcText8">C/с - автосборка в "Свободном режиме"</li>
+                        <li id="mcText9">Ы/s - разборка кубика</li>
                     </ul>
                 </div>
                 <!-- Управление кубиком -->
@@ -69,15 +84,16 @@
     <div id="creatorModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&otimes;</span>
-            <h2 id="creator">Создатель</h2>
+            <h2 id="creator">Создатель/Creator</h2>
             <div class="creator-info">
                 <div class="creator-details">
-                    <p><strong>Имя: </strong>Владимиров Максим (4 курс)</p>
+                    <p><strong>Имя/name: </strong>Владимиров Максим / Vladimirov Maksim (4 курс)</p>
                     <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER" target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
                     <br><p><strong>Особенности проекта: </strong></p>
                     <ul>
-                        <li>Создано с использованием THREEJS</li>
-                        <li>в будущем возможно будут обновления</li>
+                        <li>Создано с использованием THREEJS<br> 
+                            в будущем возможно будут обновления
+                        </li> 
                     </ul>
                 </div>
             </div>
@@ -93,11 +109,11 @@
             <div class="select">
                 <select style="top: 5px;" id="theme-select">
                     <option value="default">По умолчанию</option>
-                    <option value="cars">Машины</option>
-                    <option value="gems">Драгоценый куб ₽₽₽</option>
+                    <option value="cars">🚗</option>
+                    <option value="gems">💎🧊₽₽₽</option>
                     <option value="girls">🔥</option>
                 </select>
-                <h3 style="text-align: center; top: 2px;" id="name_textures">Цветовая тема</h3>
+                <h3 style="text-align: center; top: 2px;" id="color_theme_textures">Цветовая тема</h3>
                 <select id="color-theme-select">
                     <option value="classic">Классическая</option>
                     <option value="neon">Неон</option>
@@ -117,12 +133,12 @@
             <audio id="rotation_sound" src="sounds/rotate.mp3" preload="auto"></audio>
             <h3 id="name_sound">Звук</h3>
             <div class="slider">
-                <label class="range-label" for="music_range">Музыка</label>
+                <label id="music_name" class="range-label" for="music_range">Музыка</label>
                 <div class="slider-wrapper">
                     <span id="prog_music" class="slider-value">50%</span>
                     <input class="range" id="music_range" type="range" min="0" max="100" value="50" step="1">
                 </div>
-                <label class="range-label" for="sound_range">Звук</label>
+                <label id="sound_name" class="range-label" for="sound_range">Звук</label>
                 <div class="slider-wrapper">
                     <span id="prog_sound" class="slider-value">50%</span>
                     <input class="range" id="sound_range" type="range" min="0" max="100" value="50" step="1">
@@ -137,20 +153,19 @@
             <h2 id="supportId" style="font-size: 25px;">ПОДДЕРЖКА АВТОРА</h2>
             <div class="creator-info">
                 <div class="creator-details">
-                    <p><strong>Автор:</strong> Maksim Vladimirovich</p> <!-- Ваше имя -->
+                    <p><strong>Автор\Author:</strong> Максим Владимиров / Maksim Vladimirov</p> <!-- Ваше имя -->
                     <p><strong>GitHub:</strong> <a href="https://github.com/Maksim2021-whiteHAKER" target="_blank" style="color: #00aaff;">Maksim2021-whiteHAKER</a></p> <!-- Ссылка на GitHub -->
-
                     <!-- Раздел "Поддержка проекта" -->
-                    <h3 style="margin-top: 15px;">Как вы можете поддержать проект:</h3>
+                    <h3 id="supportHowHelp" style="margin-top: 15px;">Как вы можете поддержать проект:</h3>
                     <ul style="list-style-type: disc; margin-left: 20px;">
-                        <li>Поставить звезду на <a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank" style="color: #00aaff;">GitHub</a> ⭐</li> <!-- Ссылка на GitHub репозиторий -->                       
-                        <li>Финансовая поддержка через кошелёк(wallet)<a href="https://yoomoney.ru/to/410015336126322" target="_blank" rel="noopener noreferrer" style="color: #00aaff;">YooMoney</a> 💰</li>
-                        <li>Финансовая поддержка: <a href="https://boosty.to/ghostwarriorxz/donate" target="_blank" style="color: #00aaff;">Boosty</a> 💰</li>
-                        <li>Financial support(foreing users) <a href="https://www.donationalerts.com/r/ghostwarriorxz" target="_blank" style="color: #FF0FA0;">donationalerts</a> 💰</li>               
-                        <li>Сообщить об ошибках или предложить идеи (<a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika/issues" target="_blank" style="color: #00aaff;">Issues на GitHub</a>)</li>
-                        <li>Рассказать друзьям о приложении! 🗣️</li>
+                        <li id="putStar">Поставить звезду на <a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank" style="color: #00aaff;">GitHub</a> ⭐</li> <!-- Ссылка на GitHub репозиторий -->                       
+                        <li id="financialHelpWallet">Финансовая поддержка через кошелёк(wallet)<a href="https://yoomoney.ru/to/410015336126322" target="_blank" rel="noopener noreferrer" style="color: #00aaff;">YooMoney</a> 💰</li>
+                        <li id="financialHelpBoosty">Финансовая поддержка: <a href="https://boosty.to/ghostwarriorxz/donate" target="_blank" style="color: #00aaff;">Boosty</a> 💰</li>
+                        <li id="financialHelpDonationAlerts">Финансовая поддержка(иностранные пользователи) <a href="https://www.donationalerts.com/r/ghostwarriorxz" target="_blank" style="color: #FF0FA0;">donationalerts</a> 💰</li>               
+                        <li id="reportError">Сообщить об ошибках или предложить идеи (<a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika/issues" target="_blank" style="color: #00aaff;">Issues на GitHub</a>)</li>
+                        <li id="tellUs">Рассказать друзьям о приложении! 🗣️</li>
                     </ul>
-                    <p style="margin-top: 15px;"><em>Спасибо за использование приложения! Любая поддержка мотивирует на развитие проекта дальше.</em></p>
+                    <p id="thanksForSupport" style="margin-top: 15px;"><em>Спасибо за использование приложения! Любая поддержка мотивирует на развитие проекта дальше.</em></p>
                 </div>
             </div>
         </div>
@@ -180,6 +195,7 @@
         <h3>Матрица состояния кубика</h3>
         <div id="matrix-table"></div>
     </div> -->
-       <script src="Scripts/index.js" type="module"></script>
+    <script src="Scripts/translations.js" type="module"></script>
+    <script src="Scripts/index.js" type="module"></script>
 </body>
 </html>

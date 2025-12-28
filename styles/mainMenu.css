@@ -274,7 +274,7 @@ p {
     font-size: 30px;
 }
 
-#dls {
+#dls, #dls2, #dls3 {
     list-style-type: none;
 }
 
