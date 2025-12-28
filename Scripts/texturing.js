@@ -201,7 +201,7 @@ export async function applyTextures(theme, texture_select, selector){
         if (!isDefaultSelected){
             if (!nonCassatOptionExists) {
                 console.log('applyTextures: Добавляем опцию "без наложения цвета"');
-                const option = new Option("без наложения цвета", "non_cassat");               
+                const option = new Option("без наложения цвета/non cassat", "non_cassat");               
                 // Добавляем опцию в конец списка
                 if (selector.options.length > 0) {
                     selector.add(option, selector.options.length);

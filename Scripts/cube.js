@@ -822,9 +822,9 @@ function isCubeSolved(debugMode = false) {
             Math.abs(dynamicPos.y - staticPos.y) > posTolerance ||
             Math.abs(dynamicPos.z - staticPos.z) > posTolerance
         ) {
-            console.warn(`Позиции не совпадают для ${dynamicCube.name}:`);
-            console.warn(`Dynamic: [${dynamicPos.x.toFixed(3)}, ${dynamicPos.y.toFixed(3)}, ${dynamicPos.z.toFixed(3)}]`);
-            console.warn(`Static: [${staticPos.x.toFixed(3)}, ${staticPos.y.toFixed(3)}, ${staticPos.z.toFixed(3)}]`);
+            // console.warn(`Позиции не совпадают для ${dynamicCube.name}:`);
+            // тест console.warn(`Dynamic: [${dynamicPos.x.toFixed(3)}, ${dynamicPos.y.toFixed(3)}, ${dynamicPos.z.toFixed(3)}]`);
+            // console.warn(`Static: [${staticPos.x.toFixed(3)}, ${staticPos.y.toFixed(3)}, ${staticPos.z.toFixed(3)}]`);
             isSolved = false;
             unsolvedObjects.push(`Позиции не совпадают для ${dynamicCube.name}: Dynamic=[${dynamicPos.x.toFixed(3)}, ${dynamicPos.y.toFixed(3)}, ${dynamicPos.z.toFixed(3)}], Static=[${staticPos.x.toFixed(3)}, ${staticPos.y.toFixed(3)}, ${staticPos.z.toFixed(3)}]`);
         }
@@ -836,9 +836,9 @@ function isCubeSolved(debugMode = false) {
             const angleTolerance = 0.01; // Радианы
             const angleDiff = dynamicQuat.angleTo(staticQuat);
             if (angleDiff > angleTolerance) {
-                console.warn(`Кватернионы не совпадают для ${dynamicCube.name}:`);
-                console.warn(`Dynamic: [${dynamicQuat.x.toFixed(3)}, ${dynamicQuat.y.toFixed(3)}, ${dynamicQuat.z.toFixed(3)}, ${dynamicQuat.w.toFixed(3)}]`);
-                console.warn(`Static: [${staticQuat.x.toFixed(3)}, ${staticQuat.y.toFixed(3)}, ${staticQuat.z.toFixed(3)}, ${staticQuat.w.toFixed(3)}]`);
+                // console.warn(`Кватернионы не совпадают для ${dynamicCube.name}:`);
+                // тест2 console.warn(`Dynamic: [${dynamicQuat.x.toFixed(3)}, ${dynamicQuat.y.toFixed(3)}, ${dynamicQuat.z.toFixed(3)}, ${dynamicQuat.w.toFixed(3)}]`);
+                // console.warn(`Static: [${staticQuat.x.toFixed(3)}, ${staticQuat.y.toFixed(3)}, ${staticQuat.z.toFixed(3)}, ${staticQuat.w.toFixed(3)}]`);
                 isSolved = false;
                 unsolvedObjects.push(`Кватернионы не совпадают для ${dynamicCube.name}: Dynamic=[${dynamicQuat.x.toFixed(3)}, ${dynamicQuat.y.toFixed(3)}, ${dynamicQuat.z.toFixed(3)}, ${dynamicQuat.w.toFixed(3)}], Static=[${staticQuat.x.toFixed(3)}, ${staticQuat.y.toFixed(3)}, ${staticQuat.z.toFixed(3)}, ${staticQuat.w.toFixed(3)}]`);
             }
@@ -854,10 +854,10 @@ function isCubeSolved(debugMode = false) {
 
     if (isSolved) {
         console.log('✅ Кубик собран по позициям и кватернионам!');
-        console.log('exitMenu:', exitMenu)
+        // console.log('exitMenu:', exitMenu)
         exitMenu === false ? updateProgressBar(100) : updateProgressBar(0); 
     } else {
-        console.warn('❌ Кубик не собран.');
+        // console.warn('❌ Кубик не собран.');
     }
 
     return debugMode ? { isSolved, unsolvedObjects } : isSolved;
