@@ -191,7 +191,7 @@ export function updateHelpContent(){
     // Получаем базовый перевод "Управление кубиком" из глобальной функции t
     // Предположим, в translations.js у вас есть ключ 'cube_control_base'
     let baseTitle = window.t('cube_control_base'); // Используем глобальную функцию
-    console.warn(`baseT: ${baseTitle}`)
+    // console.warn(`baseT: ${baseTitle}`)
 
     let templateKey; // шаблон подсказки
 
