@@ -1,0 +1,358 @@
+/* styles/reset.css */
+/* 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4) */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margins and paddings */
+body,
+h1, h2, h3, h4, h5, h6,
+p, blockquote, pre,
+dl, dd, ol, ul,
+fieldset, legend,
+figure,
+hr {
+  margin: 0;
+  padding: 0;
+}
+
+/* 3. Use a more readable tab size. */
+html {
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+
+/* 4. Correct the line height in all browsers. */
+body {
+  line-height: 1.5;
+}
+
+/* 5. Use a more readable font. */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* Или оставьте вашу настройку шрифта */
+}
+
+/* 6. Make images easier to work with */
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 7. Remove tap highlights */
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 8. Ensure all text elements inherit the correct font styles */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+/* 9. Normalize `sub` and `sup` elements */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* 10. Remove default focus outlines on elements that cannot be focused */
+*[tabindex="-1"]:focus:not(:focus-visible) {
+  outline: 0 !important;
+}
+
+/* 11. Ensure horizontal rules are visible by default */
+hr {
+  border: 0;
+  border-top: 1px solid;
+  color: inherit;
+  height: 0;
+  overflow: visible;
+}
+
+/* 12. Remove default button styles */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  /* Убираем стандартный внешний вид для некоторых браузеров */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* 13. Remove default list styling */
+ol,
+ul {
+  list-style: none;
+}
+
+/* 14. Remove default quotes */
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+}
+
+/* 15. Reset table styles */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption {
+  text-align: left;
+}
+
+td,
+th {
+  vertical-align: top;
+}
+
+th {
+  text-align: left;
+  font-weight: bold;
+}
+
+/* 16. Normalize form elements */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/* 17. Normalize `details` and `summary` */
+details,
+summary {
+  display: block;
+}
+
+summary {
+  display: list-item;
+}
+
+/* 18. Normalize `dialog` */
+dialog {
+  background-color: inherit;
+  border: solid;
+  color: inherit;
+  height: -moz-fit-content;
+  height: -webkit-fit-content;
+  height: fit-content;
+  left: 0;
+  margin: auto;
+  padding: 1em;
+  position: absolute;
+  right: 0;
+  width: -moz-fit-content;
+  width: -webkit-fit-content;
+  width: fit-content;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* 19. Normalize `progress` */
+progress {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+/* 20. Normalize `template` */
+template {
+  display: none;
+}
+
+/* 21. Normalize `iframe` */
+iframe {
+  border: 0;
+}
+
+/* 22. Normalize `embed` and `object` */
+embed,
+object {
+  display: block;
+}
+
+/* 23. Normalize `audio` and `video` */
+audio,
+video {
+  display: inline-block;
+}
+
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/* 24. Normalize `area`, `base`, `datalist`, `head`, `link`, `meta`, `noscript`, `param`, `source`, `style`, `title` */
+area,
+base,
+datalist,
+head,
+link,
+meta,
+noscript,
+param,
+source,
+style,
+title {
+  display: none;
+}
+
+/* 25. Normalize `canvas` */
+canvas {
+  display: inline-block;
+}
+
+/* 26. Normalize `slot` */
+slot {
+  display: contents;
+}
+
+/* 27. Normalize `time` */
+time {
+  display: contents;
+}
+
+/* 28. Normalize `data` */
+data {
+  display: contents;
+}
+
+/* 29. Normalize `wbr` */
+wbr {
+  display: contents;
+}
+
+/* 30. Normalize `ruby`, `rt`, `rp` */
+ruby,
+rt,
+rp {
+  display: contents;
+}
+
+/* 31. Normalize `bdi`, `bdo` */
+bdi,
+bdo {
+  display: contents;
+}
+
+/* 32. Normalize `mark` */
+mark {
+  background-color: transparent;
+  color: inherit;
+}
+
+/* 33. Normalize `kbd`, `samp`, `code`, `var`, `pre` */
+kbd,
+samp,
+code,
+var,
+pre {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/* 34. Normalize `abbr` */
+abbr[title] {
+  text-decoration: underline dotted;
+}
+
+/* 35. Normalize `dfn` */
+dfn {
+  font-style: italic;
+}
+
+/* 36. Normalize `ins` and `del` */
+ins {
+  text-decoration: underline;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+/* 37. Normalize `small` */
+small {
+  font-size: 80%;
+}
+
+/* 38. Normalize `strong`, `b` */
+strong,
+b {
+  font-weight: bolder;
+}
+
+/* 39. Normalize `em`, `i` */
+em,
+i {
+  font-style: italic;
+}
+
+/* 40. Normalize `sub`, `sup` (already handled above) */
+
+/* 41. Normalize `u` */
+u {
+  text-decoration: underline;
+}
+
+/* 42. Normalize `s` */
+s {
+  text-decoration: line-through;
+}
+
+/* 43. Normalize `address` */
+address {
+  font-style: normal;
+}
+
+/* 44. Normalize `main` */
+main {
+  display: block;
+}
