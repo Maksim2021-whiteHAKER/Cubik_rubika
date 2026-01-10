@@ -563,7 +563,7 @@ button, .control-btn {
 /* Адаптация для мобильных устройств */
 @media (max-width: 768px) {
     .main-menu {
-      width: 90%;
+      width: 100%;
       max-width: unset;
       padding: 1.5rem;
     }
@@ -682,7 +682,7 @@ button, .control-btn {
     .main-menu {
       padding: 1rem;
       overflow-y: auto;
-      max-height: 90vh;
+      max-height: 100%;
     }
     
     .title {
