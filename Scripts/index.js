@@ -13,6 +13,7 @@ let stats;
 let textureLoader = new THREE.TextureLoader();
 let texture_grass = textureLoader.load("https://threejs.org/examples/textures/terrain/grasslight-big.jpg");
 document.getElementById('menu_settings').style.display = 'none';
+let orbitControlSet = document.getElementById('OrbitConSet')
 let isDragging = false;
 let startObject = null;
 const raycaster = new THREE.Raycaster();
@@ -52,8 +53,14 @@ const rotationDelay = 150;
 const MOUSE_CONTROL_SENSITIVITY = 5;
 
 // переменные для телефона
-let touchStartX, touchStartY;
 let currentTouches = [];
+let isPinching = false;
+let isOrbiting = false;
+let initialPinchDistance = 0;
+let initialOrbitCenter = new THREE.Vector2();
+let initialOrbitRotation = 0;
+let initialOrbitDistance = 0;
+let initialOrbitTarget = new THREE.Vector3();
 
 export function getDeviceType(){
     if (navigator.maxTouchPoints > 0){
@@ -500,14 +507,9 @@ document.addEventListener('keydown', async (event) => {
     let off_on;
     if (!gameState.active) return
     if (event.code === 'KeyO') {
-        if (controls.enabled) {
-            controls.enabled = false;
-            off_on = 'выкл';
-        } else {
-            controls.enabled = true;
-            off_on = 'вкл';
-        }
-        document.getElementById('OrbitConSet').innerHTML = off_on;
+        controls.enabled = !controls.enabled;
+        off_on = controls.enabled ? 'вкл' : 'выкл';
+        orbitControlSet.innerHTML = off_on;
     } else if (event.code === 'KeyR' && CurrentActiveCam === 'observer') {
         camera.position.set(15, 15, 15);
         camera.lookAt(0, 5, 0);
@@ -628,63 +630,192 @@ function setupTriggerInteraction(triggerZones) {
 
     window.addEventListener('touchstart', (event) => {
         if (!gameState.active) return;
-        
-        const touch = event.touches[0];
-        const mouseCoords = new THREE.Vector2(
-            (touch.clientX / window.innerWidth) * 2 - 1, 
-            -((touch.clientY / window.innerHeight) * 2 - 1))
 
-        raycaster.setFromCamera(mouseCoords, camera);
-        const staticObjects = getstaticObjects();
+        const touchLen = event.touches.length;
 
-        const intersects = raycaster.intersectObjects(staticObjects, true);
+        // автовкл орбиты
+        if (isTouchDevice && touchLen > 1 && !controls.enabled){
+            console.log('запуск авто-вкл орбиты')
+            controls.enabled = true;
+            orbitControlSet.innerText = 'вкл';
+        }
 
-        if (intersects.length > 0) {
-            const intersect = intersects[0];
-            startObject = intersect.object;
-            selectedCube = startObject.parent;
+        if (touchLen === 3 && controls.enabled){
+            hideArrows();
+            isOrbiting = true;
+            isPinching = false;
+            isMouseDown = false;
 
-            if (getControlMode() === 'control_touch_trigger') {
-                showArrows(selectedCube, mouseCoords);
-            } else if (getControlMode() === 'control_touch_move'){
-                isMouseDown = true;
-                rotationInProgress = false;
-                selectedCubeForMouse = selectedCube;
-                startX = touch.clientX;
-                startY = touch.clientY;
-                console.log(document.body)
-                document.body.classList.add('dragging');
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            initialOrbitCenter.set(
+                (touch1.clientX+touch2.clientX) / 2,
+                (touch1.clientY+touch2.clientY) / 2
+            );
+
+            initialOrbitTarget.copy(controls.target);
+
+            initialOrbitDistance = controls.object.position.distanceTo(controls.target);
+
+            const directionToCamera = new THREE.Vector3().subVectors(controls.object.position, controls.target).normalize();
+            initialOrbitRotation = Math.atan2(directionToCamera.x, directionToCamera.z); // Угол в горизонтальной плоскости
+
+            console.log('Начата орбита 3 пальцами');
+            return; // Не обрабатываем другие жесты одновременно
+        }
+
+        if (touchLen === 1) {
+            const touch = event.touches[0];
+            const mouseCoords = new THREE.Vector2(
+                (touch.clientX / window.innerWidth) * 2 - 1,
+                -((touch.clientY / window.innerHeight) * 2 - 1))
+
+            raycaster.setFromCamera(mouseCoords, camera);
+            const staticObjects = getstaticObjects();
+
+            const intersects = raycaster.intersectObjects(staticObjects, true);
+
+            if (intersects.length > 0) {
+                const intersect = intersects[0];
+                startObject = intersect.object;
+                selectedCube = startObject.parent;
+
+                if (getControlMode() === 'control_touch_trigger') {
+                    showArrows(selectedCube, mouseCoords);
+                } else if (getControlMode() === 'control_touch_move') {
+                    isMouseDown = true;
+                    rotationInProgress = false;
+                    selectedCubeForMouse = selectedCube;
+                    startX = touch.clientX;
+                    startY = touch.clientY;
+                    console.log(document.body)
+                    document.body.classList.add('dragging');
+                    hideArrows();
+                }
+            } else {
                 hideArrows();
             }
-        } else {
+
+            currentTouches = Array.from(event.touches);
+        } else if (touchLen === 2 && controls.enabled){
+            // Логика zoom
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            initialPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+            isPinching = true;
+            isOrbiting = false;
+            isMouseDown = false;
             hideArrows();
+            console.log('начат зум (два пальца)');
         }
-        
-        currentTouches = Array.from(event.touches);
     });
 
     window.addEventListener('touchmove', (event) => {
         if (!gameState.active) return;
-        
-        const touch = event.touches[0];
-        const mouse = new THREE.Vector2();
-        mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
 
-        if (getControlMode() === 'control_touch_trigger') {
-            control_arrows_mode({ clientX: touch.clientX, clientY: touch.clientY });
-        } else if (getControlMode() === 'control_touch_move' && isMouseDown) {
-            control_mouseRotation_mode({clientX: touch.clientX, clientY: touch.clientY});
-            hideArrows()
+        const touchLen = event.touches.length;
+
+        // обработка вращения орбиты (3 пальца)
+        if (isOrbiting && touchLen === 3) {
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            const currentOrbitCenter = new THREE.Vector2(
+                (touch1.clientX + touch2.clientX) / 2,
+                (touch1.clientY + touch2.clientY) / 2
+            );
+
+            // Рассчитываем сдвиг центра и изменение угла
+            const deltaX = currentOrbitCenter.x - initialOrbitCenter.x;
+            const deltaY = currentOrbitCenter.y - initialOrbitCenter.y;
+
+            // Масштабируем сдвиг для чувствительности (подобно mouse-drag)
+            const sensitivity = 0.005; // Подбирается экспериментально
+            const deltaPhi = -deltaX * sensitivity; // Вращение вокруг Y (лево/право)
+            const deltaTheta = -deltaY * sensitivity; // Вращение вокруг X (вверх/вниз)
+
+            controls.rotateLeft(deltaPhi);
+            controls.rotateUp(deltaTheta);
+            controls.update();
+
+            initialOrbitCenter.copy(currentOrbitCenter);
         }
-        
-        currentTouches = Array.from(event.touches);
+
+        if (isPinching && touchLen === 2 && controls.enabled) {
+            const touch1 = event.touches[0];
+            const touch2 = event.touches[1];
+            const currentPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+            const scalaDelta = currentPinchDistance / initialPinchDistance;
+
+            // Применяем зум через OrbitControls
+            // controls.dolly(scaleDelta); // Увеличивает/уменьшает приближение
+            // controls.update(); // Обновляем камеру после зума
+
+            // Или, более грубый способ (меняет FOV):
+            // camera.fov /= scaleDelta; // Уменьшаем fov -> приближение
+            // camera.fov = Math.max(controls.minPolarAngle, Math.min(controls.maxPolarAngle, camera.fov)); // Ограничиваем fov
+            // camera.updateProjectionMatrix();
+
+            // Лучше использовать dolly
+            controls.dolly(scalaDelta);
+            controls.update();
+
+            // Обновляем initialPinchDistance для следующего шага
+            initialPinchDistance = currentPinchDistance;
+            return; // Не обрабатываем другие жесты одновременно
+        }
+
+        if (!isPinching && !isOrbiting && touchLen >= 1) {
+
+            const touch = event.touches[0];
+            const mouse = new THREE.Vector2();
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+
+            if (getControlMode() === 'control_touch_trigger') {
+                control_arrows_mode({ clientX: touch.clientX, clientY: touch.clientY });
+            } else if (getControlMode() === 'control_touch_move' && isMouseDown) {
+                control_mouseRotation_mode({ clientX: touch.clientX, clientY: touch.clientY });
+                hideArrows()
+            }
+
+            currentTouches = Array.from(event.touches);
+        }
     });
 
     window.addEventListener('touchend', (event) => {
         if (!gameState.active) return;
+
+        if (isOrbiting) {
+            // Если осталось меньше 3 пальцев, останавливаем орбиту
+            if (event.touches.length < 3) {
+                isOrbiting = false;
+                console.log('Орбита 3 пальцами завершена');
+            }
+            // Не возвращаемся, чтобы обработать другие состояния, если они были одновременно
+        }
+        // --- КОНЕЦ НОВОГО ---
+    
+        // --- ОБНОВЛЕНО: Обработка окончания зума ---
+        if (isPinching) {
+            // Если осталось меньше 2 пальцев, останавливаем зум
+            if (event.touches.length < 2) {
+                isPinching = false;
+                initialPinchDistance = 0;
+                console.log('Зум 2 пальцами завершён');
+            }
+            // Не возвращаемся, чтобы обработать другие состояния
+        }
+        // --- конец обновления
+
+        // автовыкл орбиты
+        if (event.touches.length < 2 && controls.enabled){
+            controls.enabled = false;
+            orbitControlSet.innerText = 'выкл';
+            console.log(`авто-выкл орбиты: касаний ${event.touches.length}`);
+        }
+
         
-        if ((getControlMode() === 'control_touch_trigger') && selectedCube) {
+        if ((!isPinching && !isOrbiting && getControlMode() === 'control_touch_trigger') && selectedCube) {
             const touch = event.changedTouches[0];
             const mouse = new THREE.Vector2();
             mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
@@ -701,7 +832,7 @@ function setupTriggerInteraction(triggerZones) {
             }
 
             hideArrows();
-        } else if (getControlMode() === 'control_touch_move') {
+        } else if (!isPinching && !isOrbiting && getControlMode() === 'control_touch_move') {
             isMouseDown = false;
             rotationInProgress = false;
             selectedCubeForMouse = null;
@@ -801,6 +932,10 @@ function startworld() {
             mesh.position.copy(body.position);
             mesh.quaternion.copy(body.quaternion);
         });
+
+        if (controls.enabled){
+            controls.update();
+        }
 
         const pos = camera.position;
         const rot = camera.rotation;
