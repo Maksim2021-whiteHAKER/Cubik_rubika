@@ -411,7 +411,18 @@ p {
     
 }
 
-/* Добавьте эти стили в ваш существующий CSS */
+.sound_setting{
+  font-size: 1.6rem;
+  user-select: none;
+}
+
+@media (max-width: 1200px) {
+  .sound_setting {
+    font-size: 1.1rem;
+  }
+  
+}
+
 @media (max-width: 768px) {
     #cameraInfo {
         font-size: 12px;
@@ -435,6 +446,10 @@ p {
         width: 50px;
         height: 50px;
         font-size: 16px;
+    }
+
+    .sound_setting {
+      font-size: 1rem;
     }
 }
 

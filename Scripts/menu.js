@@ -63,7 +63,6 @@ const sound_pic = {
     BOTH_ON: '🎶'
 }
 musicBtn.innerHTML = sound_pic.BOTH_ON
-musicBtn.style.fontSize = '20px';
 export let state_sounds = sounds.BOTH_ON;
 
 document.body.appendChild(blurMenu)
