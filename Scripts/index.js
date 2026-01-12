@@ -132,6 +132,7 @@ function createMobileControls(){
     mobileControls.innerHTML = `
         <div class="mobile-control-btn" id="mobile-up">▼</div>
         <div class="mobile-control-btn" id="mobile-left">◄</div>
+        <div class="mobile-control-btn" id="mobile-orbit">💫</div>
         <div class="mobile-control-btn" id="mobile-down">▲</div>
         <div class="mobile-control-btn" id="mobile-right">►</div>
     `;
@@ -139,6 +140,10 @@ function createMobileControls(){
 
     document.getElementById('mobile-up').addEventListener('touchstart', () => handleMobileControl('up'));
     document.getElementById('mobile-left').addEventListener('touchstart', () => handleMobileControl('left'));
+    document.getElementById('mobile-orbit').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        orbitMobileControl();
+    })
     document.getElementById('mobile-down').addEventListener('touchstart', () => handleMobileControl('down'));
     document.getElementById('mobile-right').addEventListener('touchstart', () => handleMobileControl('right'));
 
@@ -167,6 +172,22 @@ function createMobileControls(){
             font-size: 20px;
             user-select: none;
             touch-action: none;
+            margin: 5px;
+            transition all 0.2s;
+            border: solid 1.5px transparent
+        }
+
+        #mobile-orbit {
+            background-color: rgba(155, 89, 182, 0.7);          
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+        }
+
+        #mobile-orbit.orbit-active {
+            background-color: rgba(231, 76, 60, 0.9);
+            border-color: white;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
         }
         
         @media (max-width: 768px) {
@@ -178,6 +199,8 @@ function createMobileControls(){
         }
     `;
     document.head.appendChild(style);
+
+    updateOrbitButton()
 }
 
 function handleMobileControl(direction) {
@@ -206,6 +229,78 @@ function handleMobileControl(direction) {
             rotateWholeCube(new THREE.Vector3(0, 0, 1), Math.random() > 0.5);
             break;
     }
+}
+
+function orbitMobileControl() {
+    if (!gameState.active) return;
+    
+    // Переключаем состояние орбиты
+    controls.enabled = !controls.enabled;
+    orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
+    
+    // Обновляем внешний вид кнопки
+    updateOrbitButton();
+    
+    // Показываем уведомление
+    showOrbitNotification(controls.enabled);
+    
+    // Скрываем стрелки при включении орбиты
+    if (controls.enabled) {
+        hideArrows();
+    }
+    
+    console.log(`OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+}
+
+function updateOrbitButton() {
+    const orbitBtn = document.getElementById('mobile-orbit');
+    if (!orbitBtn) return;
+    
+    if (controls.enabled) {
+        orbitBtn.textContent = '✖';
+        orbitBtn.classList.add('orbit-active');
+        orbitBtn.title = 'Выключить управление камерой';
+    } else {
+        orbitBtn.textContent = '💫';
+        orbitBtn.classList.remove('orbit-active');
+        orbitBtn.title = 'Включить управление камерой';
+    }
+}
+
+function showOrbitNotification(isEnabled) {
+    // Создаем временное уведомление
+    const notification = document.createElement('div');
+    notification.innerHTML = isEnabled ? 
+        `Управление камерой включено 🔄 <br> Camera control is on` : 
+        `Управление камерой выключено <br> Camera control is off`;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-size: 16px;
+        z-index: 1000;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        text-align: center;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Плавно исчезаем
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 1500);
 }
 
 function resetMouse(){
@@ -504,12 +599,9 @@ function hideArrows() {
 document.addEventListener('keydown', async (event) => {
     const blurM = document.getElementById('blurmenu')
     if (blurM && blurM.style.display === 'block') { return; }
-    let off_on;
     if (!gameState.active) return
     if (event.code === 'KeyO') {
-        controls.enabled = !controls.enabled;
-        off_on = controls.enabled ? 'вкл' : 'выкл';
-        orbitControlSet.innerHTML = off_on;
+        orbitMobileControl();
     } else if (event.code === 'KeyR' && CurrentActiveCam === 'observer') {
         camera.position.set(15, 15, 15);
         camera.lookAt(0, 5, 0);
@@ -633,35 +725,47 @@ function setupTriggerInteraction(triggerZones) {
 
         const touchLen = event.touches.length;
 
-        // автовкл орбиты
-        if (isTouchDevice && touchLen > 1 && !controls.enabled){
-            console.log('запуск авто-вкл орбиты')
-            controls.enabled = true;
-            orbitControlSet.innerText = 'вкл';
+        // Жест тремя пальцами - переключает орбиту
+        if (touchLen === 3) {
+            event.preventDefault();
+
+            // Только если не в процессе других действий
+            if (!isPinching && !isOrbiting && !isMouseDown) {
+                // Переключаем орбиту
+                controls.enabled = !controls.enabled;
+                orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
+
+                // Обновляем кнопку
+                updateOrbitButton();
+
+                // Показываем уведомление
+                showOrbitNotification(controls.enabled);
+
+                // Скрываем стрелки при включении
+                if (controls.enabled) {
+                    hideArrows();
+                }
+
+                // Блокируем другие жесты на короткое время
+                isOrbiting = true;
+                setTimeout(() => {
+                    isOrbiting = false;
+                }, 500);
+
+                console.log(`Жест 3 пальцев: OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+                return;
+            }
         }
 
-        if (touchLen === 3 && controls.enabled){
+        
+        // Автоматическое включение орбиты при 2+ пальцах (опционально)
+        if (isTouchDevice && touchLen >= 2 && !controls.enabled) {
+            console.log('автовкл орбиты при 2+ пальцах');
+            controls.enabled = true;
+            orbitControlSet.innerText = 'вкл';
+            updateOrbitButton();
+            showOrbitNotification(true);
             hideArrows();
-            isOrbiting = true;
-            isPinching = false;
-            isMouseDown = false;
-
-            const touch1 = event.touches[0];
-            const touch2 = event.touches[1];
-            initialOrbitCenter.set(
-                (touch1.clientX+touch2.clientX) / 2,
-                (touch1.clientY+touch2.clientY) / 2
-            );
-
-            initialOrbitTarget.copy(controls.target);
-
-            initialOrbitDistance = controls.object.position.distanceTo(controls.target);
-
-            const directionToCamera = new THREE.Vector3().subVectors(controls.object.position, controls.target).normalize();
-            initialOrbitRotation = Math.atan2(directionToCamera.x, directionToCamera.z); // Угол в горизонтальной плоскости
-
-            console.log('Начата орбита 3 пальцами');
-            return; // Не обрабатываем другие жесты одновременно
         }
 
         if (touchLen === 1) {
@@ -697,7 +801,8 @@ function setupTriggerInteraction(triggerZones) {
             }
 
             currentTouches = Array.from(event.touches);
-        } else if (touchLen === 2 && controls.enabled){
+
+        } else if (touchLen === 2 && controls.enabled) {
             // Логика zoom
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
@@ -785,36 +890,11 @@ function setupTriggerInteraction(triggerZones) {
     window.addEventListener('touchend', (event) => {
         if (!gameState.active) return;
 
-        if (isOrbiting) {
-            // Если осталось меньше 3 пальцев, останавливаем орбиту
-            if (event.touches.length < 3) {
-                isOrbiting = false;
-                console.log('Орбита 3 пальцами завершена');
-            }
-            // Не возвращаемся, чтобы обработать другие состояния, если они были одновременно
-        }
-        // --- КОНЕЦ НОВОГО ---
-    
-        // --- ОБНОВЛЕНО: Обработка окончания зума ---
-        if (isPinching) {
-            // Если осталось меньше 2 пальцев, останавливаем зум
-            if (event.touches.length < 2) {
-                isPinching = false;
-                initialPinchDistance = 0;
-                console.log('Зум 2 пальцами завершён');
-            }
-            // Не возвращаемся, чтобы обработать другие состояния
-        }
-        // --- конец обновления
-
-        // автовыкл орбиты
-        if (event.touches.length < 2 && controls.enabled){
-            controls.enabled = false;
-            orbitControlSet.innerText = 'выкл';
-            console.log(`авто-выкл орбиты: касаний ${event.touches.length}`);
+        // Если был жест 3 пальцев
+        if (isOrbiting && event.touches.length < 3) {
+            isOrbiting = false;
         }
 
-        
         if ((!isPinching && !isOrbiting && getControlMode() === 'control_touch_trigger') && selectedCube) {
             const touch = event.changedTouches[0];
             const mouse = new THREE.Vector2();
@@ -838,9 +918,9 @@ function setupTriggerInteraction(triggerZones) {
             selectedCubeForMouse = null;
             document.body.classList.remove('dragging');
             hideArrows();
-        }         
+        }
         currentTouches = Array.from(event.touches);
-    });    
+    });
 }
 
 function control_arrows_mode(event) {
