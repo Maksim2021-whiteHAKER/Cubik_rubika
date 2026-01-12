@@ -18,6 +18,7 @@ const music = document.getElementById('background_music');
 const musicBtn = document.getElementById('sound_setting');
 export const selector_theme = document.getElementById('theme-select');
 const selector_color_theme = document.getElementById('color-theme-select')
+const mcTextPhoneEl = document.getElementById('mcTextPhone');
 blurMenu.id = 'blurmenu';
 pauseMenu.id = 'pause-menu';
 pauseMenu.innerHTML = `
@@ -186,11 +187,33 @@ export function updateHelpContent(){
 
     const list = document.getElementById('cube-control-list');
     const title = document.getElementById('cube-control-title'); // Получаем элемент заголовка
+    const mcTextsId = ['mcText4', 'mcText5', 'mcText6', 'mcText7', 'mcText8', 'mcText9'];
+
+    mcTextsId.forEach(id => {
+        const elem = document.getElementById(id);
+        if (elem){
+            if (deviceType === 'touch'){
+                elem.style.display = 'none';
+            } else {
+                elem.style.display = 'list-item';
+            }
+        }
+    })
 
     // Получаем базовый перевод "Управление кубиком" из глобальной функции t
     // Предположим, в translations.js у вас есть ключ 'cube_control_base'
     let baseTitle = window.t('cube_control_base'); // Используем глобальную функцию
     // console.warn(`baseT: ${baseTitle}`)
+
+    // помощь для телефона
+    if (mcTextPhoneEl) {
+        if (deviceType === 'touch') {
+            mcTextPhoneEl.innerHTML = window.t('mcTextPhone');
+            mcTextPhoneEl.style.display = 'list-item';
+        } else {
+            mcTextPhoneEl.style.display = 'none';
+        }
+    }
 
     let templateKey; // шаблон подсказки
 
