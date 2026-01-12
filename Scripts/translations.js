@@ -169,30 +169,30 @@ const translations = {
         "tr": "🛠 Ana Kontroller 🛠"
     },
     "dls": { // <-- id элемента <li>
-        "ru": "🔴ПКМ - правая кнопка мыши, ЛКМ - левая кнопка мыши",
-        "sr": "🔴Десни клик - десни тастер миша, Леви клик - леви тастер миша",
-        "en": "🔴RMB - Right Mouse Button, LMB - Left Mouse Button",
-        "es": "🔴RMB - Botón Derecho del Ratón, LMB - Botón Izquierdo del Ratón",
-        "zh-CN": "🔴RMB - 鼠标右键, LMB - 鼠标左键",
-        "fr": "🔴RMB - Bouton droit de la souris, LMB - Bouton gauche de la souris",
-        "de": "🔴RMB - Rechte Maustaste, LMB - Linke Maustaste",
-        "ja": "🔴RMB - マウス右ボタン, LMB - マウス左ボタン",
-        "pt-BR": "🔴RMB - Botão Direito do Mouse, LMB - Botão Esquerdo do Mouse",
-        "ar": "🔴RMB - زر الماوس الأيمن، LMB - زر الماус الأيسر",
-        "tr": "🔴SAK - Sağ Fare Düğmesi, LAK - Sol Fare Düğmesi"
+        "ru": "◽ПКМ - правая кнопка мыши, ЛКМ - левая кнопка мыши",
+        "sr": "◽Десни клик - десни тастер миша, Леви клик - леви тастер миша",
+        "en": "◽RMB - Right Mouse Button, LMB - Left Mouse Button",
+        "es": "◽RMB - Botón Derecho del Ratón, LMB - Botón Izquierdo del Ratón",
+        "zh-CN": "◽RMB - 鼠标右键, LMB - 鼠标左键",
+        "fr": "◽RMB - Bouton droit de la souris, LMB - Bouton gauche de la souris",
+        "de": "◽RMB - Rechte Maustaste, LMB - Linke Maustaste",
+        "ja": "◽RMB - マウス右ボタン, LMB - マウス左ボタン",
+        "pt-BR": "◽RMB - Botão Direito do Mouse, LMB - Botão Esquerdo do Mouse",
+        "ar": "◽RMB - زر الماوس الأيمن، LMB - زر الماус الأيسر",
+        "tr": "◽SAK - Sağ Fare Düğmesi, LAK - Sol Fare Düğmesi"
     },
     "dls2": { // <-- id элемента <li>
-        "ru": "🔴Раскладка для горячих клавиш кнопка одна (rus/eng)",
-        "sr": "🔴Дугме за пречице је исто (руск/енгл)", // Примерный перевод
-        "en": "🔴Hotkey button is the same (rus/eng)",
-        "es": "🔴El botón de atajo es el mismo (rus/eng)",
-        "zh-CN": "🔴热键按钮相同 (rus/eng)",
-        "fr": "🔴Le bouton de raccourci est le même (rus/eng)",
-        "de": "🔴Hotkey-Taste ist dieselbe (rus/eng)",
-        "ja": "🔴ホットキーのボタンは同じ (rus/eng)",
-        "pt-BR": "🔴O botão de atalho é o mesmo (rus/eng)",
-        "ar": "🔴زر المفتاح السريع هو نفسه (rus/eng)",
-        "tr": "🔴Kısayol tuşu aynıdır (rus/eng)"
+        "ru": "◽Раскладка для горячих клавиш кнопка одна (rus/eng)",
+        "sr": "◽Дугме за пречице је исто (руск/енгл)", // Примерный перевод
+        "en": "◽Hotkey button is the same (rus/eng)",
+        "es": "◽El botón de atajo es el mismo (rus/eng)",
+        "zh-CN": "◽热键按钮相同 (rus/eng)",
+        "fr": "◽Le bouton de raccourci est le même (rus/eng)",
+        "de": "◽Hotkey-Taste ist dieselbe (rus/eng)",
+        "ja": "◽ホットキーのボタンは同じ (rus/eng)",
+        "pt-BR": "◽O botão de atalho é o mesmo (rus/eng)",
+        "ar": "◽زر المفتاح السريع هو نفسه (rus/eng)",
+        "tr": "◽Kısayol tuşu aynıdır (rus/eng)"
     },
     "dls3": { // <-- id элемента <li>
         "ru": "✅ Кубик считается собранным если (верх(⬜), перед(🟩), бок(🟥))",
@@ -820,6 +820,19 @@ const translations = {
         "pt-BR": "Redefinir e sair", // Это правильно
         "ar": "إعادة تعيين والخروج",
         "tr": "Sıfırla ve çık",
+    },
+    "mcTextPhone": {
+        "ru": "◽ Жест одним пальцем - при отключённой орбите — вращение кубика, при включённой — вращение камеры по орбите вокруг кубика.<br>◽ Жест двумя пальцами - автовкл орбиты, масштабирование (зум)<br>◽ Жест тремя пальцами или нажать на кнопку '💫' - переключатель выкл/вкл орбиты",
+        "sr": "◽ Покрет једним прстом - када је орбита искључена: окретање коцке, када је орбита укључена: окретање камере око коцке.<br>◽ Покрет двома прстима - аутоматско укључивање орбите, зум<br>◽ Покрет три прста или додир дугмета '💫' - укљ./искљ. орбиту",
+        "en": "◽ One-finger gesture - when orbit is off: rotate cube, when orbit is on: rotate camera around cube.<br>◽ Two-finger gesture - auto-enable orbit, zoom<br>◽ Three-finger gesture or tap '💫' button - toggle orbit on/off",
+        "es": "◽ Gestualidad de un dedo - con órbita desactivada: girar cubo, con órbita activada: girar cámara alrededor del cubo.<br>◽ Gestualidad de dos dedos - activación automática de órbita, zoom<br>◽ Gestualidad de tres dedos o tocar el botón '💫' - alternar órbita on/off",
+        "zh-CN": "◽ 单指手势 - 轨道关闭时：旋转魔方，轨道开启时：围绕魔方旋转相机。<br>◽ 双指手势 - 自动开启轨道，缩放，<br>◽ 三指手势或点击 '💫' 按钮 - 切换轨道 开/关",
+        "fr": "◽ Gestuelle d'un doigt - lorsque l'orbite est désactivée : rotation du cube, lorsque l'orbite est activée : rotation de la caméra autour du cube.<br>◽ Gestuelle de deux doigts - activation automatique de l'orbite, zoom,<br>◽ Gestuelle de trois doigts ou appui sur le bouton '💫' - basculer l'orbite activée/désactivée",
+        "de": "◽ Ein-Finger-Geste - bei deaktivierter Umlaufbahn: Würfel drehen, bei aktivierter Umlaufbahn: Kamera um Würfel drehen.<br>◽ Zwei-Finger-Geste - Umlaufbahn automatisch aktivieren, Zoom<br>◽ Drei-Finger-Geste oder '💫'-Taste drücken - Umlaufbahn ein/aus schalten",
+        "ja": "◽ 1本指のジェスチャー - 軌道がオフのとき：キューブを回転、軌道がオンのとき：キューブの周りをカメラが回転。<br>◽ 2本指のジェスチャー - 軌道を自動的に有効化、ズーム、<br>◽ 3本指のジェスチャーまたは'💫'ボタンをタップ - 軌道のオン/オフ切り替え",
+        "pt-BR": "◽ Gestualidade com um dedo - com órbita desligada: girar cubo, com órbita ligada: girar câmera em torno do cubo.<br>◽ Gestualidade com dois dedos - ativar órbita automaticamente, zoom<br>◽ Gestualidade com três dedos ou tocar no botão '💫' - alternar órbita ligar/desligar",
+        "ar": "◽ إيماءة بإصبع واحد - عندما تكون المدار مُعطلًا: تدوير المكعب، عندما يكون المدار مُفعلًا: تدوير الكاميرا حول المكعب.<br>◽ إيماءة بإصبعين - تفعيل المدار تلقائيًا، تكبير/تصغير،<br>◽ إيماءة بثلاثة أصابع أو نقر زر '💫' - تبديل تشغيل/إيقاف المدار",
+        "tr": "◽ Tek parmak hareketi - yörünge kapalıyken: küpü döndür, yörünge açıkken: kamerayı küp etrafında döndür.<br>◽ İki parmak hareketi - yörüngeyi otomatik etkinleştir, yakınlaştır<br>◽ Üç parmak hareketi veya '💫' düğmesine dokunun - yörüngeyi aç/kapat",
     }
 };
 

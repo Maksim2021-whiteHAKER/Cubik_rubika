@@ -726,37 +726,35 @@ function setupTriggerInteraction(triggerZones) {
         const touchLen = event.touches.length;
 
         // Жест тремя пальцами - переключает орбиту
-        if (touchLen === 3) {
-            event.preventDefault();
+        if (touchLen === 3) {          
 
             // Только если не в процессе других действий
-            if (!isPinching && !isOrbiting && !isMouseDown) {
-                // Переключаем орбиту
-                controls.enabled = !controls.enabled;
-                orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
 
-                // Обновляем кнопку
-                updateOrbitButton();
+            // Переключаем орбиту
+            controls.enabled = !controls.enabled;
+            orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
 
-                // Показываем уведомление
-                showOrbitNotification(controls.enabled);
+            // Обновляем кнопку
+            updateOrbitButton();
 
-                // Скрываем стрелки при включении
-                if (controls.enabled) {
-                    hideArrows();
-                }
+            // Показываем уведомление
+            showOrbitNotification(controls.enabled);
 
-                // Блокируем другие жесты на короткое время
-                isOrbiting = true;
-                setTimeout(() => {
-                    isOrbiting = false;
-                }, 500);
-
-                console.log(`Жест 3 пальцев: OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
-                return;
+            // Скрываем стрелки при включении
+            if (controls.enabled) {
+                hideArrows();
             }
-        }
 
+            // Блокируем другие жесты на короткое время
+            isOrbiting = true;
+            setTimeout(() => {
+                isOrbiting = false;
+            }, 500);
+
+            console.log(`Жест 3 пальцев: OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+            return;
+
+        }
         
         // Автоматическое включение орбиты при 2+ пальцах (опционально)
         if (isTouchDevice && touchLen >= 2 && !controls.enabled) {
