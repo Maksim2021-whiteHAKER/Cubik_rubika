@@ -58,9 +58,6 @@ let isPinching = false;
 let isOrbiting = false;
 let initialPinchDistance = 0;
 let initialOrbitCenter = new THREE.Vector2();
-let initialOrbitRotation = 0;
-let initialOrbitDistance = 0;
-let initialOrbitTarget = new THREE.Vector3();
 
 export function getDeviceType(){
     if (navigator.maxTouchPoints > 0){
@@ -335,6 +332,22 @@ function syncStaticCube(dynamicCube){
 
 addEventListener('contextmenu', (e) => {e.preventDefault()})
 
+function onWindowResize() { // <-- Отдельная функция
+    // --- ИСПОЛЬЗУЕМ ТЕКУЩИЕ РАЗМЕРЫ ОКНА ---
+    const newWidth = window.innerWidth;
+    const newHeight = window.innerHeight;
+    // --- КОНЕЦ ---
+
+    observerCamera.aspect = newWidth / newHeight;
+    observerCamera.updateProjectionMatrix();
+    cameraPlayer.aspect = newWidth / newHeight;
+    cameraPlayer.updateProjectionMatrix();
+    renderer.setSize(newWidth, newHeight);
+
+    // Опционально: обновить OrbitControls, если камера изменилась
+    // controls.update(); // Обычно не требуется при изменении размера, но можно вызвать
+}
+
 texture_grass.onError = () => {
     console.warn('Не удалось загрузить текстуру травы');
     texture_grass = new THREE.MeshLambertMaterial({ color: 0x00aa00 });
@@ -352,14 +365,6 @@ function initThree() {
     cameraPlayer = new THREE.PerspectiveCamera(60, width / height, 0.5, 1000);
     observerCamera.name = 'observer';
     cameraPlayer.name = 'player';
-
-    window.addEventListener('resize', () => {
-        observerCamera.aspect = width / height;
-        observerCamera.updateProjectionMatrix();
-        cameraPlayer.aspect = width / height;
-        cameraPlayer.updateProjectionMatrix();
-        renderer.setSize(width, height);
-    });
 
     camera = observerCamera;
     camera.position.set(15, 15, 15);
@@ -1001,6 +1006,13 @@ export function getCurrentCam() {
 export function getControlMode() {
     return document.getElementById('theme-select_2')?.value || 'control_arrows';
 }
+
+window.addEventListener('resize', (event) => {
+    console.log('Размер окна или ориентация изменились (resize)!');
+
+    // Ваша функция обновления Three.js
+    onWindowResize(); // Или тот код, что вы используете для resize
+});
 
 function startworld() {
     requestAnimationFrame(startworld);
