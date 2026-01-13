@@ -296,8 +296,8 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             });
 
             _objects.sort((a, b) => a.name.localeCompare(b.name))
-            // console.log('Модель - динамика',_objects)
-            // console.log('Эталлоны ',_staticobjects)
+            console.log('Модель - динамика',_objects)
+            console.log('Эталлоны ',_staticobjects)
 
             // console.log('***Эталонные позиции***');
             referencePositions.forEach((data, name) => {
@@ -457,10 +457,12 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
                 requestAnimationFrame(animateRotation);
             } else {
                 finishRotation();
-                if (!isScrambling && isCubeSolved()){                  
-                    isCubeSolved()
-                    historyrotation = [];
-                    console.log('Куб собран')
+                if (!isScrambling) { // <-- Не обновляем прогресс во время перемешивания
+                    isCubeSolved(); // Вызываем для обновления ProgressBar
+                    if (isCubeSolved()) { // Проверяем, собран ли кубик
+                        historyrotation = [];
+                        console.log('Куб собран');
+                    }
                 }       
                 resolve();
             }
@@ -546,11 +548,13 @@ export async function rotateWholeCube(axis, isCounterclockwise = false) {
                 requestAnimationFrame(animateRotation);
             } else {
                 finishWholeRotation(initialStates);
-                if (!isScrambling && isCubeSolved()){
-                    isCubeSolved();
-                    historyrotation = [];
-                    console.log('Куб собран')
-                }       
+                if (!isScrambling) { // <-- Не обновляем прогресс во время перемешивания
+                    isCubeSolved(); // Вызываем для обновления ProgressBar
+                    if (isCubeSolved()) { // Проверяем, собран ли кубик
+                        historyrotation = [];
+                        console.log('Куб собран');
+                    }
+                }      
                 resolve();
             }
         }
@@ -612,6 +616,11 @@ function finishWholeRotation(initialStates) {
         bodies[0].body.position.copy(new CANNON.Vec3(centerPos.x, centerPos.y, centerPos.z));
         bodies[0].mesh.position.copy(centerPos);
         // Кватернион физического тела не обновляем, так как вращение затрагивает только визуальные кубики
+    }
+
+    if (!isScrambling && gameState.active) {
+        // Используем обновленную логику isCubeSolved
+        isCubeSolved(false);
     }
 }
 
@@ -691,6 +700,12 @@ function finishRotation() {
     if (bodies.length > 0 && bodies[0] && bodies[0].body && bodies[0].mesh){
         bodies[0].body.position.copy(new CANNON.Vec3(0, 5, 0));
         bodies[0].mesh.position.copy(new THREE.Vector3(0, 5, 0));
+    }
+
+
+    if (!isScrambling && gameState.active) {
+        // Используем обновленную логику isCubeSolved
+        isCubeSolved(false);
     }
 }
 
@@ -781,21 +796,29 @@ export function checkCubeSolved(){
 function isCubeSolved(debugMode = false) {
     if (_objects.length !== _staticobjects.length) {
         console.warn(`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`);
-        return debugMode ? { isSolved: false, unsolvedObjects: [`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`] } : false;
+        const result = debugMode ? { 
+            isSolved: false, 
+            progress: 0,
+            unsolvedObjects: [`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`] 
+        } : false;
+        updateProgressBar(0);
+        return result;
     }
+    
     if (isMouseDown === true) return;
 
     // Список центральных кубиков, для которых игнорируем проверку кватернионов
     const centerCubes = [
         'Mid2_CENTER_W002',
         'Mid4_CENTER_G004',
-        'Mid5_CENTET_Black005',
+        'Mid5_CENTER_Black005',
         'Mid6_CENTER_B006',
         'Mid8_CENTER_Y008',
         'R5_CENTER_R005',
         'O5_CENTER_O005',
     ];  
 
+    let correctCubes = 0;
     let isSolved = true;
     const unsolvedObjects = [];
 
@@ -817,28 +840,26 @@ function isCubeSolved(debugMode = false) {
         staticCube.getWorldPosition(staticPos);
 
         const posTolerance = 0.01;
-        if (
-            Math.abs(dynamicPos.x - staticPos.x) > posTolerance ||
-            Math.abs(dynamicPos.y - staticPos.y) > posTolerance ||
-            Math.abs(dynamicPos.z - staticPos.z) > posTolerance
-        ) {
-            // console.warn(`Позиции не совпадают для ${dynamicCube.name}:`);
-            // тест console.warn(`Dynamic: [${dynamicPos.x.toFixed(3)}, ${dynamicPos.y.toFixed(3)}, ${dynamicPos.z.toFixed(3)}]`);
-            // console.warn(`Static: [${staticPos.x.toFixed(3)}, ${staticPos.y.toFixed(3)}, ${staticPos.z.toFixed(3)}]`);
+        const positionCorrect = 
+            Math.abs(dynamicPos.x - staticPos.x) <= posTolerance &&
+            Math.abs(dynamicPos.y - staticPos.y) <= posTolerance &&
+            Math.abs(dynamicPos.z - staticPos.z) <= posTolerance;
+
+        if (!positionCorrect) {
             isSolved = false;
             unsolvedObjects.push(`Позиции не совпадают для ${dynamicCube.name}: Dynamic=[${dynamicPos.x.toFixed(3)}, ${dynamicPos.y.toFixed(3)}, ${dynamicPos.z.toFixed(3)}], Static=[${staticPos.x.toFixed(3)}, ${staticPos.y.toFixed(3)}, ${staticPos.z.toFixed(3)}]`);
         }
 
         // Проверка кватернионов
-        if (!centerCubes.includes(dynamicCube.name)){
+        let orientationCorrect = true;
+        if (!centerCubes.includes(dynamicCube.name)) {
             const dynamicQuat = dynamicCube.getWorldQuaternion(new THREE.Quaternion());
             const staticQuat = staticCube.getWorldQuaternion(new THREE.Quaternion());
             const angleTolerance = 0.01; // Радианы
             const angleDiff = dynamicQuat.angleTo(staticQuat);
-            if (angleDiff > angleTolerance) {
-                // console.warn(`Кватернионы не совпадают для ${dynamicCube.name}:`);
-                // тест2 console.warn(`Dynamic: [${dynamicQuat.x.toFixed(3)}, ${dynamicQuat.y.toFixed(3)}, ${dynamicQuat.z.toFixed(3)}, ${dynamicQuat.w.toFixed(3)}]`);
-                // console.warn(`Static: [${staticQuat.x.toFixed(3)}, ${staticQuat.y.toFixed(3)}, ${staticQuat.z.toFixed(3)}, ${staticQuat.w.toFixed(3)}]`);
+            orientationCorrect = angleDiff <= angleTolerance;
+            
+            if (!orientationCorrect) {
                 isSolved = false;
                 unsolvedObjects.push(`Кватернионы не совпадают для ${dynamicCube.name}: Dynamic=[${dynamicQuat.x.toFixed(3)}, ${dynamicQuat.y.toFixed(3)}, ${dynamicQuat.z.toFixed(3)}, ${dynamicQuat.w.toFixed(3)}], Static=[${staticQuat.x.toFixed(3)}, ${staticQuat.y.toFixed(3)}, ${staticQuat.z.toFixed(3)}, ${staticQuat.w.toFixed(3)}]`);
             }
@@ -850,17 +871,35 @@ function isCubeSolved(debugMode = false) {
             isSolved = false;
             unsolvedObjects.push(`Разное количество дочерних объектов для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
         }
+
+        // Кубик считается правильным только если и позиция и ориентация правильные
+        if (positionCorrect && orientationCorrect) {
+            correctCubes++;
+        }
     });
+
+    // вычисление процента %
+    const totalCubes = _objects.length;
+    const progressPercentage = totalCubes > 0 ? (correctCubes / totalCubes) * 100 : 0;
+
+    console.log(`Прогресс: ${correctCubes}/${totalCubes} кубиков правильно (${progressPercentage.toFixed(2)}%)`);
 
     if (isSolved) {
         console.log('✅ Кубик собран по позициям и кватернионам!');
-        // console.log('exitMenu:', exitMenu)
-        exitMenu === false ? updateProgressBar(100) : updateProgressBar(0); 
     } else {
         // console.warn('❌ Кубик не собран.');
     }
 
-    return debugMode ? { isSolved, unsolvedObjects } : isSolved;
+    // Обновляем прогресс-бар только если игра активна и не идет перемешивание
+    if (!isScrambling && gameState.active) {
+        updateProgressBar(progressPercentage);
+    }
+
+    return debugMode ? { 
+        isSolved, 
+        progress: progressPercentage,
+        unsolvedObjects 
+    } : isSolved;
 }
 
 function debugCheckCube() {
