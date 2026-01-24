@@ -10,33 +10,7 @@ class CubeTextureManager {
     constructor() {
         this.textures = new Map();
         this.currentTheme = 'default';
-    }
-   
-    // Загрузка текстуры
-    loadTexture(TexturePath){
-        return new Promise((resolve) => {
-            const texture = new THREE.TextureLoader().load(TexturePath, () => {
-                resolve(texture);
-            });
-        });
-    }
-
-    async checkTextureExists(texturePath) {
-        try {
-            const response = await fetch(texturePath, { method: 'HEAD' }); // HEAD - запрашивает только заголовки
-            // console.log(`Проверка ${texturePath}: Статус ${response.status}`); // Для отладки
-            return response.ok; // Возвращает true, если статус 200-299 (OK), false для 404 и других ошибок
-        } catch (error) {
-            // console.error(`Ошибка при проверке ${texturePath}:`, error); // Для отладки
-            return false; // Ошибка сети или другая проблема - файл считается несуществующим
-        }
-    }
-
-    // Применение текстур по теме
-    async applyTextures(theme) {
-        this.currentTheme = theme;
-        
-        const configTheme = {
+        this.configTheme = {
             'default': { clear: true }, 
             'girls': {
                 'front': 'textures/cube/anime_green_side512.jpg',
@@ -63,28 +37,117 @@ class CubeTextureManager {
                 'bottom': 'textures/cube/rock_crystal512.jpg'
             }
         };
+        this.loadUnlockThemes();
+    }
 
-        const config = configTheme[theme];
-        if (!config){
-            console.warn(`Тема текстур "${theme}" не найдена`)
+    // --- Новое 20.01.2026-23: загрузка разблокированых тем из localStorage 
+    loadUnlockThemes(){
+        const savedThemes = localStorage.getItem('unlockedCustomThemes');
+        if (savedThemes) {
+            try {
+                const themes = JSON.parse(savedThemes);
+                if (Array.isArray(themes)){
+                    themes.forEach(themeData => {
+                        if (themeData && themeData.id && themeData.config){
+                            const customThemeId = `custom_${themeData.id}`;
+                            this.configTheme[customThemeId] = {
+                                ...themeData.config,
+                                _originalId: themeData.id,
+                                _displayName: themeData.name || themeData.id.replace(/_/g, ' ')
+                            };
+                            console.log('Загружена кастомная тема: ', customThemeId);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Ошибка при загрузке разблокированых тем ', e)
+            }
+        }
+    }
+
+    saveUnlockedThemes() {
+        const unlockedThemes = [];
+        // Предположим, все кастомные темы имеют префикс, например, 'custom_'
+        for (const [themeId, config] of Object.entries(this.configTheme)) {
+            if (themeId.startsWith('custom_')) { // Или другое условие для "кастомных" тем
+                const originalId = themeId.replace('custom_', '');
+                const themeData = {
+                    id: originalId,
+                    config: config,
+                    name: config._displayName || originalId
+                }
+                unlockedThemes.push(themeData);
+            }
+        }
+        const themesArray = Object.entries(unlockedThemes).map(([id, config]) => ({ id, config }));
+        localStorage.setItem('unlockedCustomThemes', JSON.stringify(unlockedThemes));
+        console.log('Разблокированные кастомные темы сохранены в localStorage.');
+    }
+    
+    addCustomTheme(themeId, themeConfig, themeName = null) {
+
+        const customThemeId = `custom_${themeId}`
+
+        if (this.configTheme[customThemeId]) {
+            console.warn(`Тема "${themeId}" уже существует.`);
+            return false;
+        }
+        this.configTheme[customThemeId] = {
+            ...themeConfig,
+            _originalId: themeId,
+            _displayName: themeName || themeId.replace(/_/g, ' ')
+        };
+
+        this.saveUnlockedThemes(); // Сохраняем сразу после добавления
+        console.log(`Кастомная тема "${customThemeId}" добавлена.`);
+        return true;
+    }
+   
+    // Загрузка текстуры
+    loadTexture(TexturePath){
+        return new Promise((resolve) => {
+            const texture = new THREE.TextureLoader().load(TexturePath, () => {
+                resolve(texture);
+            });
+        });
+    }
+
+    async checkTextureExists(texturePath) {
+        try {
+            const response = await fetch(texturePath, { method: 'HEAD' }); // HEAD - запрашивает только заголовки
+            // console.log(`Проверка ${texturePath}: Статус ${response.status}`); // Для отладки
+            return response.ok; // Возвращает true, если статус 200-299 (OK), false для 404 и других ошибок
+        } catch (error) {
+            // console.error(`Ошибка при проверке ${texturePath}:`, error); // Для отладки
+            return false; // Ошибка сети или другая проблема - файл считается несуществующим
+        }
+    }
+
+    // Применение текстур по теме
+    async applyTextures(theme) {
+        // this.currentTheme = theme; // <-- Можно оставить или убрать, если не используется
+
+        // const config = configTheme[theme]; // <-- ЗАМЕНЕНО НА this.configTheme[theme]
+        const config = this.configTheme[theme];
+        if (!config) {
+            console.warn(`Тема текстур "${theme}" не найдена в конфигурации.`);
             return;
         }
 
-        if (config.clear){
+        if (config.clear) {
             await this.clearAllTextures();
             return;
         }
 
         // применяем текстуры для каждой стороны
-        for (const [side, TexturePath] of Object.entries(config)){
-            // console.log('testing: ', TexturePath, ' ', selector_theme.value, ' infomore: ', infomore)
-            if (await this.checkTextureExists(TexturePath)){
+        for (const [side, TexturePath] of Object.entries(config)) {
+            if (await this.checkTextureExists(TexturePath)) {
                 await this.applyTexturesToSide(side, TexturePath);
             } else {
-                infomore.style.display = 'block';
-                selector_theme.value = 'default';
+                // infomore.style.display = 'block';
+                // selector_theme.value = 'default'; // <-- Не меняем значение селектора тут, пусть меню решает
                 console.warn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
-                return;
+                return; // if TP === false, return
             } // if TP === false, return
         }
     }
@@ -173,6 +236,7 @@ class CubeTextureManager {
 }
 
 const textureManager = new CubeTextureManager();
+export {textureManager}
 
 export async function applyTextures(theme, texture_select, selector){
     await textureManager.applyTextures(theme);    
