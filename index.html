@@ -3,23 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Кубик-рубика v19</title>
+    <title>Кубик-рубика v20</title>
     <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
     <link rel="stylesheet" href="styles/resetCSS.css" type="text/css">
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
     <link rel="stylesheet" href="styles/mainMenu.css" type="text/css">
+    <link rel="stylesheet" href="styles/WheelOfFortune.css" type="text/css">
     <script src="Scripts/checkProtocol.js"></script>
 </head>
 <body>
     <button id="debugCheckButton" class="debugCheckbtn">Проверить кубик</button>
     <div id="errormes"></div>
 
+    <!-- WF -->
+    <div id="wheelContainer" class="wheel-container">
+        <button class="close-btnWF" aria-label="Закрыть колесо фортуны">&times;</button>
+
+        <div class="wheel-content">
+            <div class="wheel-wrapper">
+                <div class="wheel-pointer"></div>
+                <div id="wheel" class="wheel">
+                    <!-- Сегменты будут добавлены динамически через JavaScript -->
+                </div>
+            </div>
+
+            <button id="spinButton" class="spin-button" aria-label="Крутить колесо">
+                <span class="spin-icon">💫</span>
+            </button>
+        </div>
+    </div>
+
     <!-- Главное меню -->
      <div id="mainMenu" class="main-menu">
         <div class="title">
             <h1 id="title">Кубик-рубика 3D</h1>
-            <span id="ver">0.0.1.9</span>
+            <span id="ver">0.0.2.0 beta</span>
         </div>
 
         <!-- Селектор языка -->
@@ -45,7 +64,6 @@
     <!-- Модальные окна -->
     <div id="congratsModal" class="modal_con">
         <div class="modal-content">
-            <span class="close-btn"></span>
             <h2 id="congrats">🎉 Поздравляем 🎉</h2>
             <p id="timesolve">Время сборки / Time solve: <BR> <span id="solveTime">00:00:00</span> ч/м/с || h/m/s</p>
             <button id="resetBtn">Собрать заново</button>
@@ -96,54 +114,131 @@
                             в будущем возможно будут обновления
                         </li> 
                     </ul>
+                    <br><p><strong>Особая благодарность(Special Thanks):</strong></p>
+                    <ul>
+                        <li>благодарю за помощь в добавлении этой темы<br>
+                            thanks for hint add special theme<br>------<br>
+                            MEM-THEME - my friend {NickName} from GTA5 Online</li>
+                            greatTree-THEME - подруга {прозвище}
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="settingsModal" class="modal_set">
-        <div class="modal-content_set">
+        <div class="modal-content_set compact">
             <span class="close-btn">&otimes;</span>
             <h2 id="settings-info">Настройки</h2>
-            <p id="infomore" style="display: none; color: yellow;">функционал ограничен github pages</p>
-            <h3 style="top: 6px;" id="name_textures">Текстуры</h3>
-            <div class="select">
-                <select style="top: 5px;" id="theme-select">
-                    <option value="default">По умолчанию/default</option>
-                    <option value="cars">🚗</option>
-                    <option value="gems">💎🧊₽₽₽</option>
-                    <option value="girls">🔥</option>
-                </select>
-                <h3 style="text-align: center; top: 2px;" id="color_theme_textures">Цветовая тема</h3>
-                <select id="color-theme-select">
-                    <option id="classic" value="classic">Классическая</option>
-                    <option id="neon" value="neon">Неон</option>
-                    <option id="monochrome" value="monochrome">Монохром</option>
-                </select>
-                <img id="form_style" class='form-texture' src="textures/form_style/default.png" alt="отображение темы" width="162.8px">
-                <button id="accept_style" class="menu-btn-accept">применить тему</button>
+            
+            <!-- Вкладки -->
+            <div class="settings-tabs">
+                <button id="setTextures" class="tab-btn active" data-tab="textures">🎨 Текстуры</button>
+                <button id="setControls" class="tab-btn" data-tab="controls">🎮 Управление</button>
+                <button id="setSound" class="tab-btn" data-tab="sound">🔊 Звук</button>
+                <button id="setData" class="tab-btn" data-tab="data">🗃️ Данные</button>
             </div>
-            <div class="select">
-                <h3 id="name_mode">Режим управления вращения</h3>
-                <select id="theme-select_2">
-                    <option id="control_arrows" value="control_arrows">Триггерами на кубе</option>
-                    <option id="control_mouse_move" value="control_mouse_move">Движением мыши</option>
-                </select>
+            
+            <!-- Содержимое вкладок -->
+            <div class="tab-content">
+                <!-- Текстуры -->
+                <div class="tab-pane active" id="textures-tab">
+                    <div class="compact-option">
+                        <label id="setThemes" for="theme-select" class="compact-label">Тема:</label>
+                        <select id="theme-select" class="compact-select">
+                            <option value="default">По умолчанию</option>
+                            <option value="cars">🚗</option>
+                            <option value="gems">💎</option>
+                            <option value="girls">🔥</option>
+                        </select>
+                    </div>
+                    
+                    <div class="compact-option">
+                        <label id="setColor" for="color-theme-select" class="compact-label">Цвета:</label>
+                        <select id="color-theme-select" class="compact-select">
+                            <option id="classic" value="classic">Классика</option>
+                            <option id="neon" value="neon">Неон</option>
+                            <option id="monochrome" value="monochrome">Монохром</option>
+                        </select>
+                    </div>
+                    
+                    <div class="compact-preview">
+                        <img id="form_style" src="textures/form_style/default.png" alt="превью" width="120">
+                        <div class="preview-buttons">
+                            <button id="viewWheelFortune" class="compact-btn wheel-btn">▶🎡</button>
+                            <button style="display: none;" id="accept_style" class="compact-btn apply-btn">Применить</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Управление -->
+                <div class="tab-pane" id="controls-tab">
+                    <div class="compact-option">
+                        <label id="name_mode" for="theme-select_2" class="compact-label">Режим:</label>
+                        <select id="theme-select_2" class="compact-select">
+                            <option id="control_arrows" value="control_arrows">Триггерами на кубе</option>
+                            <option id="control_mouse_move" value="control_mouse_move">Движением мыши</option>
+                        </select>
+                    </div>                    
+                </div>
+                
+                <!-- Звук -->
+                <div class="tab-pane" id="sound-tab">
+                    <audio id="background_music" src="sounds/playing_the_gusli.mp3" autoplay loop onerror="console.error('не удалось загрузить музыку')"></audio>
+                    <audio id="rotation_sound" src="sounds/rotate.mp3" preload="auto"></audio>
+                    <div class="compact-option slider-group">
+                        <label style="color: #0f0;" id="music_name" class="compact-label">Музыка</label>
+                        <div class="slider-compact">
+                            <span class="volume-icon">🎵</span>
+                            <input id="music_range" type="range" min="0" max="100" value="50" class="compact-slider">
+                            <span style="font-size: large;" id="prog_music" class="volume-value">50%</span>
+
+                        </div>
+                    </div>
+                    
+                    <div class="compact-option slider-group">
+                        <label id="name_sound" class="compact-label">Звуки:</label>
+                        <div class="slider-compact">
+                            <span class="volume-icon">🔊</span>
+                            <input id="sound_range" type="range" min="0" max="100" value="50" class="compact-slider">
+                            <span style="font-size: large;" id="prog_sound" class="volume-value">50%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sound-quick">
+                        <button class="sound-preset" data-volume="0">🔇 Выкл/Off</button>
+                        <button class="sound-preset" data-volume="30">🔈 Тихий/Quietly</button>
+                        <button class="sound-preset" data-volume="70">🔉 Средний/Medium</button>
+                        <button class="sound-preset" data-volume="100">🔊 Макс/Max</button>
+                    </div>
+                </div>
+                
+                <!-- Данные -->
+                <div class="tab-pane" id="data-tab">
+                    <div class="data-stats">
+                        <p><small>Тем разблокировано(Theme unlocked): <span id="unlocked-count">0</span></p>
+                        <p><small>В колесе осталось<br>(WheelOfFortune count): <span id="wheel-count">3</span></p>
+                    </div>
+                    
+                    <div class="data-actions">
+                        <button id="clearCustomThemes" class="compact-btn danger-btn">
+                            🗑️ Очистить темы
+                        </button>
+                        <button id="clearAllData" class="compact-btn danger-btn">
+                            ⚠️ Сбросить всё
+                        </button>
+                    </div>
+                    
+                    <div class="data-info">
+                        <p id="clearWarning"><small>⚠️ Действия необратимы!</small></p>
+                    </div>
+                </div>
             </div>
-            <audio id="background_music" src="sounds/playing_the_gusli.mp3" autoplay loop onerror="console.error('не удалось загрузить музыку')"></audio>
-            <audio id="rotation_sound" src="sounds/rotate.mp3" preload="auto"></audio>
-            <h3 id="name_sound">Звук</h3>
-            <div class="slider">
-                <label id="music_name" class="range-label" for="music_range">Музыка</label>
-                <div class="slider-wrapper">
-                    <span id="prog_music" class="slider-value">50%</span>
-                    <input class="range" id="music_range" type="range" min="0" max="100" value="50" step="1">
-                </div>
-                <label id="sound_name" class="range-label" for="sound_range">Звук</label>
-                <div class="slider-wrapper">
-                    <span id="prog_sound" class="slider-value">50%</span>
-                    <input class="range" id="sound_range" type="range" min="0" max="100" value="50" step="1">
-                </div>
+            
+            <!-- Быстрые действия (внизу) -->
+            <div class="quick-actions">
+                <button id="quick-help" class="quick-btn">❓ Помощь</button>
+                <button id="reset-settings" class="quick-btn">🔄 Сброс</button>
             </div>
         </div>
     </div>

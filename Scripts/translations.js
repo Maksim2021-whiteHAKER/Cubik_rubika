@@ -25,16 +25,16 @@ const translations = {
     },
     "normalMode": {
         "ru": "Обычный режим",
-        "sr": "Нормалан режим", 
+        "sr": "Нормалан режим",
         "en": "Normal Mode",
-        "es": "Modo Normal", 
-        "zh-CN": "普通模式", 
-        "fr": "Mode Normal", 
-        "de": "Normaler Modus", 
-        "ja": "通常モード", 
-        "pt-BR": "Modo Normal", 
-        "ar": "الوضع العادي", 
-        "tr": "Normal Mod" 
+        "es": "Modo Normal",
+        "zh-CN": "普通模式",
+        "fr": "Mode Normal",
+        "de": "Normaler Modus",
+        "ja": "通常モード",
+        "pt-BR": "Modo Normal",
+        "ar": "الوضع العادي",
+        "tr": "Normal Mod"
     },
     "freeMode": {
         "ru": "Свободный режим",
@@ -285,7 +285,7 @@ const translations = {
         "ar": "Ы/s - خلط المكعب",
         "tr": "Ы/s - küpü karıştır"
     },
- "tm_text1": {
+    "tm_text1": {
         "ru": "Двигайте пальцем по экрану - вращение грани в направлении движения",
         "sr": "Померајте прст по екрану - ротација стране у правцу кретања",
         "en": "Move your finger across the screen - rotate the face in the direction of movement",
@@ -833,7 +833,124 @@ const translations = {
         "pt-BR": "◽ Gestualidade com um dedo - com órbita desligada: girar cubo, com órbita ligada: girar câmera em torno do cubo.<br>◽ Gestualidade com dois dedos - ativar órbita automaticamente, zoom<br>◽ Gestualidade com três dedos ou tocar no botão '💫' - alternar órbita ligar/desligar",
         "ar": "◽ إيماءة بإصبع واحد - عندما تكون المدار مُعطلًا: تدوير المكعب، عندما يكون المدار مُفعلًا: تدوير الكاميرا حول المكعب.<br>◽ إيماءة بإصبعين - تفعيل المدار تلقائيًا، تكبير/تصغير،<br>◽ إيماءة بثلاثة أصابع أو نقر زر '💫' - تبديل تشغيل/إيقاف المدار",
         "tr": "◽ Tek parmak hareketi - yörünge kapalıyken: küpü döndür, yörünge açıkken: kamerayı küp etrafında döndür.<br>◽ İki parmak hareketi - yörüngeyi otomatik etkinleştir, yakınlaştır<br>◽ Üç parmak hareketi veya '💫' düğmesine dokunun - yörüngeyi aç/kapat",
-    }
+    },
+    "data_management": {
+        "ru": "Управление данными",
+        "sr": "Управљање подацима",
+        "en": "Data Management",
+        "es": "Gestión de datos",
+        "zh-CN": "数据管理",
+        "fr": "Gestion des données",
+        "de": "Datenverwaltung",
+        "ja": "データ管理",
+        "pt-BR": "Gerenciamento de dados",
+        "ar": "إدارة البيانات",
+        "tr": "Veri Yönetimi"
+    },
+    "clearCustomThemes": {
+        "ru": "🗑️ Очистить разблокированные темы",
+        "sr": "🗑️ Обришите откључане теме",
+        "en": "🗑️ Clear unlocked themes",
+        "es": "🗑️ Borrar temas desbloqueados",
+        "zh-CN": "🗑️ 清除已解锁主题",
+        "fr": "🗑️ Effacer les thèmes débloqués",
+        "de": "🗑️ Entsperrte Themen löschen",
+        "ja": "🗑️ ロック解除されたテーマをクリア",
+        "pt-BR": "🗑️ Limpar temas desbloqueados",
+        "ar": "🗑️ مسح السمات غير المقفلة",
+        "tr": "🗑️ Kilidi açılan temaları temizle"
+    },
+    "clearAllData": {
+        "ru": "⚠️ Сбросить все настройки",
+        "sr": "⚠️ Ресетујте сва подешавања",
+        "en": "⚠️ Reset all settings",
+        "es": "⚠️ Restablecer toda la configuración",
+        "zh-CN": "⚠️ 重置所有设置",
+        "fr": "⚠️ Réinitialiser tous les paramètres",
+        "de": "⚠️ Alle Einstellungen zurücksetzen",
+        "ja": "⚠️ すべての設定をリセット",
+        "pt-BR": "⚠️ Redefinir todas as configurações",
+        "ar": "⚠️ إعادة تعيين جميع الإعدادات",
+        "tr": "⚠️ Tüm ayarları sıfırla"
+    },
+    "clearWarning": {
+        "ru": "Внимание: это действие нельзя отменить!",
+        "sr": "Пажња: ову радњу није могуће опозвати!",
+        "en": "Warning: this action cannot be undone!",
+        "es": "Advertencia: ¡esta acción no se puede deshacer!",
+        "zh-CN": "警告：此操作无法撤消！",
+        "fr": "Attention : cette action est irréversible !",
+        "de": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden!",
+        "ja": "警告：この操作は取り消せません！",
+        "pt-BR": "Aviso: esta ação não pode ser desfeita!",
+        "ar": "تحذير: لا يمكن التراجع عن هذا الإجراء!",
+        "tr": "Uyarı: bu işlem geri alınamaz!"
+    },
+    "setTextures": {
+        "ru": "🎨 Текстуры",
+        "sr": "🎨 Текстуре",
+        "en": "🎨 Textures",
+        "es": "🎨 Texturas",
+        "zh-CN": "🎨 圖案",
+        "fr": "🎨 Textures",
+        "de": "🎨 Texturen",
+        "ja": "🎨 テクスチャ",
+        "pt-BR": "🎨 Texturas",
+        "ar": "🎨 القوام", // Правильно: "القوام" или "الTextures" - оба варианта используются
+        "tr": "🎨 Dokular" // Правильно: "Dokular" (множественное число от "doku")
+    },
+    "setControls": {
+        "ru": "🎮 Управление",
+        "sr": "🎮 Управљање",
+        "en": "🎮 Controls",
+        "es": "🎮 Controles", // Исправлено: "Gestión" означает "управление/администрирование", а не "контролы/управление"
+        "zh-CN": "🎮 控制", // Исправлено: "管理层" - это управление компанией, а "控制" - контроль/управление системой
+        "fr": "🎮 Commandes", // Исправлено: "Contrôle" - это проверка, а "Commandes" - элементы управления
+        "de": "🎮 Steuerung",
+        "ja": "🎮 コントロール", // Исправлено: "マネジメント" - это управление, а не контроль/управление
+        "pt-BR": "🎮 Controles", // Исправлено: как в испанском
+        "ar": "🎮 عناصر التحكم", // Исправлено: "الإدارة" - управление, а не контроль
+        "tr": "🎮 Kontroller" // Исправлено: "Yönetim" - управление, а не элементы управления
+    },
+    "setSound": {
+        "ru": "🔊 Звук",
+        "sr": "🔊 Звук",
+        "en": "🔊 Sound",
+        "es": "🔊 Sonido",
+        "zh-CN": "🔊 声音",
+        "fr": "🔊 Son",
+        "de": "🔊 Ton", // Можно и "Audio", но "Ton" тоже правильный вариант
+        "ja": "🔊 音",
+        "pt-BR": "🔊 Som",
+        "ar": "🔊 الصوت",
+        "tr": "🔊 Ses"
+    },
+    "setData": {
+        "ru": "🗃️ Данные",
+        "sr": "🗃️ Подаци",
+        "en": "🗃️ Data",
+        "es": "🗃️ Datos",
+        "zh-CN": "🗃️ 資料",
+        "fr": "🗃️ Données",
+        "de": "🗃️ Daten", 
+        "ja": "🗃️ データ",
+        "pt-BR": "🗃️ Dados",
+        "ar": "🗃️ البيانات",
+        "tr": "🗃️ Veriler"
+    },
+    "settings-info": {
+        "ru": "Настройки",
+        "sr": "Подешавања",
+        "en": "Settings",
+        "es": "Configuración",
+        "zh-CN": "设置",
+        "fr": "Paramètres",
+        "de": "Einstellungen",
+        "ja": "設定",
+        "pt-BR": "Configurações",
+        "ar": "إعدادات",
+        "tr": "Ayarlar",
+    },
 };
 
 // 3. Глобальная переменная для хранения текущего языка
@@ -940,7 +1057,7 @@ console.log(`Translation system initialized. Current language: ${currentLanguage
 // Коды языков должны совпадать с теми, что используются в функции changeLanguage
 const sliderLanguages = [
     { code: 'ru', name: 'Русский' },
-    { code: 'sr', name: 'Српски'},
+    { code: 'sr', name: 'Српски' },
     { code: 'en', name: 'English' },
     { code: 'es', name: 'Español' },
     { code: 'zh-CN', name: '中文' },
@@ -958,20 +1075,20 @@ let flagEmoji = {};
 let flagNames = {};
 
 const emoji = [
-    {lang: 'Россия', name: 'ru', symbol: 'RU'},
-    {lang: 'Србија', name: 'sr', symbol: 'RS'},
-    {lang: 'USA', name: 'en', symbol: 'USA'},
-    {lang: 'España', name: 'es', symbol: 'ES'},
-    {lang: '中国', name: 'zh-CN', symbol: '中国'},
-    {lang: 'France', name: 'fr', symbol: 'FR'},
-    {lang: 'Deutschland', name: 'de', symbol: 'DE'},
-    {lang: '日本', name: 'ja', symbol: '日本'},
-    {lang: 'Brasil', name: 'pt-BR', symbol: 'BR'},
-    {lang: 'المملكة العربية السعودية', name: 'ar', symbol: 'AE'},
-    {lang: 'Türkiye', name: 'tr', symbol: 'TUR'},
+    { lang: 'Россия', name: 'ru', symbol: 'RU' },
+    { lang: 'Србија', name: 'sr', symbol: 'RS' },
+    { lang: 'USA', name: 'en', symbol: 'USA' },
+    { lang: 'España', name: 'es', symbol: 'ES' },
+    { lang: '中国', name: 'zh-CN', symbol: '中国' },
+    { lang: 'France', name: 'fr', symbol: 'FR' },
+    { lang: 'Deutschland', name: 'de', symbol: 'DE' },
+    { lang: '日本', name: 'ja', symbol: '日本' },
+    { lang: 'Brasil', name: 'pt-BR', symbol: 'BR' },
+    { lang: 'المملكة العربية السعودية', name: 'ar', symbol: 'AE' },
+    { lang: 'Türkiye', name: 'tr', symbol: 'TUR' },
 ]
 
-function logicSlider(){
+function logicSlider() {
     setTimeout(() => {
         console.log(flagNames)
         const sliderContainer = document.getElementById('languageSliderContainer');
@@ -1017,16 +1134,16 @@ function logicSlider(){
                 flagContent.style.gap = '0.5px'; // Отступ между флагом и названием
 
                 let flagElement;
-                if (version_game === 'full' & flagImages[langData.code]){  
+                if (version_game === 'full' & flagImages[langData.code]) {
 
                     const flagImg = document.createElement('img');
                     typeVersion.textContent = 'Full';
                     flagImg.className = 'lang-flag-img';
                     flagImg.src = flagImages[langData.code];
-                                
+
                     flagImg.alt = langData.name || langData.code.toUpperCase();
-                    
-                    flagImg.onerror = function(){
+
+                    flagImg.onerror = function () {
                         console.log(`[${langData.code}] Эмодзи fallback triggered`);
                         this.style.display = 'none';
                         // const flagContainer = this.parentElement;
@@ -1056,13 +1173,13 @@ function logicSlider(){
                 nameDiv.style.textOverflow = 'ellipsis';
                 nameDiv.style.whiteSpace = 'nowrap';
                 nameDiv.title = flagNames[langData.code] || langData.name; // Всплывающая подсказка для длинных названий
-            
+
                 // Добавляем название в контейнер (оно будет под флагом/эмодзи)
                 flagContent.appendChild(nameDiv);
-            
+
                 // Добавляем контейнер в кнопку
                 flagBtn.appendChild(flagContent);
-            
+
                 // Добавляем кнопку в слайдер
                 sliderFlagsContainer.appendChild(flagBtn);
 
@@ -1095,7 +1212,7 @@ function logicSlider(){
     }, 150); // Небольшая задержка для уверенности в загрузке DOM
 }
 
-export{logicSlider, sliderLanguages, emoji, changeLanguage}
+export { logicSlider, sliderLanguages, emoji, changeLanguage }
 
 window.t = t;
 window.applyTranslations = applyTranslations;

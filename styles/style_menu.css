@@ -506,15 +506,15 @@ canvas {
 }
 
 #theme-select, #theme-select_2 {
-  position: relative;
-  top: -15px;
+  /* position: relative; */
+  /* top: -15px; */
   color: #99ff4e;
-  font-size: 16px;
+  /* font-size: 16px; */
 }
 
-#theme-select_2 {
-  top: 15px;
-}
+/* #theme-select_2 {
+  top: 15px; 
+}  */
 
 #settings-info {
   color: #00ffff;
@@ -530,20 +530,20 @@ canvas {
   font-size: 25px;
 }
 
-#name_mode {
+/* #name_mode {
   position: relative;
   text-align: center;
   font-size: 25px;
   color: #0f0;
   top: 15px;
-}
+} */
 
 #name_sound {
-  position: relative;
+  /* position: relative;
   text-align: center;
-  font-size: 25px;
+  font-size: 25px; */
   color: #0f0;
-  top: 15px;
+  /* top: 15px; */
 }
 
 /* Мобильная адаптация */
@@ -617,15 +617,15 @@ canvas {
     padding: 1rem;
   }
   
-  #theme-select, #theme-select_2 {
+  /* #theme-select, #theme-select_2 {
     font-size: 14px;
-  }
+  } */
   
   #settings-info {
     font-size: 24px;
   }
   
-  #name_textures, #name_mode, #name_sound {
+  #name_textures, #name_sound {
     font-size: 18px;
   }
   
@@ -792,5 +792,273 @@ canvas {
   /* Скрываем менее важные элементы при очень маленькой высоте */
   #cameraInfo {
     display: none;
+  }
+}
+
+/* компакт меню */
+/* Компактные настройки */
+.modal-content_set.compact {
+  max-width: 400px;
+  padding: 20px;
+}
+
+/* Вкладки */
+.settings-tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 5px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: white;
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.tab-btn.active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+  font-weight: bold;
+}
+
+/* Контент вкладок */
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.3s;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Компактные опции */
+.compact-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.compact-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.compact-label {
+  min-width: 80px;
+  font-size: 14px;
+  color: #3498db;
+  margin-right: 10px;
+}
+
+.compact-select {
+  flex: 1;
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: white;
+  font-size: 13px;
+}
+
+/* Превью темы */
+.compact-preview {
+  text-align: center;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.preview-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.compact-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wheel-btn {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+}
+
+.apply-btn {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.danger-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  font-size: 12px;
+}
+
+/* Слайдеры */
+.slider-group {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.slider-compact {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.compact-slider {
+  flex: 1;
+  height: 4px;
+  background: #555;
+  border-radius: 2px;
+  outline: none;
+  /* -webkit-appearance: none; */
+}
+
+.compact-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #3498db;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.volume-icon {
+  font-size: 16px;
+}
+
+.volume-value {
+  min-width: 40px;
+  text-align: right;
+  font-size: 12px;
+  color: #3498db;
+}
+
+/* Быстрые пресеты звука */
+.sound-quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.sound-preset {
+  padding: 6px 4px;
+  background: rgba(52, 152, 219, 0.2);
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  color: #3498db;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sound-preset:hover {
+  background: rgba(52, 152, 219, 0.4);
+}
+
+/* Информация */
+.compact-info, .data-stats, .data-info {
+  font-size: 12px;
+  color: #aaa;
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+/* Действия с данными */
+.data-actions {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+/* Быстрые действия (нижняя панель) */
+.quick-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #444;
+}
+
+.quick-btn {
+  padding: 6px 12px;
+  background: rgba(52, 152, 219, 0.2);
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  color: #3498db;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-btn:hover {
+  background: rgba(52, 152, 219, 0.4);
+}
+
+.sound-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .modal-content_set.compact {
+      max-width: 95%;
+      padding: 15px;
+  }
+  
+  .tab-btn {
+      font-size: 11px;
+      padding: 6px 3px;
+  }
+  
+  .compact-label {
+      min-width: 70px;
+      font-size: 13px;
+  }
+  
+  .compact-select {
+      font-size: 12px;
+      padding: 5px 8px;
+  }
+  
+  .data-actions {
+      flex-direction: column;
   }
 }

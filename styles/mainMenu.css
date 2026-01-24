@@ -56,6 +56,23 @@
     backdrop-filter: blur(2px);
 }
 
+.btn-viewWF {
+  margin-top: 1.5%;
+  width: 75%;
+  box-sizing: border-box;
+  background-color: rgba(160,20,10, 0.8);
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  padding: 1.2rem 2rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 15px;
+  text-align: center;
+  text-decoration: none;
+  backdrop-filter: blur(2px);
+}
+
 .menu-btn-accept {
     display: none;
     margin-top: 1.5%;
@@ -74,7 +91,7 @@
     backdrop-filter: blur(2px);
 }
 
-.menu-btn:hover, .resetAndExit:hover, .resume:hover, .menu-btn-accept:hover {
+.menu-btn:hover, .resetAndExit:hover, .resume:hover, .menu-btn-accept:hover, .btn-viewWF:hover {
     background: rgba(0,255,255,0.9);
     color: #000;
     transform: translateY(-2px);
@@ -130,7 +147,7 @@
     z-index: 999;
 }
 
-.close-btn {
+.close-btn, .close-btnWF {
     position: absolute;
     top: 10px;
     right: 15px;
@@ -141,7 +158,12 @@
     z-index: 1001;
 }
 
-.close-btn:hover {
+.close-btnWF {
+  margin-top: 7rem;
+  margin-right: 38rem;
+}
+
+.close-btn:hover, .close-btnWF:hover {
     color: #ff0000;
 }
 
@@ -690,6 +712,10 @@ button, .control-btn {
     .select h3, .slider h3 {
       font-size: 16px;
     }
+    .wheel {
+      width: 15rem;
+      height: 15rem;
+    }
   }
 
   /* Горизонтальная ориентация для модальных окон */
@@ -802,4 +828,95 @@ button, .control-btn {
     .range {
       width: 150px;
     }
+    .wheel {
+      width: 15rem;
+      height: 15rem;
+    }
   }
+
+
+/* стиль очистки */
+/* Стили для кнопок управления данными */
+.data-management-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.menu-btn.danger {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  border: 1px solid #c0392b;
+}
+
+.menu-btn.danger:hover {
+  background: linear-gradient(135deg, #ff6b6b 0%, #e74c3c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.menu-btn.danger:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 25px;
+  border-radius: 12px;
+  z-index: 10001;
+  color: white;
+  text-align: center;
+  min-width: 150px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid #ff6b6b;
+}
+
+.confirmation-dialog h3 {
+  color: #ff6b6b;
+  margin-bottom: 15px;
+}
+
+.confirmation-dialog p {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.confirmation-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.confirm-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.confirm-yes {
+  background: #e74c3c;
+  color: white;
+}
+
+.confirm-yes:hover {
+  background: #ff6b6b;
+}
+
+.confirm-no {
+  background: #34495e;
+  color: white;
+}
+
+.confirm-no:hover {
+  background: #4a6582;
+}  
