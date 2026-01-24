@@ -181,7 +181,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_full.glb",
+    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFix.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
@@ -296,8 +296,8 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             });
 
             _objects.sort((a, b) => a.name.localeCompare(b.name))
-            console.log('Модель - динамика',_objects)
-            console.log('Эталлоны ',_staticobjects)
+            // console.log('Модель - динамика',_objects)
+            // console.log('Эталлоны ',_staticobjects)
 
             // console.log('***Эталонные позиции***');
             referencePositions.forEach((data, name) => {
