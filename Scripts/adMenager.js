@@ -233,7 +233,7 @@ export async function unlockCustomThemeViaSpin() {
         } else {
             // Для тестирования без AdMob
             console.warn('AdMob недоступен. Режим тестирования активирован.');
-            rewardGranted = true; // В тестовом режиме всегда даем награду
+            alert('ad не доступен, разработчик решает проблему\n adMob not denied, develover WIP')
         }
 
         if (!rewardGranted) {
