@@ -46,6 +46,20 @@ const spinWheelThemes = [
         },
         rarity: 'common',
         color: '#3498db'
+    }, 
+    {
+        id: 'space',
+        name: 'Space',
+        config: {
+            'front': 'textures/customCube/space_nebuelaGreen_greenSide512.jpg',
+            'back': 'textures/customCube/space_planetEarth_blueSide512.jpg',
+            'right': 'textures/customCube/space_giantRed_redSide512.jpg',
+            'left': 'textures/customCube/space_planetJupiter_orangeSide512.jpg',
+            'top': 'textures/customCube/space_milkyway_whiteSide512.jpg',
+            'bottom': 'textures/customCube/space_nebuela_yellowSide512.jpg',
+        },
+        rarity: 'rare',
+        color: '#31ffaa'
     }
 ];
 
@@ -232,6 +246,7 @@ export async function unlockCustomThemeViaSpin() {
             }
         } else {
             // Для тестирования без AdMob
+            // rewardGranted = true;
             console.warn('AdMob недоступен. Режим тестирования активирован.');
             alert('ad не доступен, разработчик решает проблему\n adMob not denied, develover WIP')
         }
