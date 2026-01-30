@@ -907,6 +907,7 @@ canvas {
 }
 
 .wheel-btn {
+  font-size: 35px;
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
   color: white;
 }
