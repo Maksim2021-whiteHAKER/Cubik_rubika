@@ -21,20 +21,20 @@ class CubeTextureManager {
                 'bottom': 'textures/cube/anime_yellow_side512c.jpg'
             },
             'cars': {
-                'front': 'textures/cube/car_green_side512.jpg',
-                'back': 'textures/cube/car_blue_side512.jpg',
-                'right': 'textures/cube/car_red_side512.jpg',
-                'left': 'textures/cube/car_orange_side512.jpg',
-                'top': 'textures/cube/car_white_side512.jpg',
-                'bottom': 'textures/cube/car_yellow_side512.jpg'
+                'front': 'textures/cube/car_green_side512c.jpg',
+                'back': 'textures/cube/car_blue_side512c.jpg',
+                'right': 'textures/cube/car_red_side512c.jpg',
+                'left': 'textures/cube/car_orange_side512c.jpg',
+                'top': 'textures/cube/car_white_side512c.jpg',
+                'bottom': 'textures/cube/car_yellow_side512c.jpg'
             },
             'gems': {
-                'front': 'textures/cube/emerald512.jpg',
-                'back': 'textures/cube/sapphire512.jpg',
-                'right': 'textures/cube/ruby512.jpg',
-                'left': 'textures/cube/citrine512.jpg',
-                'top': 'textures/cube/amber512.jpg',
-                'bottom': 'textures/cube/rock_crystal512.jpg'
+                'front': 'textures/cube/emerald512c.jpg',
+                'back': 'textures/cube/sapphire512c.jpg',
+                'right': 'textures/cube/ruby512c.jpg',
+                'left': 'textures/cube/citrine512c.jpg',
+                'top': 'textures/cube/amber512.jpgc',
+                'bottom': 'textures/cube/rock_crystal512c.jpg'
             }
         };
         this.loadUnlockThemes();
