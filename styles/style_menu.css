@@ -35,14 +35,6 @@ body.control-mouse-move.dragging {
   cursor: url('../textures/grabbing50.png') 25 25, auto;
 }
 
-body.control-touch-move {
-  cursor: url('../textures/fingerPrint64.png') 25 25, move;
-}
-
-body.control-touch-move.dragging {
-  cursor: url('../textures/fingerPrint64_active.png') 25 25, auto;
-}
-
 canvas {
   outline: none;
 }
@@ -343,12 +335,12 @@ canvas {
 
 #helpM {
     left: calc(50% + 210px); /* 200px - половина ширины прогрессбара + 10px отступ */
-    background-image: url("../textures/question-sign.png");
+    background-image: url("../textures/question-sign.svg");
 }
 
 #mainMenu_g {
     right: calc(50% + 210px); /* 200px - половина ширины прогрессбара + 50px отступ */
-    background-image: url("../textures/icons8-home-page-100.png");
+    background-image: url("../textures/home-page-100.svg");
 }
 
 #sound_setting {

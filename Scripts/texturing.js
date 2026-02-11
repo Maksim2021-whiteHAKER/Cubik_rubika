@@ -13,12 +13,12 @@ class CubeTextureManager {
         this.configTheme = {
             'default': { clear: true }, 
             'girls': {
-                'front': 'textures/cube/anime_green_side512.jpg',
-                'back': 'textures/cube/anime_blue_side512.jpg',
-                'right': 'textures/cube/anime_red_side512.jpg',
-                'left': 'textures/cube/anime_orange_side512.jpg',
-                'top': 'textures/cube/anime_white_side512.jpg',
-                'bottom': 'textures/cube/anime_yellow_side512.jpg'
+                'front': 'textures/cube/anime_green_side512c.jpg',
+                'back': 'textures/cube/anime_blue_side512c.jpg',
+                'right': 'textures/cube/anime_red_side512c.jpg',
+                'left': 'textures/cube/anime_orange_side512c.jpg',
+                'top': 'textures/cube/anime_white_side512c.jpg',
+                'bottom': 'textures/cube/anime_yellow_side512c.jpg'
             },
             'cars': {
                 'front': 'textures/cube/car_green_side512.jpg',

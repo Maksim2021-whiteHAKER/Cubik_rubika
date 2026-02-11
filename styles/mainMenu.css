@@ -7,7 +7,7 @@
     height: 100%; /* Ограничение максимальной ширины */
     padding: 2rem;
     background: rgba(0,0,0,0.9);
-    background-image: url("../textures/hypercube.jpg");
+    background-image: url("../textures/hypercubecompress.jpg");
     background-size: cover;
     background-position: center;
     border-radius: 15px;
@@ -258,7 +258,7 @@ p {
     width: 35%; /* Кнопки занимают всю ширину контейнера */
     box-sizing: border-box; /* Учитывает padding в ширине */
     background: rgba(26,26,26,0.9);
-    background-image: url("../textures/refresh.png");
+    background-image: url("../textures/refresh.svg");
     background-repeat: no-repeat;
     background-position: center;
     color: #fff;

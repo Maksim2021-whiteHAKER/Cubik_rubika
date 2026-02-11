@@ -795,8 +795,7 @@ function setupTriggerInteraction(triggerZones) {
                     selectedCubeForMouse = selectedCube;
                     startX = touch.clientX;
                     startY = touch.clientY;
-                    console.log(document.body)
-                    document.body.classList.add('dragging');
+                    console.log(document.body)                    
                     hideArrows();
                 }
             } else {
@@ -919,7 +918,6 @@ function setupTriggerInteraction(triggerZones) {
             isMouseDown = false;
             rotationInProgress = false;
             selectedCubeForMouse = null;
-            document.body.classList.remove('dragging');
             hideArrows();
         }
         currentTouches = Array.from(event.touches);

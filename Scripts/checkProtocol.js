@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.protocol === 'file:') {
         document.body.classList.add('page-error');
-        document.body.style.backgroundImage = "url('textures/pixel.jpg')";
+        document.body.style.backgroundImage = "url('textures/pixelcompress.jpg')";
         const menu = document.getElementById('menu_info');
         const setting = document.getElementById('menu_settings');
         const orbitCon = document.getElementById('OrbitCon');

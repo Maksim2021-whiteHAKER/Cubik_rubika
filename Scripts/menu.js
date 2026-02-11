@@ -90,97 +90,100 @@ export function updateFormStyle(textureValue, themeValue){
     const formStyle = document.getElementById('form_style');
     if (!formStyle) return;
 
+    const ALLOWED_VALUES = ['default', 'cars', 'gems', 'girls'];
+
     switch(textureValue){
         case 'default':
             switch (themeValue) {
                 case 'classic':
-                    formStyle.src = 'textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.jpg';
                     break;
                 case 'neon':
-                    formStyle.src = 'textures/form_style/def_neon.png';
+                    formStyle.src = 'textures/form_style/def_neon.jpg';
                     break;
                 case 'monochrome':
-                    formStyle.src = 'textures/form_style/def_monochrome.png';
+                    formStyle.src = 'textures/form_style/def_monochrome.jpg';
                     break;
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = 'textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.jpg';
                     break;
             }
             break;
         case 'cars':
             switch (themeValue){
                 case 'classic':
-                    formStyle.src = 'textures/form_style/cars.png';
+                    formStyle.src = 'textures/form_style/cars.jpg';
                     break;
                 case 'neon':
-                    formStyle.src = 'textures/form_style/cars_neon.png';
+                    formStyle.src = 'textures/form_style/cars_neon.jpg';
                     break;
                 case 'monochrome':
-                    formStyle.src = 'textures/form_style/cars_monochrome.png';
+                    formStyle.src = 'textures/form_style/cars_monochrome.jpg';
                     break;
                 case 'non_cassat':
-                    formStyle.src = 'textures/form_style/cars_noncassat.png';
+                    formStyle.src = 'textures/form_style/cars_noncassat.jpg';
                     break
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = 'textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.jpg';
                     break;
             }
             break;
         case 'gems':
             switch (themeValue){
                 case 'classic':
-                    formStyle.src = 'textures/form_style/gems.png';
+                    formStyle.src = 'textures/form_style/gems.jpg';
                     break;
                 case 'neon':
-                    formStyle.src = 'textures/form_style/gems_neon.png';
+                    formStyle.src = 'textures/form_style/gems_neon.jpg';
                     break;
                 case 'monochrome':
-                    formStyle.src = 'textures/form_style/gems_monochrome.png';
+                    formStyle.src = 'textures/form_style/gems_monochrome.jpg';
                     break;
                 case 'non_cassat':
-                    formStyle.src = 'textures/form_style/gems_noncassat.png';
+                    formStyle.src = 'textures/form_style/gems_noncassat.jpg';
                     break;
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = 'textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.jpg';
                     break;
             }
             break;
         case 'girls':
             switch (themeValue){
                 case 'classic':
-                    formStyle.src = 'textures/form_style/girls.png';
+                    formStyle.src = 'textures/form_style/girls.jpg';
                     break;
                 case 'neon':
-                    formStyle.src = 'textures/form_style/girls_neon.png';
+                    formStyle.src = 'textures/form_style/girls_neon.jpg';
                     break;
                 case 'monochrome':
-                    formStyle.src = 'textures/form_style/girls_monochrome.png';
+                    formStyle.src = 'textures/form_style/girls_monochrome.jpg';
                     break;
                 case 'non_cassat':                        
-                    formStyle.src = 'textures/form_style/girls_noncassat.png';
+                    formStyle.src = 'textures/form_style/girls_noncassat.jpg';
                     break;
                 default:
                     console.log('Неизвестная тема:', themeValue);
-                    formStyle.src = 'textures/form_style/default.png';
+                    formStyle.src = 'textures/form_style/default.jpg';
                     break;
                 }
                 break;
+    };
+
+    if (!ALLOWED_VALUES.includes(textureValue)){
+        formStyle.src = 'textures/form_style/custom.jpg';
+
     }
 }
 
 function updateCursorMode(){
     document.body.classList.remove('control-mouse-move');
-    document.body.classList.remove('control-touch-move');
 
     if (getControlMode() === 'control_mouse_move'){
         document.body.classList.add('control-mouse-move');
-    } else if (getControlMode() === 'control_touch_move'){
-        document.body.classList.add('control-touch-move');
     }
-
 }
 
 export function updateHelpContent(){
