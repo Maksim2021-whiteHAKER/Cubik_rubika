@@ -1,5 +1,5 @@
 // texturing.js
-import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
+import * as THREE from '../Scripts/lib/three.module.js';
 import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
 import { selector_theme } from './menu.js';
 
