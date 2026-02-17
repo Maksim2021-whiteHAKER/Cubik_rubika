@@ -1,12 +1,18 @@
-import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
+import * as THREE from '../Scripts/lib/three.module.js';
 import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from '../Scripts/lib/GLTFLoader.js';
+import DRACOLoader from './lib/DRACOLoader.js';
 import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
-import { exitMenu, gameState, state_sounds } from './menu.js';
+import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 
 let scene;
 export let world;
 const loaderGLTF = new GLTFLoader();
+const LoaderDraco = new DRACOLoader();
+
+LoaderDraco.setDecoderPath('../Scripts/lib');
+loaderGLTF.setDRACOLoader(LoaderDraco);
+
 export const bodies = [];
 let _objects = []; // Внутренний массив
 let _staticobjects = []; // эталлоные объекты
@@ -181,7 +187,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFix.glb",
+    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFixCompress.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
@@ -821,6 +827,7 @@ function isCubeSolved(debugMode = false) {
     let correctCubes = 0;
     let isSolved = true;
     const unsolvedObjects = [];
+    const isDefaultTheme = selector_theme.value === 'default'
 
     _objects.forEach((dynamicCube, index) => {
         const staticCube = _staticobjects[index];
@@ -852,7 +859,7 @@ function isCubeSolved(debugMode = false) {
 
         // Проверка кватернионов
         let orientationCorrect = true;
-        if (!centerCubes.includes(dynamicCube.name)) {
+        if (!centerCubes.includes(dynamicCube.name) || (centerCubes.includes(dynamicCube.name) && !isDefaultTheme)) {
             const dynamicQuat = dynamicCube.getWorldQuaternion(new THREE.Quaternion());
             const staticQuat = staticCube.getWorldQuaternion(new THREE.Quaternion());
             const angleTolerance = 0.01; // Радианы

@@ -1,5 +1,6 @@
-import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.122.0/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from '../Scripts/lib/three.module.js';
+import DRACOLoader from './lib/DRACOLoader.js';
+import { GLTFLoader } from './lib/GLTFLoader.js';
 import { cameraPlayer } from './index.js';
 import { checkFpsHit } from './cube.js';
 
@@ -25,11 +26,16 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     fpsCursor.id = 'fps-cursor';
     document.body.appendChild(fpsCursor);
 
-    const playerLoader = new GLTFLoader();
-    playerLoader.load("/models/player_texture.glb", function (gltf) {
+    const GLTFLoader_mod = new GLTFLoader();
+    const DRACOLoader_mod = new DRACOLoader();
+
+    DRACOLoader_mod.setDecoderPath('../Scripts/lib');
+    GLTFLoader_mod.setDRACOLoader(DRACOLoader_mod);
+
+    GLTFLoader_mod.load("/models/player_texture.glb", function (gltf) {
         playerModel = gltf.scene;
         playerModel.scale.set(1, 1, 1);
-        playerModel.position.set(2, -1.5, -15);
+        playerModel.position.set(-1, -1.5, -13);
         playerModel.rotateY(Math.PI);
         sceneArg.add(playerModel);
               
