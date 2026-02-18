@@ -237,6 +237,14 @@ class DRACOLoader extends THREE.Loader {
 
     _loadLibrary(url, responseType) {
 
+        // ДОБАВЬ ЭТУ СТРОКУ ДЛЯ ОТЛАДКИ:
+        // console.log('--- DRACO DEBUG ---');
+        // console.log('Путь (decoderPath):', this.decoderPath); 
+        // console.log('Имя файла (url):', url);
+        // console.log('Итоговый URL:', this.decoderPath + url);
+        // console.log('-------------------');
+
+
         var loader = new THREE.FileLoader(this.manager);
         loader.setPath(this.decoderPath);
         loader.setResponseType(responseType);
@@ -270,8 +278,8 @@ class DRACOLoader extends THREE.Loader {
 
         } else {
 
-            librariesPending.push(this._loadLibrary('draco_wasm_wrapper.js', 'text'));
-            librariesPending.push(this._loadLibrary('draco_decoder.wasm', 'arraybuffer'));
+            librariesPending.push(this._loadLibrary('libdraco_wasm_wrapper.js', 'text'));
+            librariesPending.push(this._loadLibrary('libdraco_decoder.wasm', 'arraybuffer'));
 
         }
 
