@@ -10,7 +10,7 @@ export let world;
 const loaderGLTF = new GLTFLoader();
 const LoaderDraco = new DRACOLoader();
 
-LoaderDraco.setDecoderPath('/Scripts/');
+LoaderDraco.setDecoderPath(new URL('.', import.meta.url).href);
 loaderGLTF.setDRACOLoader(LoaderDraco);
 
 export const bodies = [];
