@@ -32,7 +32,7 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     DRACOLoader_mod.setDecoderPath(new URL('.', import.meta.url).href);
     GLTFLoader_mod.setDRACOLoader(DRACOLoader_mod);
 
-    GLTFLoader_mod.load("/models/player_texture.glb", function (gltf) {
+    GLTFLoader_mod.load("models/player_texture.glb", function (gltf) {
         playerModel = gltf.scene;
         playerModel.scale.set(1, 1, 1);
         playerModel.position.set(-1, -1.5, -13);
