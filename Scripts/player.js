@@ -29,7 +29,7 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     const GLTFLoader_mod = new GLTFLoader();
     const DRACOLoader_mod = new DRACOLoader();
 
-    DRACOLoader_mod.setDecoderPath('../Scripts/lib');
+    DRACOLoader_mod.setDecoderPath('/Scripts/');
     GLTFLoader_mod.setDRACOLoader(DRACOLoader_mod);
 
     GLTFLoader_mod.load("/models/player_texture.glb", function (gltf) {
