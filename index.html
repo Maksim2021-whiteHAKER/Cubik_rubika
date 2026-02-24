@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>Кубик-рубика v23</title>
-    <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon"/>
+    <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon" />
     <link rel="stylesheet" href="styles/resetCSS.css" type="text/css">
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
@@ -12,7 +13,24 @@
     <link rel="stylesheet" href="styles/WheelOfFortune.css" type="text/css">
     <script src="Scripts/checkProtocol.js"></script>
 </head>
+
 <body>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=106987423', 'ym');
+
+        ym(106987423, 'init', { ssr: true, webvisor: true, clickmap: true, ecommerce: "dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce: true, trackLinks: true });
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/106987423" style="position:absolute; left:-9999px;" alt="" /></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
     <button id="debugCheckButton" class="debugCheckbtn">Проверить кубик</button>
     <div id="errormes"></div>
 
@@ -35,10 +53,10 @@
     </div>
 
     <!-- Главное меню -->
-     <div id="mainMenu" class="main-menu">
+    <div id="mainMenu" class="main-menu">
         <div class="title">
             <h1 id="title">Кубик-рубика 3D</h1>
-            <span id="ver">0.0.2.3 beta</span>
+            <span id="ver">0.0.2.3+ beta</span>
         </div>
 
         <!-- Селектор языка -->
@@ -98,7 +116,7 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 
     <div id="creatorModal" class="modal">
         <div class="modal-content">
@@ -107,16 +125,19 @@
             <div class="creator-info">
                 <div class="creator-details">
                     <p><strong>Имя/name: </strong>Владимиров Максим / Vladimirov Maksim (4 курс)</p>
-                    <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER" target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
-                    <br><p><strong>Особенности проекта(Project features): </strong></p>
+                    <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER"
+                            target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
+                    <br>
+                    <p><strong>Особенности проекта(Project features): </strong></p>
                     <ul>
-                        <li>Создано с использованием THREEJS(Created using THREEJS)<br> 
+                        <li>Создано с использованием THREEJS(Created using THREEJS)<br>
                             В будущем будут \ In future be: <br>
                               * режим обучения \ mode study <br>
                               * сетевая игра \ online game
-                        </li> 
+                        </li>
                     </ul>
-                    <br><p><strong>Особая благодарность(Special Thanks):</strong></p>
+                    <br>
+                    <p><strong>Особая благодарность(Special Thanks):</strong></p>
                     <ul>
                         <li>благодарю за помощь в добавлении этой темы<br>
                             thanks for help add special this theme<br>------<br>
@@ -134,7 +155,7 @@
         <div class="modal-content_set compact">
             <span class="close-btn">&otimes;</span>
             <h2 id="settings-info">Настройки</h2>
-            
+
             <!-- Вкладки -->
             <div class="settings-tabs">
                 <button id="setTextures" class="tab-btn active" data-tab="textures">🎨 Текстуры</button>
@@ -142,7 +163,7 @@
                 <button id="setSound" class="tab-btn" data-tab="sound">🔊 Звук</button>
                 <button id="setData" class="tab-btn" data-tab="data">🗃️ Данные</button>
             </div>
-            
+
             <!-- Содержимое вкладок -->
             <div class="tab-content">
                 <!-- Текстуры -->
@@ -156,7 +177,7 @@
                             <option value="girls">🔥</option>
                         </select>
                     </div>
-                    
+
                     <div class="compact-option">
                         <label id="setColor" for="color-theme-select" class="compact-label">Цвета:</label>
                         <select id="color-theme-select" class="compact-select">
@@ -165,16 +186,17 @@
                             <option id="monochrome" value="monochrome">Монохром</option>
                         </select>
                     </div>
-                    
+
                     <div class="compact-preview">
-                        <img id="form_style" src="textures/form_style/default.webp" alt="превью" width="130"/>
+                        <img id="form_style" src="textures/form_style/default.webp" alt="превью" width="130" />
                         <div class="preview-buttons">
                             <button id="viewWheelFortune" class="compact-btn wheel-btn">▶🎡</button>
-                            <button style="display: none;" id="accept_style" class="compact-btn apply-btn">Применить</button>
+                            <button style="display: none;" id="accept_style"
+                                class="compact-btn apply-btn">Применить</button>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Управление -->
                 <div class="tab-pane" id="controls-tab">
                     <div class="compact-option">
@@ -183,12 +205,13 @@
                             <option id="control_arrows" value="control_arrows">Триггерами на кубе</option>
                             <option id="control_mouse_move" value="control_mouse_move">Движением мыши</option>
                         </select>
-                    </div>                    
+                    </div>
                 </div>
-                
+
                 <!-- Звук -->
                 <div class="tab-pane" id="sound-tab">
-                    <audio id="background_music" src="sounds/playing_the_gusli_35_33kbs.mp3" autoplay loop onerror="console.error('не удалось загрузить музыку')"></audio>
+                    <audio id="background_music" src="sounds/playing_the_gusli_35_33kbs.mp3" autoplay loop
+                        onerror="console.error('не удалось загрузить музыку')"></audio>
                     <audio id="rotation_sound" src="sounds/rotate.mp3" preload="auto"></audio>
                     <div class="compact-option slider-group">
                         <label style="color: #0f0;" id="music_name" class="compact-label">Музыка</label>
@@ -199,7 +222,7 @@
 
                         </div>
                     </div>
-                    
+
                     <div class="compact-option slider-group">
                         <label id="name_sound" class="compact-label">Звуки:</label>
                         <div class="slider-compact">
@@ -208,7 +231,7 @@
                             <span style="font-size: large;" id="prog_sound" class="volume-value">50%</span>
                         </div>
                     </div>
-                    
+
                     <div class="sound-quick">
                         <button class="sound-preset" data-volume="0">🔇 Выкл/Off</button>
                         <button class="sound-preset" data-volume="30">🔈 Тихий/Quietly</button>
@@ -216,14 +239,14 @@
                         <button class="sound-preset" data-volume="100">🔊 Макс/Max</button>
                     </div>
                 </div>
-                
+
                 <!-- Данные -->
                 <div class="tab-pane" id="data-tab">
                     <div class="data-stats">
                         <p><small>Тем разблокировано(Theme unlocked): <span id="unlocked-count">0</span></p>
                         <p><small>В колесе осталось<br>(WheelOfFortune count): <span id="wheel-count">3</span></p>
                     </div>
-                    
+
                     <div class="data-actions">
                         <button id="clearCustomThemes" class="compact-btn danger-btn">
                             🗑️ Очистить темы
@@ -232,13 +255,13 @@
                             ⚠️ Сбросить всё
                         </button>
                     </div>
-                    
+
                     <div class="data-info">
                         <p id="clearWarning"><small>⚠️ Действия необратимы!</small></p>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Быстрые действия (внизу) -->
             <div class="quick-actions">
                 <button id="quick-help" class="quick-btn">❓ Помощь</button>
@@ -254,18 +277,31 @@
             <div class="creator-info">
                 <div class="creator-details">
                     <p><strong>Автор\Author:</strong> Максим Владимиров / Maksim Vladimirov</p> <!-- Ваше имя -->
-                    <p><strong>GitHub:</strong> <a href="https://github.com/Maksim2021-whiteHAKER" target="_blank" style="color: #00aaff;">Maksim2021-whiteHAKER</a></p> <!-- Ссылка на GitHub -->
+                    <p><strong>GitHub:</strong> <a href="https://github.com/Maksim2021-whiteHAKER" target="_blank"
+                            style="color: #00aaff;">Maksim2021-whiteHAKER</a></p> <!-- Ссылка на GitHub -->
                     <!-- Раздел "Поддержка проекта" -->
-                    <h3 style="font-size: 1.2rem;" id="supportHowHelp" style="margin-top: 15px;">Как вы можете поддержать проект:</h3>
+                    <h3 style="font-size: 1.2rem;" id="supportHowHelp" style="margin-top: 15px;">Как вы можете
+                        поддержать проект:</h3>
                     <ul style="list-style-type: disc; margin-left: 20px;">
-                        <li id="putStar">Поставить звезду на <a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank" style="color: #00aaff;">GitHub</a> ⭐</li> <!-- Ссылка на GitHub репозиторий -->                       
-                        <li id="financialHelpWallet">Финансовая поддержка через кошелёк(wallet)<a href="https://yoomoney.ru/to/410015336126322" target="_blank" rel="noopener noreferrer" style="color: #00aaff;">YooMoney</a> 💰</li>
-                        <li id="financialHelpBoosty">Финансовая поддержка: <a href="https://boosty.to/ghostwarriorxz/donate" target="_blank" style="color: #00aaff;">Boosty</a> 💰</li>
-                        <li id="financialHelpDonationAlerts">Финансовая поддержка(иностранные пользователи) <a href="https://www.donationalerts.com/r/ghostwarriorxz" target="_blank" style="color: #FF0FA0;">donationalerts</a> 💰</li>               
-                        <li id="reportError">Сообщить об ошибках или предложить идеи (<a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika/issues" target="_blank" style="color: #00aaff;">Issues на GitHub</a>)</li>
+                        <li id="putStar">Поставить звезду на <a
+                                href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank"
+                                style="color: #00aaff;">GitHub</a> ⭐</li> <!-- Ссылка на GitHub репозиторий -->
+                        <li id="financialHelpWallet">Финансовая поддержка через кошелёк(wallet)<a
+                                href="https://yoomoney.ru/to/410015336126322" target="_blank" rel="noopener noreferrer"
+                                style="color: #00aaff;">YooMoney</a> 💰</li>
+                        <li id="financialHelpBoosty">Финансовая поддержка: <a
+                                href="https://boosty.to/ghostwarriorxz/donate" target="_blank"
+                                style="color: #00aaff;">Boosty</a> 💰</li>
+                        <li id="financialHelpDonationAlerts">Финансовая поддержка(иностранные пользователи) <a
+                                href="https://www.donationalerts.com/r/ghostwarriorxz" target="_blank"
+                                style="color: #FF0FA0;">donationalerts</a> 💰</li>
+                        <li id="reportError">Сообщить об ошибках или предложить идеи (<a
+                                href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika/issues" target="_blank"
+                                style="color: #00aaff;">Issues на GitHub</a>)</li>
                         <li id="tellUs">Рассказать друзьям о приложении! 🗣️</li>
                     </ul>
-                    <p id="thanksForSupport" style="margin-top: 15px;"><em>Спасибо за использование приложения! Любая поддержка мотивирует на развитие проекта дальше.</em></p>
+                    <p id="thanksForSupport" style="margin-top: 15px;"><em>Спасибо за использование приложения! Любая
+                            поддержка мотивирует на развитие проекта дальше.</em></p>
                 </div>
             </div>
         </div>
@@ -285,7 +321,7 @@
                 <div id="progressFill"></div>
             </div>
             <div style="user-select: none;" id="progtext">0%</div>
-        </div>    
+        </div>
         <button id="helpM" aria-label="Help"></button>
         <button id="mainMenu_g" aria-label="Main_menu"></button>
         <button class="sound_setting" id="sound_setting" aria-label="sound_setting"></button>
@@ -294,4 +330,5 @@
     <script src="Scripts/translations.js" type="module"></script>
     <script src="Scripts/index.js" type="module"></script>
 </body>
+
 </html>
