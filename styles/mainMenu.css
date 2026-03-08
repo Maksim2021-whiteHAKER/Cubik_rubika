@@ -442,7 +442,18 @@ p {
   .sound_setting {
     font-size: 1.1rem;
   }
+  .currency_balance {
+    left: calc(50% + clamp(163px, 29.5vw, 302px));
+    width: 21%;
+  }
   
+}
+
+@media (max-width: 1600px) {
+  .currency_balance {
+    left: calc(50% + clamp(163px, 31vw, 302px));
+    width: clamp(19%, 18vw, 21%);
+  }
 }
 
 @media (max-width: 768px) {
@@ -452,7 +463,7 @@ p {
     }
     
     #progressBar {
-        width: 80%;
+        width: 100%;
     }
     
     .modal {
