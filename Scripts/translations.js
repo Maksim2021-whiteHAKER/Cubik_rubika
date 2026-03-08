@@ -168,7 +168,7 @@ const translations = {
         "ar": "🛠 عناصر التحكم الرئيسية 🛠",
         "tr": "🛠 Ana Kontroller 🛠"
     },
-    "dls": { // <-- id элемента <li>
+    "dls": { 
         "ru": "◽ПКМ - правая кнопка мыши, ЛКМ - левая кнопка мыши",
         "sr": "◽Десни клик - десни тастер миша, Леви клик - леви тастер миша",
         "en": "◽RMB - Right Mouse Button, LMB - Left Mouse Button",
@@ -181,9 +181,9 @@ const translations = {
         "ar": "◽RMB - زر الماوس الأيمن، LMB - زر الماус الأيسر",
         "tr": "◽SAK - Sağ Fare Düğmesi, LAK - Sol Fare Düğmesi"
     },
-    "dls2": { // <-- id элемента <li>
+    "dls2": {
         "ru": "◽Раскладка для горячих клавиш кнопка одна (rus/eng)",
-        "sr": "◽Дугме за пречице је исто (руск/енгл)", // Примерный перевод
+        "sr": "◽Дугме за пречице је исто (руск/енгл)",
         "en": "◽Hotkey button is the same (rus/eng)",
         "es": "◽El botón de atajo es el mismo (rus/eng)",
         "zh-CN": "◽热键按钮相同 (rus/eng)",
@@ -194,9 +194,9 @@ const translations = {
         "ar": "◽زر المفتاح السريع هو نفسه (rus/eng)",
         "tr": "◽Kısayol tuşu aynıdır (rus/eng)"
     },
-    "dls3": { // <-- id элемента <li>
+    "dls3": {
         "ru": "✅ Кубик считается собранным если (верх(⬜), перед(🟩), бок(🟥))",
-        "sr": "✅ Коцка је решена ако је (горе(⬜), напред(🟩), страна(🟥))", // Примерный перевод
+        "sr": "✅ Коцка је решена ако је (горе(⬜), напред(🟩), страна(🟥))",
         "en": "✅ Cube is solved if (top(⬜), front(🟩), side(🟥))",
         "es": "✅ El cubo está resuelto si (arriba(⬜), frente(🟩), lado(🟥))",
         "zh-CN": "✅ 如果（顶部(⬜), 前面(🟩), 侧面(🟥)）则魔方已解决",
@@ -207,9 +207,9 @@ const translations = {
         "ar": "✅ يُحل المكعب إذا كان (الأعلى(⬜)، الأمام(🟩)، الجانب(🟥))",
         "tr": "✅ Küp çözüldüyse (üst(⬜), ön(🟩), yan(🟥))"
     },
-    "mcText4": { // <-- id элемента <li>
+    "mcText4": {
         "ru": "ПКМ + тащить - вращение камеры (орбита вкл)",
-        "sr": "Десни клик + превуци - ротација камере (орбита укљ.)", // Примерный перевод
+        "sr": "Десни клик + превуци - ротација камере (орбита укљ.)",
         "en": "RMB + drag - camera rotation (orbit on)",
         "es": "RMB + arrastrar - rotación de cámara (órbita activada)",
         "zh-CN": "右键 + 拖拽 - 相能旋转 (轨道开启)",
@@ -220,9 +220,9 @@ const translations = {
         "ar": "زر الماوس الأيمن + سحب - تدوير الكاميرا (ال궤道 مفعل)",
         "tr": "SAK + sürükle - kamera döndürme (yörünge açık)"
     },
-    "mcText5": { // <-- id элемента <li>
+    "mcText5": {
         "ru": "Щ/o - включить/выключить орбиту",
-        "sr": "Щ/O - укључи/искључи орбиту", // Примерный перевод
+        "sr": "Щ/O - укључи/искључи орбиту",
         "en": "Щ/O - turn orbit on/off",
         "es": "Щ/O - activar/desactivar órbita",
         "zh-CN": "Щ/O - 开启/关闭轨道",
@@ -233,9 +233,9 @@ const translations = {
         "ar": "Щ/O - تشغيل/إيقاف ال궤道",
         "tr": "Щ/O - yörüngeyi aç/kapat"
     },
-    "mcText6": { // <-- id элемента <li>
+    "mcText6": {
         "ru": "Колесико мыши - зум (орбита вкл)",
-        "sr": "Точкић миша - зум (орбита укљ.)", // Примерный перевод
+        "sr": "Точкић миша - зум (орбита укљ.)",
         "en": "Mouse wheel - zoom (orbit on)",
         "es": "Rueda del ratón - zoom (órbita activada)",
         "zh-CN": "鼠标滚轮 - 缩放 (轨道开启)",
@@ -246,9 +246,9 @@ const translations = {
         "ar": "عجلة الماوس - تكبير (ال궤道 مفعل)",
         "tr": "Fare tekerleği - yakınlaştırma (yörünge açık)"
     },
-    "mcText7": { // <-- id элемента <li>
+    "mcText7": {
         "ru": "K/r - сброс камеры",
-        "sr": "K/r - ресет камере", // Примерный перевод
+        "sr": "K/r - ресет камере",
         "en": "K/r - reset camera",
         "es": "K/r - restablecer cámara",
         "zh-CN": "K/r - 重置相机",
@@ -259,9 +259,9 @@ const translations = {
         "ar": "K/r - إعادة تعيين الكاميرا",
         "tr": "K/r - kamerayı sıfırla"
     },
-    "mcText8": { // <-- id элемента <li>
+    "mcText8": {
         "ru": "C/с - автосборка в 'Свободном режиме'",
-        "sr": "C/с - аутоматско решавање у 'Слободном режиму'", // Примерный перевод
+        "sr": "C/с - аутоматско решавање у 'Слободном режиму'",
         "en": "C/с - auto-solve in 'Free Mode'",
         "es": "C/с - auto-resolver en 'Modo Libre'",
         "zh-CN": "C/с - '自由模式'下的自动解决",
@@ -272,9 +272,9 @@ const translations = {
         "ar": "C/с - الحل التلقائي في 'الوضع الحر'",
         "tr": "C/с - 'Serbest Mod'da otomatik çözüm"
     },
-    "mcText9": { // <-- id элемента <li>
+    "mcText9": {
         "ru": "Ы/s - разборка кубика",
-        "sr": "Ы/s - мешање коцке", // Примерный перевод
+        "sr": "Ы/s - мешање коцке",
         "en": "Ы/s - scramble cube",
         "es": "Ы/s - desordenar cubo",
         "zh-CN": "Ы/s - 打乱魔方",
@@ -440,6 +440,45 @@ const translations = {
         "pt-BR": "No entanto, na face superior os controles são invertidos cima = baixo, baixo = cima",
         "ar": "ومع ذلك، على الوجه العلوي تكون عناصر التحكم معكوسة للأعلى = للأسفل، للأسفل = للأعلى",
         "tr": "Ancak üst yüze ait kontroller ters çevrilmiştir: yukarı = aşağı, aşağı = yukarı"
+    },
+    "cmm_text1": {
+        "ru": "Зажать ПКМ и двигать мышь - вращение грани в направлении движения",
+        "sr": "Држати десни клик и померати миш - ротација лица у правцу кретања",
+        "en": "Hold RMB and move mouse - face rotation in movement direction",
+        "es": "Mantener pulsado el botón derecho y mover el ratón - rotación de la cara en la dirección del movimiento",
+        "zh-CN": "按住右键并移动鼠标 - 按移动方向旋转面",
+        "fr": "Maintenir le clic droit et déplacer la souris - rotation de la face dans le sens du mouvement",
+        "de": "Rechte Maustaste halten und Maus bewegen - Drehung der Fläche in Bewegungsrichtung",
+        "ja": "右クリックを押しながらマウスを動かす - 移動方向に応じて面を回転",
+        "pt-BR": "Segurar botão direito e mover o mouse - rotação da face na direção do movimento",
+        "ar": "الضغط مع الاستمرار على الزر الأيمن وتحريك الماوس - تدوير الوجه في اتجاه الحركة",
+        "tr": "Sağ tuşu basılı tutun ve fareyi hareket ettirin - hareket yönünde yüz dönmesi"
+    },
+    "cmm_text2": {
+        "ru": "Движение мыши по оси X/Y - поворот по вертикали/горизонтали",
+        "sr": "Кретање миша по X/Y оси - ротација вертикално/хоризонтално",
+        "en": "Mouse movement along X/Y axis - rotation vertically/horizontally",
+        "es": "Movimiento del ratón a lo largo del eje X/Y - rotación vertical/horizontal",
+        "zh-CN": "鼠标沿X/Y轴移动 - 垂直/水平旋转",
+        "fr": "Mouvement de la souris selon l'axe X/Y - rotation verticale/horizontale",
+        "de": "Mausbewegung entlang der X/Y-Achse - Rotation vertikal/horizontal",
+        "ja": "マウスのX/Y軸方向の動き - 垂直/水平回転",
+        "pt-BR": "Movimento do mouse ao longo do eixo X/Y - rotação vertical/horizontal",
+        "ar": "حركة الماوس على طول المحور X/Y - تدوير عمودي/أفقي",
+        "tr": "Fare hareketi X/Y ekseni boyunca - dikey/yatay dönüş"
+    },
+    "cmm_text3": {
+        "ru": "Движение мыши по оси X/Y - поворот по вертикали/горизонтали",
+        "sr": "Кретање миша по X/Y оси - ротација вертикално/хоризонтално",
+        "en": "Mouse movement along X/Y axis - rotation vertically/horizontally",
+        "es": "Movimiento del ratón eje X/Y - rotación vertical/horizontal",
+        "zh-CN": "鼠标沿X/Y轴移动 - 垂直/水平旋转",
+        "fr": "Mouvement de la souris selon l'axe X/Y - rotation verticale/horizontale",
+        "de": "Mausbewegung entlang der X/Y-Achse - Rotation vertikal/horizontal",
+        "ja": "マウスのX/Y軸方向の動き - 垂直/水平回転",
+        "pt-BR": "Movimento do mouse ao longo do eixo X/Y - rotação vertical/horizontal",
+        "ar": "حركة الماوس على طول المحور X/Y - تدوير عمودي/أفقي",
+        "tr": "Fare hareketi X/Y ekseni boyunca - dikey/yatay dönüş"
     },
     "name_textures": {
         "ru": "Текстуры",
@@ -1096,6 +1135,16 @@ function logicSlider() {
         const sliderPrevBtn = document.getElementById('sliderPrev');
         const sliderNextBtn = document.getElementById('sliderNext');
         const currentLang = window.currentLanguage || 'ru'; // Получаем текущий язык
+        // console.info(`Test 1: ${window.currentLanguage},  Test 2: ${!window.currentLanguage}`)
+        if (!window.currentLanguage) {
+            import('./menu.js').then(menuModule => { 
+                menuModule.showClearNotification(
+                    'Language not found in my library, default language is Russian, but you can choose from the suggested languages for now.',
+                    'Language help'
+            );
+        }).catch(error => {
+            console.error('ошибка при загрузке menu.js:', error);
+        })};
         const typeVersion = document.getElementById('typeVersion');
 
         if (!sliderContainer || !sliderFlagsContainer || !sliderPrevBtn || !sliderNextBtn) {

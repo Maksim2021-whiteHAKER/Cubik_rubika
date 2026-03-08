@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>Кубик-рубика v23</title>
-    <link rel="shortcut ICON" href="https://cdn-icons-png.flaticon.com/512/522/522103.png" type="image/x-icon" />
+    <link rel="shortcut ICON" href="/textures/icon_cube128.webp" type="image/x-icon" />
     <link rel="stylesheet" href="styles/resetCSS.css" type="text/css">
     <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
     <link rel="stylesheet" href="styles/cursors.css" type="text/css">
@@ -56,7 +56,7 @@
     <div id="mainMenu" class="main-menu">
         <div class="title">
             <h1 id="title">Кубик-рубика 3D</h1>
-            <span id="ver">0.0.2.3+ beta</span>
+            <span id="ver">0.0.2.4 beta</span>
         </div>
 
         <!-- Селектор языка -->
@@ -325,6 +325,12 @@
         <button id="helpM" aria-label="Help"></button>
         <button id="mainMenu_g" aria-label="Main_menu"></button>
         <button class="sound_setting" id="sound_setting" aria-label="sound_setting"></button>
+        <button class="currency_balance" id="balance_rub" aria-label="Money">
+            <span id="currency_rub_count">0</span>
+            <span class="currency-icon-wrapper">
+                <img id="icon_money" src="textures/money.svg" alt="Куб-рублик" width="64" height="64">
+            </span>
+        </button>
     </div>
 
     <script src="Scripts/translations.js" type="module"></script>

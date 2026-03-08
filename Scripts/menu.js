@@ -28,26 +28,28 @@ pauseMenu.innerHTML = `
     <button id="resumeBtn" class="resume">Вернуться</button>
     <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>`;
 
-const helpTempletes = {
+const helpTemplates = {
     'touch_move': `
-        <li id="tm_text1">Двигайте пальцем по экрану - вращение грани в направлении движения</li>
-        <li id="tm_text2">Движение пальца по оси X/Y - поворот по вертикали/горизонтали</li>
-        <li id="tm_text3">На грани сверху управление может быть инвертировано.</li>
+        <li id="tm_text1"></li>
+        <li id="tm_text2"></li>
+        <li id="tm_text3"></li>
     `,
     'touch_trigger':`
-        <li id="tt_text1">Нажать на экран и держать, навести палец точно на стрелки и отпустить - поворот грани</li>
-        <li id="tt_text2">Нажать на экран и держать, навести палец на шар и отпустить - поворот передней грани</li>
-        <li id="tt_text3">Стрелки - это поворот кубика полностью</li>`
+        <li id="tt_text1"></li>
+        <li id="tt_text2"></li>
+        <li id="tt_text3"></li>
+    `
     ,
     'control_arrows': `
-    <li id="ca_text1">Зажать ПКМ и навести точно на стрелки - поворот грани (обрита выкл)</li>
-    <li id="ca_text2">Зажать ПКМ и навести на шар - поворот передней грани (орбита выкл)</li>
-    <li id="ca_text3">Стрелки на клавиатуре - это поворот кубика полностью</li>`
+        <li id="ca_text1"></li>
+        <li id="ca_text2"></li>
+        <li id="ca_text3"></li>
+    `
     ,
     'control_mouse_move': `
-     <li id="cmm_text1">Зажать ПКМ и двигать мышь - вращение грани в направлении движения</li>
-     <li id="cmm_text2">Движение мыши по оси X/Y - поворот по вертикали/горизонтали</li>
-     <li id="cmm_text3"'>Однако на грани сверху управление инвертировано вверх = низ, низ = вверх.</li>
+     <li id="cmm_text1"></li>
+     <li id="cmm_text2"></li>
+     <li id="cmm_text3"></li>
     `
 }
 
@@ -224,31 +226,39 @@ export function updateHelpContent(){
 
     switch (controlMode){
         case 'control_arrows':
-            // title.textContent = '🕹Управление кубиком (стрелки)🕹'; // БЫЛО
             title.textContent = '🕹' + baseTitle + window.t('control_suffix_arrows') + '🕹'; // СТАЛО
             templateKey = 'control_arrows';
             break;
         case 'control_mouse_move':
-            // title.textContent = '🕹Управление кубиком (мышь)🕹'; // БЫЛО
             title.textContent = '🕹' + baseTitle + window.t('control_suffix_mouse_move') + '🕹'; // СТАЛО
             templateKey = 'control_mouse_move';
             break;
         case 'control_touch_move':
-            // title.textContent = '🕹Управление кубиком (сенсор)🕹'; // БЫЛО
             title.textContent = '🕹' + baseTitle + window.t('control_suffix_touch_move') + '🕹'; // СТАЛО
             templateKey = 'touch_move';
             break;
         case 'control_touch_trigger':
-            // title.textContent = '🕹Управление кубиком (сенсор-стрелки)🕹' // БЫЛО
-            title.textContent = '🕹' + baseTitle + window.t('control_suffix_touch_trigger') + '🕹'; // СТАЛО
+            title.textContent = '🕹' + baseTitle + window.t('control_suffix_touch_trigger') + '🕹';
             templateKey = 'touch_trigger';
             break;
         default:
-            // title.textContent = '🕹Управление кубиком (неизвестно)🕹'; // БЫЛО
-            title.textContent = '🕹' + baseTitle + window.t('control_suffix_unknown') + '🕹'; // СТАЛО (добавьте control_suffix_unknown в translations)
+            title.textContent = '🕹' + baseTitle + window.t('control_suffix_unknown') + '🕹';
     }
     
-    list.innerHTML = helpTempletes[templateKey] || 'Инструкции не доступны. / error';
+    let templateHTML = helpTemplates[templateKey] || 'Инструкции не доступны. / error';
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = templateHTML;
+
+    tempDiv.querySelectorAll('[id]').forEach(elem => {
+        const id = elem.id;
+        const prefixes = ['tm_', 'tt_', 'ca_', 'cmm_'];
+        if (prefixes.some(prefix => id.startsWith(prefix))){
+            elem.textContent = window.t(id) || `Перевод по ключу не найден: ${id}`; 
+        }
+    });
+
+    list.innerHTML = tempDiv.innerHTML;
 }
 
 window.updateHelpContent = updateHelpContent;
@@ -873,7 +883,7 @@ function showClearNotification(message, type = 'info') {
     notification.style.cssText = `
         position: fixed;
         top: 20px;
-        right: 20px;
+        right: 23%;
         background: ${type === 'success' ? '#2ecc71' : '#e74c3c'};
         color: white;
         padding: 15px 25px;
@@ -909,7 +919,7 @@ function showClearNotification(message, type = 'info') {
     setTimeout(() => {
         if (notification.parentNode) {
             notification.style.opacity = '0';
-            notification.style.transition = 'opacity 0.5s';
+            notification.style.transition = 'opacity 5.5s';
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
