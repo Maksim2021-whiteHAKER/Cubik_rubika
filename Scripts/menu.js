@@ -1,5 +1,5 @@
 import { showWheel, spinWheelThemes } from "./adMenager.js";
-import { applyColorTheme, scrambleCube, solveCube } from "./cube.js";
+import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
 import { getControlMode, updateProgressBar, getDeviceType, controls } from "./index.js";
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
@@ -348,26 +348,41 @@ function hideModalWF(){
     document.querySelectorAll('.wheel-container').forEach(wc => wc.style.display = 'none');
 }
 
-// Обработчики кнопок главного меню
-document.getElementById('normalMode').addEventListener('click', () => {
-    gameState.active = true
-    gameState.mode = 'normal';
-    gameState.solved = false
-    mainMenu.style.display = 'none';
-    startGameTimer();
-    scrambleCube(20);
-});
+export function setupGameEventListeners(){
 
-document.getElementById('freeMode').addEventListener('click', () => {
-    gameState.active = true
-    gameState.mode = 'free';
-    mainMenu.style.display = 'none';
-    startGameTimer();
-});
+    // Обработчики кнопок главного меню
+    document.getElementById('normalMode').addEventListener('click', () => {
+        gameState.active = true
+        gameState.mode = 'normal';
+        gameState.solved = false
+        mainMenu.style.display = 'none';
+        console.log(`_objectsNM: ${getObjects().length}`);
+        if (getObjects().length === 27){
+            scrambleCube(20);
+        } else {
+            const checkAndScrumble = () => {
+                if (getObjects().length === 27){
+                    scrambleCube(20)
+                } else {
+                    setTimeout(checkAndScrumble, 100)
+                }
+            };
+            checkAndScrumble();
+        }
+        startGameTimer();
+    });
 
-// document.getElementById('trainingMode').addEventListener('click', ()=> {
-//     alert('🛠Пока в разработке🛠')
-// })
+    document.getElementById('freeMode').addEventListener('click', () => {
+        gameState.active = true
+        gameState.mode = 'free';
+        mainMenu.style.display = 'none';
+        startGameTimer();
+    });
+
+    // document.getElementById('trainingMode').addEventListener('click', ()=> {
+    //     alert('🛠Пока в разработке🛠')
+    // })
+}
 
 // Кнопка "Сброс"
 if (resetButton) {

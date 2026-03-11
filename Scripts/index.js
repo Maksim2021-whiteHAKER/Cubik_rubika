@@ -5,13 +5,16 @@ import { PointerLockControls } from '../Scripts/lib/PointerLockControls.js';
 import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, getstaticObjects, getReferenceDynamicObjects } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
-import { gameState, congratsModal, stopTimer, togglePauseMenu, updateHelpContent } from './menu.js';
+import { gameState, congratsModal, stopTimer, togglePauseMenu, updateHelpContent, setupGameEventListeners } from './menu.js';
 
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
 let stats;
 let textureLoader = new THREE.TextureLoader();
-let texture_grass = textureLoader.load("https://threejs.org/examples/textures/terrain/grasslight-big.jpg");
+let texture_grass = textureLoader.load('textures/grasslightmin.jpg');
+texture_grass.wrapS = THREE.RepeatWrapping;
+texture_grass.wrapT = THREE.RepeatWrapping;
+texture_grass.repeat.set(2.3, 2.3);
 document.getElementById('menu_settings').style.display = 'none';
 let orbitControlSet = document.getElementById('OrbitConSet')
 let isDragging = false;
@@ -427,7 +430,7 @@ function initThree() {
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    const floorGeometry = new THREE.PlaneBufferGeometry(100, 100, 1, 1);
+    const floorGeometry = new THREE.PlaneGeometry(100, 100, 25, 25);
     floorGeometry.rotateX(-Math.PI / 2);
     const floorMaterial = new THREE.MeshLambertMaterial({ color: 0x777777, map: texture_grass });
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -1059,6 +1062,7 @@ window.addEventListener('load', () => {
         setupTriggerInteraction(triggerZones);
         initPlayer(scene, renderer, controls, controlsPointer);
         initializeControlMode();
+        setupGameEventListeners();
         startworld();
     });   
 });
