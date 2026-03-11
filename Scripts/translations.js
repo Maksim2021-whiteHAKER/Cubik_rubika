@@ -1129,7 +1129,6 @@ const emoji = [
 
 function logicSlider() {
     setTimeout(() => {
-        console.log(flagNames)
         const sliderContainer = document.getElementById('languageSliderContainer');
         const sliderFlagsContainer = document.getElementById('sliderFlags');
         const sliderPrevBtn = document.getElementById('sliderPrev');
