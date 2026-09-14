@@ -10,7 +10,7 @@ export let world;
 const loaderGLTF = new GLTFLoader();
 const LoaderDraco = new DRACOLoader();
 
-LoaderDraco.setDecoderPath('/draco/');
+LoaderDraco.setDecoderPath('draco/');
 loaderGLTF.setDRACOLoader(LoaderDraco);
 
 export const bodies = [];
@@ -187,14 +187,14 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("/models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFixCompress.glb",
+    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFixCompress.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
             // model.position.set(0, 5 ,0)
             scene.add(model);
 
-            loaderGLTF.load("/models/Cubik-Rubik_LITE_without_camera_fixCenterPosition.glb", (refgltf) => {
+            loaderGLTF.load("models/Cubik-Rubik_LITE_without_camera_fixCenterPosition.glb", (refgltf) => {
                 referenceCube = refgltf.scene;
                 referenceCube.scale.set(1, 1, 1)
                 referenceCube.position.set(0, 5, 0)
