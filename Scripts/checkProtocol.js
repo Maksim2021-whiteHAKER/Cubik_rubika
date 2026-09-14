@@ -1,3 +1,14 @@
+import { initMenu } from "./menu";
+import { version } from '../package.json'
+
+function convertionVer(version) {
+    // 1. Убираем все не‑цифровые символы (в первую очередь точки)
+    const digits = version.replace(/[^0-9]/g, ''); 
+    // 2. Удаляем ведущие нули. Если после этого ничего не осталось — возвращаем "0"
+    const result = digits.replace(/^0+/, '') || '0';
+    return result;
+}  
+
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.protocol === 'file:') {
         document.body.classList.add('page-error');
@@ -20,9 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(errorMes);
         throw new Error('Приложение не может работать через file:// из-за ограничений CORS.');
     } else {
-        const MenuScript = document.createElement('script')
-        MenuScript.src = 'Scripts/menu.js';
-        MenuScript.type = 'module';
-        document.body.appendChild(MenuScript);
+        const versionGame = document.getElementById('ver')
+        versionGame.textContent = version + " beta";
+        let versionConv = convertionVer(version);
+        document.getElementById('titleHead').textContent = "Кубик-Рубика v" + versionConv
+        initMenu()
     }
 });

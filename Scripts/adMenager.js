@@ -247,7 +247,6 @@ export async function unlockCustomThemeViaSpin() {
         } else {
             // Для тестирования без AdMob
             // rewardGranted = true;
-            // console.warn('AdMob недоступен. Режим тестирования активирован.');
             alert('--- Колесо Фортуны не доступно ---\nразработчик решает проблему (рекламы пока нет)\n\n --- Wheel of Fortune not denied --- \n develover WIP (there are not ads yet)');
         }
 

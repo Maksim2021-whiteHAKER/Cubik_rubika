@@ -1,16 +1,16 @@
-import * as THREE from '../Scripts/lib/three.module.js';
-import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../Scripts/lib/GLTFLoader.js';
-import DRACOLoader from './lib/DRACOLoader.js';
 import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
 import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
+import DRACOLoader from './lib/DRACOLoader.js';
 
 let scene;
 export let world;
 const loaderGLTF = new GLTFLoader();
 const LoaderDraco = new DRACOLoader();
 
-LoaderDraco.setDecoderPath(new URL('.', import.meta.url).href);
+LoaderDraco.setDecoderPath('/draco/');
 loaderGLTF.setDRACOLoader(LoaderDraco);
 
 export const bodies = [];
@@ -187,14 +187,14 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
     initCannon();
 
-    loaderGLTF.load("models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFixCompress.glb",
+    loaderGLTF.load("/models/Cubuk-rubic_UltraLITE_withoutCamera_rounded250FixPos_grbowy_fullFixCompress.glb",
         (gltf) => {
             const model = gltf.scene;
             model.scale.set(1, 1, 1);
             // model.position.set(0, 5 ,0)
             scene.add(model);
 
-            loaderGLTF.load("models/Cubik-Rubik_LITE_without_camera_fixCenterPosition.glb", (refgltf) => {
+            loaderGLTF.load("/models/Cubik-Rubik_LITE_without_camera_fixCenterPosition.glb", (refgltf) => {
                 referenceCube = refgltf.scene;
                 referenceCube.scale.set(1, 1, 1)
                 referenceCube.position.set(0, 5, 0)
