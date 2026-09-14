@@ -1,5 +1,7 @@
 // Scripts/translations.js
 
+import { showClearNotification } from "./menu";
+
 let version_game = 'lite'
 
 function getUserLanguage() {
@@ -992,7 +994,6 @@ const translations = {
     },
 };
 
-// 3. Глобальная переменная для хранения текущего языка
 let currentLanguage = getUserLanguage();
 
 // 4. Функция для получения перевода по ключу
@@ -1000,17 +1001,15 @@ function t(key, params = {}) {
     const translationObj = translations[key];
     if (!translationObj) {
         console.warn(`Translation key '${key}' not found.`);
-        return key; // Возвращаем ключ, если перевод не найден
+        return key;
     }
 
     let translatedText = translationObj[currentLanguage];
     if (translatedText === undefined) {
         console.warn(`Translation for key '${key}' not found for language '${currentLanguage}'.`);
-        // Попробуем вернуть перевод на языке по умолчанию (русский)
         translatedText = translationObj['ru'] || key;
     }
 
-    // Заменяем плейсхолдеры {{paramName}} на значения из params
     for (const [paramKey, paramValue] of Object.entries(params)) {
         const placeholder = `{{${paramKey}}}`;
         translatedText = translatedText.replace(new RegExp(placeholder, 'g'), paramValue);
@@ -1019,22 +1018,17 @@ function t(key, params = {}) {
     return translatedText;
 }
 
-// 5. УЛУЧШЕННАЯ Функция для применения переводов
+// 5. Функция для применения переводов
 function applyTranslations() {
     for (const key in translations) {
         if (translations.hasOwnProperty(key)) {
             const element = document.getElementById(key);
             if (element) {
-                // Получаем перевод
                 const translatedText = t(key);
 
-                // Проверяем, содержит ли перевод HTML-теги (например, <a>)
-                // Простая проверка: наличие '<' и '>'
                 if (translatedText.includes('<') && translatedText.includes('>')) {
-                    // Если содержит HTML, используем innerHTML
                     element.innerHTML = translatedText;
                 } else {
-                    // Если простой текст, используем textContent
                     if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                         if (element.hasAttribute('placeholder')) {
                             element.placeholder = translatedText;
@@ -1052,35 +1046,11 @@ function applyTranslations() {
     }
 }
 
-function initializeTranslationsOnDOMLoad() {
-    if (document.readyState === 'loading') {
-        // Если DOM ещё загружается, ждём события
-        document.addEventListener('DOMContentLoaded', () => {
-            applyTranslations();
-            // Вызовем logicSlider после applyTranslations
-            if (typeof logicSlider === 'function') {
-                logicSlider();
-            }
-        });
-    } else {
-        // Если DOM уже загружен, применяем сразу
-        applyTranslations();
-        if (typeof logicSlider === 'function') {
-            logicSlider();
-        }
-    }
-}
-
-// Запускаем инициализацию перевода
-initializeTranslationsOnDOMLoad();
-
-// 6. (Опционально) Функция для смены языка
+// 6. Функция для смены языка
 function changeLanguage(newLang) {
     if (translations['title'] && translations['title'][newLang] !== undefined) {
         currentLanguage = newLang;
         applyTranslations();
-        // updateVersionDisplay();
-        // Если игра запущена, обновляем динамический текст
         if (typeof window.updateHelpContent === 'function') {
             window.updateHelpContent();
         }
@@ -1091,9 +1061,7 @@ function changeLanguage(newLang) {
 
 console.log(`Translation system initialized. Current language: ${currentLanguage}`);
 
-// --- НОВОЕ: Данные для слайдера языков ---
-// Определим список языков для слайдера в нужном порядке
-// Коды языков должны совпадать с теми, что используются в функции changeLanguage
+// --- Данные для слайдера языков ---
 const sliderLanguages = [
     { code: 'ru', name: 'Русский' },
     { code: 'sr', name: 'Српски' },
@@ -1108,7 +1076,6 @@ const sliderLanguages = [
     { code: 'tr', name: 'Türkçe' },
 ];
 
-// зависят от version_game, пусты
 let flagImages = {};
 let flagEmoji = {};
 let flagNames = {};
@@ -1125,7 +1092,7 @@ const emoji = [
     { lang: 'Brasil', name: 'pt-BR', symbol: 'BR' },
     { lang: 'المملكة العربية السعودية', name: 'ar', symbol: 'AE' },
     { lang: 'Türkiye', name: 'tr', symbol: 'TUR' },
-]
+];
 
 function logicSlider() {
     setTimeout(() => {
@@ -1133,17 +1100,15 @@ function logicSlider() {
         const sliderFlagsContainer = document.getElementById('sliderFlags');
         const sliderPrevBtn = document.getElementById('sliderPrev');
         const sliderNextBtn = document.getElementById('sliderNext');
-        const currentLang = window.currentLanguage || 'ru'; // Получаем текущий язык
-        // console.info(`Test 1: ${window.currentLanguage},  Test 2: ${!window.currentLanguage}`)
+        const currentLang = window.currentLanguage || 'ru';
+        
         if (!window.currentLanguage) {
-            import('./menu.js').then(menuModule => { 
-                menuModule.showClearNotification(
-                    'Language not found in my library, default language is Russian, but you can choose from the suggested languages for now.',
-                    'Language help'
+            showClearNotification(
+                'Language not found in my library, default language is Russian, but you can choose from the suggested languages for now.',
+                'Language help'
             );
-        }).catch(error => {
-            console.error('ошибка при загрузке menu.js:', error);
-        })};
+        }
+        
         const typeVersion = document.getElementById('typeVersion');
 
         if (!sliderContainer || !sliderFlagsContainer || !sliderPrevBtn || !sliderNextBtn) {
@@ -1152,17 +1117,14 @@ function logicSlider() {
         }
 
         let currentIndex = sliderLanguages.findIndex(lang => lang.code === currentLang);
-        if (currentIndex === -1) currentIndex = 0; // Если текущий язык не в списке, выбираем первый
+        if (currentIndex === -1) currentIndex = 0;
 
-        // Функция для обновления отображения слайдера
         function updateSlider() {
-            sliderFlagsContainer.innerHTML = ''; // Очищаем контейнер
+            sliderFlagsContainer.innerHTML = '';
 
-            // Определяем индексы предыдущего, текущего и следующего языков
             const prevIndex = (currentIndex - 1 + sliderLanguages.length) % sliderLanguages.length;
             const nextIndex = (currentIndex + 1) % sliderLanguages.length;
 
-            // Создаем кнопки для флагов
             const flagsToDisplay = [prevIndex, currentIndex, nextIndex];
             flagsToDisplay.forEach((index, position) => {
                 const langData = sliderLanguages[index];
@@ -1172,35 +1134,32 @@ function logicSlider() {
                     flagBtn.classList.add('active');
                 }
                 flagBtn.setAttribute('data-lang', langData.code);
-                flagBtn.setAttribute('title', langData.name); // Всплывающая подсказка
+                flagBtn.setAttribute('title', langData.name);
 
                 const flagContent = document.createElement('div');
                 flagContent.style.display = 'flex';
-                flagContent.style.flexDirection = 'column'; // Элементы будут в столбик
-                flagContent.style.alignItems = 'center'; // Центрируем по горизонтали
-                flagContent.style.justifyContent = 'center'; // Центрируем по вертикали
-                flagContent.style.gap = '0.5px'; // Отступ между флагом и названием
+                flagContent.style.flexDirection = 'column';
+                flagContent.style.alignItems = 'center';
+                flagContent.style.justifyContent = 'center';
+                flagContent.style.gap = '0.5px';
 
                 let flagElement;
-                if (version_game === 'full' & flagImages[langData.code]) {
-
+                // Исправлен оператор & на &&
+                if (version_game === 'full' && flagImages[langData.code]) {
                     const flagImg = document.createElement('img');
                     typeVersion.textContent = 'Full';
                     flagImg.className = 'lang-flag-img';
                     flagImg.src = flagImages[langData.code];
-
                     flagImg.alt = langData.name || langData.code.toUpperCase();
 
                     flagImg.onerror = function () {
                         console.log(`[${langData.code}] Эмодзи fallback triggered`);
                         this.style.display = 'none';
-                        // const flagContainer = this.parentElement;
                         const emojiSpan = document.createElement('span');
                         emojiSpan.className = 'lang-flag-emoji';
                         emojiSpan.textContent = flagEmoji[langData.code] || langData.code.toUpperCase();
                         flagBtn.appendChild(emojiSpan);
-                    }
-
+                    };
                     flagElement = flagImg;
                 } else {
                     const emojiSpan = document.createElement('span');
@@ -1211,31 +1170,23 @@ function logicSlider() {
 
                 flagContent.appendChild(flagElement);
 
-                // Создаем элемент для названия языка
                 const nameDiv = document.createElement('div');
                 nameDiv.className = 'lang-flag-name';
-                nameDiv.textContent = flagNames[langData.code] || langData.name; // Используем название страны или имя языка
-                nameDiv.style.fontSize = '15px'; // Размер шрифта для названия
-                nameDiv.style.textAlign = 'center'; // Центрируем текст
+                nameDiv.textContent = flagNames[langData.code] || langData.name;
+                nameDiv.style.fontSize = '15px';
+                nameDiv.style.textAlign = 'center';
                 nameDiv.style.overflow = 'hidden';
                 nameDiv.style.textOverflow = 'ellipsis';
                 nameDiv.style.whiteSpace = 'nowrap';
-                nameDiv.title = flagNames[langData.code] || langData.name; // Всплывающая подсказка для длинных названий
+                nameDiv.title = flagNames[langData.code] || langData.name;
 
-                // Добавляем название в контейнер (оно будет под флагом/эмодзи)
                 flagContent.appendChild(nameDiv);
-
-                // Добавляем контейнер в кнопку
                 flagBtn.appendChild(flagContent);
-
-                // Добавляем кнопку в слайдер
                 sliderFlagsContainer.appendChild(flagBtn);
 
-                // Добавляем обработчик клика
                 flagBtn.addEventListener('click', () => {
                     if (typeof window.changeLanguage === 'function') {
                         window.changeLanguage(langData.code);
-                        // Обновляем currentIndex и сам слайдер
                         currentIndex = index;
                         updateSlider();
                     }
@@ -1243,7 +1194,6 @@ function logicSlider() {
             });
         }
 
-        // Обработчики для кнопок навигации
         sliderPrevBtn.addEventListener('click', () => {
             currentIndex = (currentIndex - 1 + sliderLanguages.length) % sliderLanguages.length;
             updateSlider();
@@ -1254,15 +1204,32 @@ function logicSlider() {
             updateSlider();
         });
 
-        // Инициализируем слайдер
         updateSlider();
 
-    }, 150); // Небольшая задержка для уверенности в загрузке DOM
+    }, 150);
 }
 
-export { logicSlider, sliderLanguages, emoji, changeLanguage }
+// Назначаем глобальные переменные СРАЗУ, чтобы они были доступны до загрузки DOM
+if (typeof window !== 'undefined') {
+    window.t = t;
+    window.applyTranslations = applyTranslations;
+    window.changeLanguage = changeLanguage;
+    window.currentLanguage = currentLanguage;
+}
 
-window.t = t;
-window.applyTranslations = applyTranslations;
-window.changeLanguage = changeLanguage;
-window.currentLanguage = currentLanguage;
+// Инициализация перевода при загрузке DOM (вызывается ОДИН РАЗ)
+function initializeTranslationsOnDOMLoad() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
+            if (typeof logicSlider === 'function') logicSlider();
+        });
+    } else {
+        applyTranslations();
+        if (typeof logicSlider === 'function') logicSlider();
+    }
+}
+
+initializeTranslationsOnDOMLoad();
+
+export { logicSlider, sliderLanguages, emoji, changeLanguage };

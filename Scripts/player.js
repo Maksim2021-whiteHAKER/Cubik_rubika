@@ -29,10 +29,10 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     const GLTFLoader_mod = new GLTFLoader();
     const DRACOLoader_mod = new DRACOLoader();
 
-    DRACOLoader_mod.setDecoderPath(new URL('.', import.meta.url).href);
+    DRACOLoader_mod.setDecoderPath('/draco/');
     GLTFLoader_mod.setDRACOLoader(DRACOLoader_mod);
 
-    GLTFLoader_mod.load("models/player_texture.glb", function (gltf) {
+    GLTFLoader_mod.load("/models/player_texture.glb", function (gltf) {
         playerModel = gltf.scene;
         playerModel.scale.set(1, 1, 1);
         playerModel.position.set(-1, -1.5, -13);
@@ -134,7 +134,7 @@ function updateCam(){
     if (fpsCursor && isCursorVisible){
         fpsCursor.style.left = `${mouse.x * 0.5 * window.innerWidth + window.innerWidth/2}px`;
         fpsCursor.style.top = `${-mouse.y * 0.5 * window.innerHeight + window.innerHeight/2}px`;
-    }5
+    }
 
     currentCam = (document.pointerLockElement === rendererRef.domElement)
     ? cameraPlayer : orbitControlsRef.object

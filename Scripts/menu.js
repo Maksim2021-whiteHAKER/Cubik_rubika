@@ -5,28 +5,28 @@ import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 
 // Элементы интерфейса
-const mainMenu = document.getElementById('mainMenu');
-const helpModal = document.getElementById('helpModal');
-const settingsModal = document.getElementById('settingsModal');
-const creatorModal = document.getElementById('creatorModal');
-const supportModal = document.getElementById('supportModal');
-const resetButton = document.getElementById('resetBtn');
-const backToMenuButton = document.getElementById('BackToMenuBtn');
-const acceptStyleButton = document.getElementById('accept_style');
-export const congratsModal = document.getElementById('congratsModal');
-const pauseMenu = document.createElement('div');
-const blurMenu = document.createElement('div');
-const music = document.getElementById('background_music');
-const musicBtn = document.getElementById('sound_setting');
-export const selector_theme = document.getElementById('theme-select');
-const selector_color_theme = document.getElementById('color-theme-select')
-const mcTextPhoneEl = document.getElementById('mcTextPhone');
-blurMenu.id = 'blurmenu';
-pauseMenu.id = 'pause-menu';
-pauseMenu.innerHTML = `
-    <h2 id="pause">Пауза</h2>
-    <button id="resumeBtn" class="resume">Вернуться</button>
-    <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>`;
+export let exitMenu = false;
+export let congratsModal = null;
+export let selector_theme = null;
+export let state_sounds = 3;
+export let gameState = {
+    active: false,
+    mode: null,
+    startTime: 0,
+    solved: false // Флаг, что кубик собран
+}
+
+export let timerInterval;
+export let pausedDuration = 0; // общая длительность пауз
+let pauseStart = 0; // время начала текущей паузы
+
+let mainMenu, helpModal, settingsModal, creatorModal, supportModal;
+let resetButton, backToMenuButton, acceptStyleButton;
+let music, musicBtn, selector_color_theme, mcTextPhoneEl;
+let blurMenu, pauseMenu;
+let settingsInfoElement, viewWheelFortune, helpBtn, creatorBtn, supportBtn, settingsBtn;
+let soundSettingBtn, resetAndExitBtn, resumeBtn;
+let themeSelect2;
 
 const helpTemplates = {
     'touch_move': `
@@ -53,40 +53,8 @@ const helpTemplates = {
     `
 }
 
-updateHelpContent();
-export let exitMenu = false;
-let sounds = {
-    PAUSED: 0,
-    ONLY_MUSIC: 1,
-    ONLY_SOUND: 2,
-    BOTH_ON: 3
-};
-const sound_pic = {
-    PAUSED: '🔇',
-    ONLY_MUSIC: '🎼',
-    ONLY_SOUND: '🔊',
-    BOTH_ON: '🎶'
-}
-musicBtn.innerHTML = sound_pic.BOTH_ON
-export let state_sounds = sounds.BOTH_ON;
-
-document.body.appendChild(blurMenu)
-document.body.appendChild(pauseMenu)
-
-// по умолчанию меню скрыто
-blurMenu.style.display = 'none';
-pauseMenu.style.display = 'none';
-
-export let gameState = {
-    active: false,
-    mode: null,
-    startTime: 0,
-    solved: false // Флаг, что кубик собран
-
-}
-export let timerInterval;
-export let pausedDuration = 0; // общая длительность пауз
-let pauseStart = 0; // время начала текущей паузы
+let sounds = { PAUSED: 0, ONLY_MUSIC: 1, ONLY_SOUND: 2, BOTH_ON: 3 };
+const sound_pic = { PAUSED: '🔇', ONLY_MUSIC: '🎼', ONLY_SOUND: '🔊', BOTH_ON: '🎶' }
 
 export function updateFormStyle(textureValue, themeValue){
     const formStyle = document.getElementById('form_style');
@@ -263,23 +231,6 @@ export function updateHelpContent(){
 
 window.updateHelpContent = updateHelpContent;
 
-function updateSliderValue(rangeId, labelId){
-    const range = document.getElementById(rangeId);
-    const label = document.getElementById(labelId);
-
-    range.addEventListener('input', function(){
-        const volume = this.value / 100;
-        if (rangeId === 'music_range'){
-            music.volume = volume;
-            
-        }        
-        label.textContent = this.value + '%';
-    })
-}
-
-updateSliderValue('music_range', 'prog_music')
-updateSliderValue('sound_range', 'prog_sound')
-
 export function updateSettingTitle(){
     const settingsInfoElement = document.getElementById('settings-info');
     if (!settingsInfoElement) {console.warn("Элемент #settings-info не найден для обновления заголовка."); return;}
@@ -349,7 +300,6 @@ function hideModalWF(){
 }
 
 export function setupGameEventListeners(){
-
     // Обработчики кнопок главного меню
     document.getElementById('normalMode').addEventListener('click', () => {
         gameState.active = true
@@ -384,137 +334,19 @@ export function setupGameEventListeners(){
     // })
 }
 
-// Кнопка "Сброс"
-if (resetButton) {
-    resetButton.addEventListener('click', () => {
-        if (confirm("Вы действительно хотите начать игру заново?")) {
-            gameState.active = true;
-            congratsModal.style.display = 'none';
-            resetGame();
-        }
-    });
-}
+function updateSliderValue(rangeId, labelId){
+    const range = document.getElementById(rangeId);
+    const label = document.getElementById(labelId);
 
-// Кнопка "В меню"
-if (backToMenuButton) {
-    backToMenuButton.addEventListener('click', () => {
-        goToMainMenu();
-    });
-}
-
-if (selector_color_theme){
-    selector_color_theme.addEventListener('change', ()=> {
-        const selectedTheme = selector_color_theme.value;       
-        try {
-            applyColorTheme(selectedTheme);
-            console.log(`Цветовая схема "${selectedTheme}" применена через меню.`);
-
-            updateFormStyle(selector_theme.value, selectedTheme)
-        } catch (error){
-            console.error("Ошибка применения цветовой темы: ", error)
-        }    
+    range.addEventListener('input', function(){
+        const volume = this.value / 100;
+        if (rangeId === 'music_range'){
+            music.volume = volume;
+            
+        }        
+        label.textContent = this.value + '%';
     })
-} else {
-    console.warn('Элемент выбора цветовой темы не найден в DOM.');
-    // Если элемента нет, можно создать его программно или убедиться, что он есть в HTML
 }
-
-// Обработчики для кнопок "Помощь" и "Создатель"
-document.getElementById('viewWheelFortune').addEventListener('click', showWheel)
-document.getElementById('helpBtn').addEventListener('click', () => showModal(helpModal));
-document.getElementById('creatorBtn').addEventListener('click', () => showModal(creatorModal));
-document.getElementById('supportBtn').addEventListener('click', () => showModal(supportModal));
-document.getElementById('settingsBtn').addEventListener('click', () => {
-    showModal(settingsModal)
-    updateSettingTitle();
-});
-document.getElementById('sound_setting').addEventListener('click', () => {
-    state_sounds = (state_sounds + 1) % 4;
-    switch(state_sounds){
-        case sounds.PAUSED:
-            musicBtn.innerHTML = sound_pic.PAUSED;
-            music.pause();
-            break;
-        case sounds.ONLY_MUSIC:
-            musicBtn.innerHTML = sound_pic.ONLY_MUSIC;
-            music.play().catch(e => console.error('Ошибка воиспроизведения: ', e));
-            break;
-        case sounds.ONLY_SOUND:
-            musicBtn.innerHTML = sound_pic.ONLY_SOUND;
-            music.pause();           
-            break;           
-        case sounds.BOTH_ON:
-            musicBtn.innerHTML = sound_pic.BOTH_ON;
-            music.play().catch(e => console.error('Ошибка воиспроизведения: ', e));
-            break;
-    }
-})
-
-selector_theme.addEventListener('change', async () => {
-    const theme = selector_theme.value;
-    try {
-        await applyTextures(theme, selector_theme, selector_color_theme);
-        console.log(`Текстуры "${theme}" успешно применены`);
-        updateFormStyle(theme, selector_color_theme.value)
-    } catch (error) {
-        console.error('Ошибка применения текстур:', error);
-    }
-});
-
-acceptStyleButton.addEventListener('click', async () => {
-    const theme = selector_theme.value;
-    try {
-        await applyTextures(theme);
-        alert(`Тема "${theme}" применена!`);
-    } catch (error) {
-        console.error('Ошибка применения текстур:', error);
-    }
-});
-
-document.getElementById('theme-select_2').addEventListener('change', () => {
-    updateCursorMode()
-    updateHelpContent()
-    // const mode = document.getElementById('theme-select_2').value;
-    // localStorage.setItem('')
-})
-
-document.getElementById('resetAndExitBtn').addEventListener('click', () => {
-    exitMenu = true
-    pauseMenu.style.display = 'none'
-    solveCube().then(() => {
-        goToMainMenu();
-    })
-});
-
-document.getElementById('resumeBtn').addEventListener('click', () => {
-    togglePauseMenu(); // закрытие меню
-})
-
-// Общий обработчик закрытия для всех модалок
-document.querySelectorAll(['.close-btn', '.close-btnWF']).forEach(btn => {
-    if (btn.className === 'close-btn'){
-        btn.addEventListener('click', hideModals);
-    } else if (btn.className === 'close-btnWF') {
-        btn.addEventListener('click', hideModalWF);
-    }
-});
-
-// Закрытие по клику вне окна
-window.addEventListener('click', (event) => {
-    if ((event.target.classList.contains('modal') || event.target.classList.contains('modal_set')) && !event.target.closest('#pause-menu')) {
-        hideModals();
-    }
-});
-
-// Закрытие по ESC
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        hideModals();
-    } else if (event.code === 'KeyP'){
-        console.log('подменю')
-        togglePauseMenu();
-    }
-});
 
 // Функция для переключения видимости подменю
 export function togglePauseMenu(){
@@ -558,6 +390,191 @@ export function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+}
+
+export function initMenu() {
+    // 1. Получаем элементы
+    mainMenu = document.getElementById('mainMenu');
+    helpModal = document.getElementById('helpModal');
+    settingsModal = document.getElementById('settingsModal');
+    creatorModal = document.getElementById('creatorModal');
+    supportModal = document.getElementById('supportModal');
+    congratsModal = document.getElementById('congratsModal');
+
+    resetButton = document.getElementById('resetBtn');
+    backToMenuButton = document.getElementById('BackToMenuBtn');
+    acceptStyleButton = document.getElementById('accept_style');
+    
+    music = document.getElementById('background_music');
+    musicBtn = document.getElementById('sound_setting');
+    selector_theme = document.getElementById('theme-select');
+    selector_color_theme = document.getElementById('color-theme-select');
+    mcTextPhoneEl = document.getElementById('mcTextPhone');
+
+    viewWheelFortune = document.getElementById('viewWheelFortune');
+    helpBtn = document.getElementById('helpBtn');
+    creatorBtn = document.getElementById('creatorBtn');
+    supportBtn = document.getElementById('supportBtn');
+    settingsBtn = document.getElementById('settingsBtn');
+    soundSettingBtn = document.getElementById('sound_setting');
+    resetAndExitBtn = document.getElementById('resetAndExitBtn');
+    resumeBtn = document.getElementById('resumeBtn');
+    themeSelect2 = document.getElementById('theme-select_2');
+
+    // 2. Создаем динамические элементы
+    blurMenu = document.createElement('div');
+    blurMenu.id = 'blurmenu';
+    blurMenu.style.display = 'none';
+
+    pauseMenu = document.createElement('div');
+    pauseMenu.id = 'pause-menu';
+    pauseMenu.style.display = 'none';
+    pauseMenu.innerHTML = `
+        <h2 id="pause">Пауза</h2>
+        <button id="resumeBtn" class="resume">Вернуться</button>
+        <button id="resetAndExitBtn" class="resetAndExit">Сбросить и выйти</button>
+    `;
+    
+    document.body.appendChild(blurMenu);
+    document.body.appendChild(pauseMenu);
+
+    // Переназначаем ссылки на новые кнопки в паузе
+    resetAndExitBtn = pauseMenu.querySelector('#resetAndExitBtn');
+    resumeBtn = pauseMenu.querySelector('#resumeBtn');
+
+    // 3. Инициализация состояния
+    if (musicBtn) musicBtn.innerHTML = sound_pic.BOTH_ON;
+    state_sounds = sounds.BOTH_ON;
+
+    updateHelpContent();
+    updateSliderValue('music_range', 'prog_music');
+    updateSliderValue('sound_range', 'prog_sound');
+
+    // 4. Навешиваем обработчики событий (с проверками)
+
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            if (confirm("Вы действительно хотите начать игру заново?")) {
+                if (congratsModal) congratsModal.style.display = 'none';
+                resetGame();
+            }
+        });
+    }
+
+    if (backToMenuButton) {
+        backToMenuButton.addEventListener('click', goToMainMenu);
+    }
+
+    if (selector_color_theme) {
+        selector_color_theme.addEventListener('change', () => {
+            const val = selector_color_theme.value;
+            try {
+                applyColorTheme(val);
+                if (selector_theme) updateFormStyle(selector_theme.value, val);
+            } catch (e) { console.error(e); }
+        });
+    }
+
+    // Кнопки модалок
+    if (viewWheelFortune) viewWheelFortune.addEventListener('click', showWheel);
+    if (helpBtn) helpBtn.addEventListener('click', () => showModal(helpModal));
+    if (creatorBtn) creatorBtn.addEventListener('click', () => showModal(creatorModal));
+    if (supportBtn) supportBtn.addEventListener('click', () => showModal(supportModal));
+    
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            showModal(settingsModal);
+            updateSettingTitle();
+        });
+    }
+
+    // Звук
+    if (soundSettingBtn && music) {
+        soundSettingBtn.addEventListener('click', () => {
+            state_sounds = (state_sounds + 1) % 4;
+            switch(state_sounds) {
+                case sounds.PAUSED:
+                    if (musicBtn) musicBtn.innerHTML = sound_pic.PAUSED;
+                    music.pause();
+                    break;
+                case sounds.ONLY_MUSIC:
+                    if (musicBtn) musicBtn.innerHTML = sound_pic.ONLY_MUSIC;
+                    music.play().catch(e => console.error(e));
+                    break;
+                case sounds.ONLY_SOUND:
+                    if (musicBtn) musicBtn.innerHTML = sound_pic.ONLY_SOUND;
+                    music.pause();
+                    break;
+                case sounds.BOTH_ON:
+                    if (musicBtn) musicBtn.innerHTML = sound_pic.BOTH_ON;
+                    music.play().catch(e => console.error(e));
+                    break;
+            }
+        });
+    }
+
+    // Текстуры
+    if (selector_theme) {
+        selector_theme.addEventListener('change', async () => {
+            try {
+                await applyTextures(selector_theme.value, selector_theme, selector_color_theme);
+                if (selector_color_theme) updateFormStyle(selector_theme.value, selector_color_theme.value);
+            } catch (e) { console.error(e); }
+        });
+    }
+
+    if (acceptStyleButton && selector_theme) {
+        acceptStyleButton.addEventListener('click', async () => {
+            try {
+                await applyTextures(selector_theme.value);
+                alert(`Тема "${selector_theme.value}" применена!`);
+            } catch (e) { console.error(e); }
+        });
+    }
+
+    // Управление курсором
+    if (themeSelect2) {
+        themeSelect2.addEventListener('change', () => {
+            updateHelpContent();
+        });
+    }
+
+    // Пауза
+    if (resetAndExitBtn) {
+        resetAndExitBtn.addEventListener('click', () => {
+            exitMenu = true;
+            if (pauseMenu) pauseMenu.style.display = 'none';
+            if (blurMenu) blurMenu.style.display = 'none';
+            solveCube().then(goToMainMenu);
+        });
+    }
+
+    if (resumeBtn) {
+        resumeBtn.addEventListener('click', togglePauseMenu);
+    }
+
+    // Закрытие модалок
+    document.querySelectorAll('.close-btn, .close-btnWF').forEach(btn => {
+        if (btn.classList.contains('close-btn')) {
+            btn.addEventListener('click', hideModals);
+        } else if (btn.classList.contains('close-btnWF')) {
+            btn.addEventListener('click', hideModalWF);
+        }
+    });
+
+    window.addEventListener('click', (e) => {
+        if ((e.target.classList.contains('modal') || e.target.classList.contains('modal_set')) && 
+            !e.target.closest('#pause-menu')) {
+            hideModals();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hideModals();
+        else if (e.code === 'KeyP') togglePauseMenu();
+    });
+
+    console.log("Кнопки управления данными инициализированы");
 }
 
 // компакт меню помощь ИИ
@@ -972,13 +989,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clearAllDataBtn) {
         clearAllDataBtn.addEventListener('click', clearAllData);
     }
-    
-    console.log('Кнопки управления данными инициализированы');
 });
 
 // Экспортируем функции для использования в других модулях
-export {
-    clearCustomThemes,
-    clearAllData,
-    showClearNotification
-};
+export { clearCustomThemes, clearAllData, showClearNotification };
