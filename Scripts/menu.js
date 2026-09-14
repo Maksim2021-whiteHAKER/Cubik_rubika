@@ -1,8 +1,9 @@
-import { showWheel, spinWheelThemes } from "./adMenager.js";
+import { showWheel, spinWheelThemes } from "./adManager.js";
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
 import { getControlMode, updateProgressBar, getDeviceType, controls } from "./index.js";
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
+import { cLog, cWarn } from './utils/logger.js'
 
 // Элементы интерфейса
 export let exitMenu = false;
@@ -75,7 +76,7 @@ export function updateFormStyle(textureValue, themeValue){
                     formStyle.src = 'textures/form_style/def_monochrome.webp';
                     break;
                 default:
-                    console.log('Неизвестная тема:', themeValue);
+                    cLog('Неизвестная тема:', themeValue);
                     formStyle.src = 'textures/form_style/default.webp';
                     break;
             }
@@ -95,7 +96,7 @@ export function updateFormStyle(textureValue, themeValue){
                     formStyle.src = 'textures/form_style/cars_noncassat.webp';
                     break
                 default:
-                    console.log('Неизвестная тема:', themeValue);
+                    cLog('Неизвестная тема:', themeValue);
                     formStyle.src = 'textures/form_style/default.webp';
                     break;
             }
@@ -115,7 +116,7 @@ export function updateFormStyle(textureValue, themeValue){
                     formStyle.src = 'textures/form_style/gems_noncassat.webp';
                     break;
                 default:
-                    console.log('Неизвестная тема:', themeValue);
+                    cLog('Неизвестная тема:', themeValue);
                     formStyle.src = 'textures/form_style/default.webp';
                     break;
             }
@@ -135,7 +136,7 @@ export function updateFormStyle(textureValue, themeValue){
                     formStyle.src = 'textures/form_style/girls_noncassat.webp';
                     break;
                 default:
-                    console.log('Неизвестная тема:', themeValue);
+                    cLog('Неизвестная тема:', themeValue);
                     formStyle.src = 'textures/form_style/default.webp';
                     break;
                 }
@@ -178,7 +179,7 @@ export function updateHelpContent(){
     // Получаем базовый перевод "Управление кубиком" из глобальной функции t
     // Предположим, в translations.js у вас есть ключ 'cube_control_base'
     let baseTitle = window.t('cube_control_base'); // Используем глобальную функцию
-    // console.warn(`baseT: ${baseTitle}`)
+    // cWarn(`baseT: ${baseTitle}`)
 
     // помощь для телефона
     if (mcTextPhoneEl) {
@@ -233,7 +234,7 @@ window.updateHelpContent = updateHelpContent;
 
 export function updateSettingTitle(){
     const settingsInfoElement = document.getElementById('settings-info');
-    if (!settingsInfoElement) {console.warn("Элемент #settings-info не найден для обновления заголовка."); return;}
+    if (!settingsInfoElement) {cWarn("Элемент #settings-info не найден для обновления заголовка."); return;}
 
     const isTouchDevice = navigator.maxTouchPoints > 0;
 
@@ -244,7 +245,7 @@ export function updateSettingTitle(){
 
 function resetGame() {
     if (gameState.active) {
-        console.log("Сброс игры");
+        cLog("Сброс игры");
         stopTimer();
         updateProgressBar(0);
         gameState.active = false;
@@ -265,7 +266,7 @@ function resetGame() {
 
 // Возврат в главное меню
 function goToMainMenu() {
-    console.log("Возвращаемся в главное меню");
+    cLog("Возвращаемся в главное меню");
 
     stopTimer();
     updateProgressBar(0);
@@ -306,7 +307,7 @@ export function setupGameEventListeners(){
         gameState.mode = 'normal';
         gameState.solved = false
         mainMenu.style.display = 'none';
-        console.log(`_objectsNM: ${getObjects().length}`);
+        cLog(`_objectsNM: ${getObjects().length}`);
         if (getObjects().length === 27){
             scrambleCube(20);
         } else {
@@ -574,7 +575,7 @@ export function initMenu() {
         else if (e.code === 'KeyP') togglePauseMenu();
     });
 
-    console.log("Кнопки управления данными инициализированы");
+    cLog("Кнопки управления данными инициализированы");
 }
 
 // компакт меню помощь ИИ
@@ -836,7 +837,7 @@ function clearCustomThemes() {
                 // Показываем уведомление
                 showClearNotification('Все разблокированные темы удалены!', 'success');
                 
-                console.log('Разблокированные темы очищены');
+                cLog('Разблокированные темы очищены');
             } catch (error) {
                 console.error('Ошибка при очистке тем:', error);
                 showClearNotification('Ошибка при очистке тем', 'error');
@@ -862,7 +863,7 @@ function clearAllData() {
                 // Показываем уведомление
                 showClearNotification('Все данные сброшены! Перезагрузите страницу.', 'success');
                 
-                console.log('Все данные очищены');
+                cLog('Все данные очищены');
             } catch (error) {
                 console.error('Ошибка при сбросе данных:', error);
                 showClearNotification('Ошибка при сбросе данных', 'error');

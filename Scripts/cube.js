@@ -4,6 +4,7 @@ import { GLTFLoader } from '../Scripts/lib/GLTFLoader.js';
 import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
 import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 import DRACOLoader from './lib/DRACOLoader.js';
+import { cLog, cWarn } from './utils/logger.js';
 
 let scene;
 export let world;
@@ -93,14 +94,14 @@ export function applyColorTheme(themeName) {
     } else {
         theme = colorThemes[themeName];
         if (!theme) {
-            console.warn(`Тема "${themeName}" не найдена.`);
+            cWarn(`Тема "${themeName}" не найдена.`);
             return;
         }
     }
     
 
     currentTheme = themeName;
-    console.log(`Применение цветовой темы: ${themeName}`);
+    cLog(`Применение цветовой темы: ${themeName}`);
 
     const objects = getObjects(); // Получаем массив динамических объектов (_objects)
 
@@ -114,7 +115,7 @@ export function applyColorTheme(themeName) {
                  let colorKey = null;
 
                  // Сопоставляем имя материала с ключом темы
-                 // Вам нужно проверить console.log из initCube, чтобы точно знать имена материалов
+                 // Вам нужно проверить cLog из initCube, чтобы точно знать имена материалов
                  if (materialName.includes('red') || materialName.includes('красн')) {
                      colorKey = 'red';
                  } else if (materialName.includes('green') || materialName.includes('зелен') || materialName.includes('GREEN.003')) {
@@ -131,7 +132,7 @@ export function applyColorTheme(themeName) {
                      colorKey = 'black';
                  } else {
                      // Если имя материала не распознано, можно пропустить или вывести предупреждение
-                     console.warn(`Не удалось определить цвет для материала: ${materialName} у меша ${mesh.name}`);
+                     cWarn(`Не удалось определить цвет для материала: ${materialName} у меша ${mesh.name}`);
                      return; // Пропускаем этот меш
                  }
 
@@ -153,12 +154,12 @@ export function applyColorTheme(themeName) {
                          originalMat.color.set(newColorHex);
                          originalMat.needsUpdate = true;
                      }
-                     // console.log(`Меняем цвет меша ${mesh.name} (${materialName}) на ${colorKey}: #${newColorHex.toString(16).padStart(6, '0')}`);
+                     // cLog(`Меняем цвет меша ${mesh.name} (${materialName}) на ${colorKey}: #${newColorHex.toString(16).padStart(6, '0')}`);
                  }
              }
         });
     });
-    console.log(`Цветовая тема "${themeName}" применена.`);
+    cLog(`Цветовая тема "${themeName}" применена.`);
 }
 
 // Getter для Objects
@@ -219,7 +220,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             })
 
             // Модель - динамика
-            // console.log('***Структура модели***');
+            // cLog('***Структура модели***');
             model.traverse(child => {
                 if (child.isGroup || child.isMesh) {
                     const worldPos = new THREE.Vector3();
@@ -246,9 +247,9 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                     const worldQuat = new THREE.Quaternion();
                     child.getWorldQuaternion(worldQuat);
                     if (child.isGroup && child.name !== 'Scene' ){
-                        // console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}], Кватернион: [${worldQuat.x.toFixed(2)}, ${worldQuat.y.toFixed(2)}, ${worldQuat.z.toFixed(2)}, ${worldQuat.w.toFixed(2)}]`);
-                        // console.log(`(без окр.) Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x}, ${worldPos.y}, ${worldPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
-                        // console.log(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
+                        // cLog(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}], Кватернион: [${worldQuat.x.toFixed(2)}, ${worldQuat.y.toFixed(2)}, ${worldQuat.z.toFixed(2)}, ${worldQuat.w.toFixed(2)}]`);
+                        // cLog(`(без окр.) Гр.: ${child.name}, Тип: ${child.type}, Поз. [${worldPos.x}, ${worldPos.y}, ${worldPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
+                        // cLog(`Гр.: ${child.name}, Тип: ${child.type}, Поз. [${roundedPos.x}, ${roundedPos.y}, ${roundedPos.z}], Кватернион: [${worldQuat.x}, ${worldQuat.y}, ${worldQuat.z}, ${worldQuat.w}]`);
                     }
                 }
                 
@@ -292,27 +293,27 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
                         quaternion: worldQuat.clone()
                     });
 
-                    // console.log(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}]`);
-                    // console.log(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x}, ${worldPos.y}, ${worldPos.z}]`);
+                    // cLog(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}]`);
+                    // cLog(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x}, ${worldPos.y}, ${worldPos.z}]`);
                     child.children.forEach(color => {
                         const colormat = color.material
-                        // console.log(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
+                        // cLog(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
                     })
                 }
             });
 
             _objects.sort((a, b) => a.name.localeCompare(b.name))
-            // console.log('Модель - динамика',_objects)
-            // console.log('Эталлоны ',_staticobjects)
+            // cLog('Модель - динамика',_objects)
+            // cLog('Эталлоны ',_staticobjects)
 
-            // console.log('***Эталонные позиции***');
+            // cLog('***Эталонные позиции***');
             referencePositions.forEach((data, name) => {
-                // console.log(`ЭП Гр.: ${name} Позиция: [${data.position.x.toFixed(2)}, ${data.position.y.toFixed(2)}, ${data.position.z.toFixed(2)}] Кватернион: [${data.quaternion.x.toFixed(2)}, ${data.quaternion.y.toFixed(2)}, ${data.quaternion.z.toFixed(2)}, ${data.quaternion.w.toFixed(2)}]`);
-                // console.log(`ЭП Гр.: ${name} Позиция: [${data.position.x}, ${data.position.y}, ${data.position.z}] Кватернион: [${data.quaternion.x}, ${data.quaternion.y}, ${data.quaternion.z}, ${data.quaternion.w}]`);
+                // cLog(`ЭП Гр.: ${name} Позиция: [${data.position.x.toFixed(2)}, ${data.position.y.toFixed(2)}, ${data.position.z.toFixed(2)}] Кватернион: [${data.quaternion.x.toFixed(2)}, ${data.quaternion.y.toFixed(2)}, ${data.quaternion.z.toFixed(2)}, ${data.quaternion.w.toFixed(2)}]`);
+                // cLog(`ЭП Гр.: ${name} Позиция: [${data.position.x}, ${data.position.y}, ${data.position.z}] Кватернион: [${data.quaternion.x}, ${data.quaternion.y}, ${data.quaternion.z}, ${data.quaternion.w}]`);
             });
-            console.log('initCube: Objects filled, length=', _objects.length);
+            cLog('initCube: Objects filled, length=', _objects.length);
             _objects.forEach((obj, i) => {
-                // console.log(`Object ${i}: ${obj.name}, Children: ${obj.children.length}`);
+                // cLog(`Object ${i}: ${obj.name}, Children: ${obj.children.length}`);
             });
 
             const body = new CANNON.Body({
@@ -322,7 +323,7 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
             });
             world.addBody(body);
             bodies.push({ mesh: model, body });
-            // console.log(`bodies initialized, lenght: ${bodies.length}`)
+            // cLog(`bodies initialized, lenght: ${bodies.length}`)
 
             
             if (onLoadCallback) onLoadCallback();
@@ -365,7 +366,7 @@ export function getCubesInLayer(normal, clickedObject) {
         }
     });
 
-//    console.log(`Слой по оси: ${axis}, координата: ${layerCoord}, кубиков: ${layerCubes.length}`);
+//    cLog(`Слой по оси: ${axis}, координата: ${layerCoord}, кубиков: ${layerCubes.length}`);
     return { cubes: layerCubes };
 }
 
@@ -380,11 +381,11 @@ export function checkFpsHit(mousePos) {
 export function rotateLayer(object, normal, isCounterclockwise = false) {
     return new Promise((resolve) => {
         if (isRotating || !object.parent || !normal.lengthSq()) {
-            console.log('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
+            cLog('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
             resolve();
             return;
         }
-        // console.log('Вращение🔃: ', {
+        // cLog('Вращение🔃: ', {
         //     object: object.name,
         //     normal: { x: normal.x, y: normal.y, z: normal.z },
         //     camMode: CurrentActiveCam,
@@ -394,9 +395,9 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
         const layerData = getCubesInLayer(normal, object);
         cubesToRotate = layerData.cubes;
 
-  //      console.log('rotateLayer: cubes to rotate=', cubesToRotate.length);
+  //      cLog('rotateLayer: cubes to rotate=', cubesToRotate.length);
         if (cubesToRotate.length === 0) {
-            console.log('rotateLayer: no cubes to rotate');
+            cLog('rotateLayer: no cubes to rotate');
             resolve();
             return;
         }
@@ -467,7 +468,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
                     isCubeSolved(); // Вызываем для обновления ProgressBar
                     if (isCubeSolved()) { // Проверяем, собран ли кубик
                         historyrotation = [];
-                        console.log('Куб собран');
+                        cLog('Куб собран');
                     }
                 }       
                 resolve();
@@ -487,7 +488,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
 export async function rotateWholeCube(axis, isCounterclockwise = false) {
     return new Promise((resolve) => {
         if (isRotating) {
-            console.log('rotateWholeCube: blocked, rotation in progress');
+            cLog('rotateWholeCube: blocked, rotation in progress');
             resolve();
             return;
         }
@@ -558,7 +559,7 @@ export async function rotateWholeCube(axis, isCounterclockwise = false) {
                     isCubeSolved(); // Вызываем для обновления ProgressBar
                     if (isCubeSolved()) { // Проверяем, собран ли кубик
                         historyrotation = [];
-                        console.log('Куб собран');
+                        cLog('Куб собран');
                     }
                 }      
                 resolve();
@@ -717,7 +718,7 @@ function finishRotation() {
 
 export async function scrambleCube(numMoves = 20){
     if (isRotating){
-        console.warn(`Перемешивание не может быть выполнено, т.к сейчас кубик вращается`);
+        cWarn(`Перемешивание не может быть выполнено, т.к сейчас кубик вращается`);
         return;
     }
     isScrambling = true; // включаем перемешивание
@@ -734,10 +735,10 @@ export async function scrambleCube(numMoves = 20){
         const axis = axes[Math.floor(Math.random() * axes.length)];
         const isCounterclockwise = Math.random() > 0.5;
 
-        console.log(`Перемешивание: движение ${i+1}/${numMoves}: cube=${cube.name}, axis=${axis.toArray()}, direction=${isCounterclockwise ? 'против часовой' : 'по часовой'}`)
+        cLog(`Перемешивание: движение ${i+1}/${numMoves}: cube=${cube.name}, axis=${axis.toArray()}, direction=${isCounterclockwise ? 'против часовой' : 'по часовой'}`)
         await rotateLayer(cube, axis, isCounterclockwise);
     }
-    console.log(`Перемешивание куба завершено-успешно`)
+    cLog(`Перемешивание куба завершено-успешно`)
     isScrambling = false
 }
 
@@ -764,13 +765,13 @@ export async function solveCube() {
         }
     }
     if (isCubeSolved()){
-        console.log("Кубик собран, очищаем историю вращений");
+        cLog("Кубик собран, очищаем историю вращений");
         exitMenu === false ? updateProgressBar(100) : updateProgressBar(0);
         historyrotation = [];
     } else {
-        console.warn("Кубик не собран после выполнения истории");
+        cWarn("Кубик не собран после выполнения истории");
     }
-    console.log("Сборка кубика завершена");
+    cLog("Сборка кубика завершена");
 }
 
 function optimizeHistory() {
@@ -792,7 +793,7 @@ function optimizeHistory() {
         optimized.push(current);
     }
     historyrotation = optimized;
-    console.log(`История оптимизирована, длина: ${historyrotation.length}`);
+    cLog(`История оптимизирована, длина: ${historyrotation.length}`);
 }
 
 export function checkCubeSolved(){
@@ -801,7 +802,7 @@ export function checkCubeSolved(){
 
 function isCubeSolved(debugMode = false) {
     if (_objects.length !== _staticobjects.length) {
-        console.warn(`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`);
+        cWarn(`Разная длина массивов: dynamic=${_objects.length}, static=${_staticobjects.length}`);
         const result = debugMode ? { 
             isSolved: false, 
             progress: 0,
@@ -834,7 +835,7 @@ function isCubeSolved(debugMode = false) {
 
         // Проверка имени
         if (dynamicCube.name !== staticCube.name) {
-            console.warn(`Имена не совпадают: dynamic=${dynamicCube.name}, static=${staticCube.name} на индексе ${index}`);
+            cWarn(`Имена не совпадают: dynamic=${dynamicCube.name}, static=${staticCube.name} на индексе ${index}`);
             isSolved = false;
             unsolvedObjects.push(`Имена не совпадают: dynamic=${dynamicCube.name}, static=${staticCube.name}`);
             return;
@@ -874,7 +875,7 @@ function isCubeSolved(debugMode = false) {
 
         // Проверка количества дочерних объектов
         if (dynamicCube.children.length !== staticCube.children.length) {
-            console.warn(`Разное количество дочерних объектов для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
+            cWarn(`Разное количество дочерних объектов для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
             isSolved = false;
             unsolvedObjects.push(`Разное количество дочерних объектов для ${dynamicCube.name}: dynamic=${dynamicCube.children.length}, static=${staticCube.children.length}`);
         }
@@ -889,12 +890,12 @@ function isCubeSolved(debugMode = false) {
     const totalCubes = _objects.length;
     const progressPercentage = totalCubes > 0 ? (correctCubes / totalCubes) * 100 : 0;
 
-    console.log(`Прогресс: ${correctCubes}/${totalCubes} кубиков правильно (${progressPercentage.toFixed(2)}%)`);
+    cLog(`Прогресс: ${correctCubes}/${totalCubes} кубиков правильно (${progressPercentage.toFixed(2)}%)`);
 
     if (isSolved) {
-        console.log('✅ Кубик собран по позициям и кватернионам!');
+        cLog('✅ Кубик собран по позициям и кватернионам!');
     } else {
-        // console.warn('❌ Кубик не собран.');
+        // cWarn('❌ Кубик не собран.');
     }
 
     // Обновляем прогресс-бар только если игра активна и не идет перемешивание
@@ -912,13 +913,13 @@ function isCubeSolved(debugMode = false) {
 function debugCheckCube() {
     const result = isCubeSolved(true);
     // const result = compareModels(_objects, _staticobjects); // true — возвращает подробный результат
-    console.log('test: ', result.isSolved)
+    cLog('test: ', result.isSolved)
     if (result.isSolved) {
-        console.log('✅ Куб собран!');
+        cLog('✅ Куб собран!');
         alert('✅ Куб собран!');
     } else {
-        console.warn('❌ Куб НЕ собран:');
-        console.warn(result.unsolvedObjects);
+        cWarn('❌ Куб НЕ собран:');
+        cWarn(result.unsolvedObjects);
         alert(`❌ Куб НЕ собран:\n${result.unsolvedObjects.join('\n')}`);
     }
 }

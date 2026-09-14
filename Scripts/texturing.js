@@ -1,9 +1,10 @@
 // texturing.js
 import * as THREE from '../Scripts/lib/three.module.js';
 import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
+import { cLog, cWarn } from './utils/logger.js';
 
 const infomore = document.getElementById('infomore');
-// console.log(`infomore: ${infomore.innerHTML}`)
+// cLog(`infomore: ${infomore.innerHTML}`)
 
 class CubeTextureManager {
     constructor() {
@@ -54,7 +55,7 @@ class CubeTextureManager {
                                 _originalId: themeData.id,
                                 _displayName: themeData.name || themeData.id.replace(/_/g, ' ')
                             };
-                            console.log('Загружена кастомная тема: ', customThemeId);
+                            cLog('Загружена кастомная тема: ', customThemeId);
                         }
                     });
                 }
@@ -80,7 +81,7 @@ class CubeTextureManager {
         }
         const themesArray = Object.entries(unlockedThemes).map(([id, config]) => ({ id, config }));
         localStorage.setItem('unlockedCustomThemes', JSON.stringify(unlockedThemes));
-        console.log('Разблокированные кастомные темы сохранены в localStorage.');
+        cLog('Разблокированные кастомные темы сохранены в localStorage.');
     }
     
     addCustomTheme(themeId, themeConfig, themeName = null) {
@@ -88,7 +89,7 @@ class CubeTextureManager {
         const customThemeId = `custom_${themeId}`
 
         if (this.configTheme[customThemeId]) {
-            console.warn(`Тема "${themeId}" уже существует.`);
+            cWarn(`Тема "${themeId}" уже существует.`);
             return false;
         }
         this.configTheme[customThemeId] = {
@@ -98,7 +99,7 @@ class CubeTextureManager {
         };
 
         this.saveUnlockedThemes(); // Сохраняем сразу после добавления
-        console.log(`Кастомная тема "${customThemeId}" добавлена.`);
+        cLog(`Кастомная тема "${customThemeId}" добавлена.`);
         return true;
     }
    
@@ -114,7 +115,7 @@ class CubeTextureManager {
     async checkTextureExists(texturePath) {
         try {
             const response = await fetch(texturePath, { method: 'HEAD' }); // HEAD - запрашивает только заголовки
-            // console.log(`Проверка ${texturePath}: Статус ${response.status}`); // Для отладки
+            // cLog(`Проверка ${texturePath}: Статус ${response.status}`); // Для отладки
             return response.ok; // Возвращает true, если статус 200-299 (OK), false для 404 и других ошибок
         } catch (error) {
             // console.error(`Ошибка при проверке ${texturePath}:`, error); // Для отладки
@@ -129,7 +130,7 @@ class CubeTextureManager {
         // const config = configTheme[theme]; // <-- ЗАМЕНЕНО НА this.configTheme[theme]
         const config = this.configTheme[theme];
         if (!config) {
-            console.warn(`Тема текстур "${theme}" не найдена в конфигурации.`);
+            cWarn(`Тема текстур "${theme}" не найдена в конфигурации.`);
             return;
         }
 
@@ -145,7 +146,7 @@ class CubeTextureManager {
             } else {
                 // infomore.style.display = 'block';
                 // selector_theme.value = 'default'; // <-- Не меняем значение селектора тут, пусть меню решает
-                console.warn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
+                cWarn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
                 return; // if TP === false, return
             } // if TP === false, return
         }
@@ -246,7 +247,7 @@ export async function applyTextures(theme, texture_select, selector){
         ? document.querySelector(texture_select) : texture_select;
 
         if (!textureSelect){
-            console.warn('Элемент texture_select не найден');
+            cWarn('Элемент texture_select не найден');
             return;
         }
 
@@ -263,7 +264,7 @@ export async function applyTextures(theme, texture_select, selector){
 
         if (!isDefaultSelected){
             if (!nonCassatOptionExists) {
-                console.log('applyTextures: Добавляем опцию "без наложения цвета"');
+                cLog('applyTextures: Добавляем опцию "без наложения цвета"');
                 const option = new Option("без наложения цвета/non cassat", "non_cassat");               
                 // Добавляем опцию в конец списка
                 if (selector.options.length > 0) {
@@ -272,15 +273,15 @@ export async function applyTextures(theme, texture_select, selector){
                     selector.add(option);
                 }
             } else {
-                console.log('без наложения уже есть')
+                cLog('без наложения уже есть')
             }
         } else {
             if (nonCassatOptionExists) {
-                console.log('applyTextures: Удаляем опцию "без наложения цвета"');
+                cLog('applyTextures: Удаляем опцию "без наложения цвета"');
                 if (selector.value === "non_cassat") {
                     selector.value = 'default';
                     applyColorTheme('classic');
-                    console.log('applyTextures: Цветовая тема "classic" принудительно применена после удаления "non_cassat".')                    
+                    cLog('applyTextures: Цветовая тема "classic" принудительно применена после удаления "non_cassat".')                    
                 }
                 selector.remove(nonCassatOptionIndex);
             }
