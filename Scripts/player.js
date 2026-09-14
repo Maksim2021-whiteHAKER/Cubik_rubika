@@ -29,10 +29,10 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     const GLTFLoader_mod = new GLTFLoader();
     const DRACOLoader_mod = new DRACOLoader();
 
-    DRACOLoader_mod.setDecoderPath('/draco/');
+    DRACOLoader_mod.setDecoderPath('draco/');
     GLTFLoader_mod.setDRACOLoader(DRACOLoader_mod);
 
-    GLTFLoader_mod.load("/models/player_texture.glb", function (gltf) {
+    GLTFLoader_mod.load("models/player_texture.glb", function (gltf) {
         playerModel = gltf.scene;
         playerModel.scale.set(1, 1, 1);
         playerModel.position.set(-1, -1.5, -13);
