@@ -6,3 +6,5 @@ dist/
 .DS_Store
 *.log
 .env
+
+public/textures/icon_cube128.webp
