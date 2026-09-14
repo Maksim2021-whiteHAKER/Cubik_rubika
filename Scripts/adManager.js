@@ -1,7 +1,9 @@
-// adMenager.js
+// adManager.js
 import { textureManager } from "./texturing.js";
 import { updateFormStyle } from "./menu.js";
+import { cLog, cWarn } from "./utils/logger.js";
 export {spinWheelThemes}
+
 
 // 22.01.2025 Определяем все возможные темы для "спина"
 const spinWheelThemes = [
@@ -87,7 +89,7 @@ updateWheelSegments();
 // Выбор темы из барабана с учётом редкости
 function pickRandomThemeFromWheel() {
     if (spinWheelThemes.length === 0) {
-        console.warn('Нет доступных тем в колесе фортуны');
+        cWarn('Нет доступных тем в колесе фортуны');
         return null;
     }
 
@@ -111,7 +113,7 @@ function removeThemeFromWheel(themeId) {
     if (index !== -1) {
         const removedTheme = spinWheelThemes.splice(index, 1)[0];
         localStorage.setItem('spinWheelThemes', JSON.stringify(spinWheelThemes));
-        console.log(`Тема "${removedTheme.name}" удалена из колеса фортуны`);
+        cLog(`Тема "${removedTheme.name}" удалена из колеса фортуны`);
         updateWheelSegments();
         return true;
     }
@@ -128,8 +130,8 @@ function loadSpinWheelFromStorage() {
                 // Очищаем и добавляем загруженные темы
                 spinWheelThemes.length = 0;
                 spinWheelThemes.push(...loadedThemes);
-                console.log(`Загружено ${loadedThemes.length} тем из localStorage`);
-                // console.log(loadedThemes)
+                cLog(`Загружено ${loadedThemes.length} тем из localStorage`);
+                // cLog(loadedThemes)
             }
         }
     } catch (error) {
@@ -220,13 +222,13 @@ export async function unlockCustomThemeViaSpin() {
                 // Ожидаем награду
                 rewardGranted = await new Promise((resolve) => {
                     admob.rewarded.onRewarded = () => {
-                        console.log('Видео успешно просмотрено');
+                        cLog('Видео успешно просмотрено');
                         resolve(true);
                     };
                     
                     admob.rewarded.onAdClosed = () => {
                         if (!rewardGranted) {
-                            console.log('Реклама закрыта без награды');
+                            cLog('Реклама закрыта без награды');
                             resolve(false);
                         }
                     };
@@ -338,7 +340,7 @@ export function updateTextureSelectorOptions() {
     const selector = document.getElementById('theme-select');
     
     if (!selector) {
-        console.warn('Элемент селектора текстур не найден для обновления.');
+        cWarn('Элемент селектора текстур не найден для обновления.');
         return;
     }
 
@@ -419,7 +421,7 @@ export function hideWheel() {
 // Вращение колеса
 async function spinWheel() {
     if (isSpinning) {
-        console.log('Колесо уже вращается');
+        cLog('Колесо уже вращается');
         return;
     }
 
@@ -487,7 +489,7 @@ export function initWheelOfFortune() {
         }
     });
     
-    console.log('Колесо Фортуны инициализировано');
+    cLog('Колесо Фортуны инициализировано');
 }
 
 // Добавляем стили для уведомлений

@@ -1,6 +1,6 @@
 // Scripts/translations.js
-
 import { showClearNotification } from "./menu";
+import { cLog, cWarn } from "./utils/logger";
 
 let version_game = 'lite'
 
@@ -13,7 +13,7 @@ function getUserLanguage() {
 
 const translations = {
     "title": {
-        "ru": "Кубик-рубика 3D",
+        "ru": "Кубик-Рубика 3D",
         "sr": "Рубикова коцка 3D",
         "en": "The Rubik's cube 3D",
         "es": "El cubo de Rubik 3D",
@@ -1000,13 +1000,13 @@ let currentLanguage = getUserLanguage();
 function t(key, params = {}) {
     const translationObj = translations[key];
     if (!translationObj) {
-        console.warn(`Translation key '${key}' not found.`);
+        cWarn(`Translation key '${key}' not found.`);
         return key;
     }
 
     let translatedText = translationObj[currentLanguage];
     if (translatedText === undefined) {
-        console.warn(`Translation for key '${key}' not found for language '${currentLanguage}'.`);
+        cWarn(`Translation for key '${key}' not found for language '${currentLanguage}'.`);
         translatedText = translationObj['ru'] || key;
     }
 
@@ -1055,11 +1055,11 @@ function changeLanguage(newLang) {
             window.updateHelpContent();
         }
     } else {
-        console.warn(`Language '${newLang}' is not supported.`);
+        cWarn(`Language '${newLang}' is not supported.`);
     }
 }
 
-console.log(`Translation system initialized. Current language: ${currentLanguage}`);
+cLog(`Translation system initialized. Current language: ${currentLanguage}`);
 
 // --- Данные для слайдера языков ---
 const sliderLanguages = [
@@ -1112,7 +1112,7 @@ function logicSlider() {
         const typeVersion = document.getElementById('typeVersion');
 
         if (!sliderContainer || !sliderFlagsContainer || !sliderPrevBtn || !sliderNextBtn) {
-            console.warn('Элементы слайдера языка не найдены в DOM.');
+            cWarn('Элементы слайдера языка не найдены в DOM.');
             return;
         }
 
@@ -1153,7 +1153,7 @@ function logicSlider() {
                     flagImg.alt = langData.name || langData.code.toUpperCase();
 
                     flagImg.onerror = function () {
-                        console.log(`[${langData.code}] Эмодзи fallback triggered`);
+                        cLog(`[${langData.code}] Эмодзи fallback triggered`);
                         this.style.display = 'none';
                         const emojiSpan = document.createElement('span');
                         emojiSpan.className = 'lang-flag-emoji';

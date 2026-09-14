@@ -6,6 +6,7 @@ import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLay
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
 import { gameState, congratsModal, stopTimer, togglePauseMenu, updateHelpContent, setupGameEventListeners } from './menu.js';
+import { cLog, cWarn } from './utils/logger.js';
 
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
@@ -73,7 +74,7 @@ export const isTouchDevice = getDeviceType() === 'touch';
 
 function updateControlModeSelector(){
     const controlModeSelect = document.getElementById('theme-select_2');
-    if (!controlModeSelect) {console.warn('элемент controlModeSelect не найден'); return;}
+    if (!controlModeSelect) {cWarn('элемент controlModeSelect не найден'); return;}
 
     const deviceType = getDeviceType();
     const allowedTouchModes = ['control_touch_trigger', 'control_touch_move'];
@@ -249,7 +250,7 @@ function orbitMobileControl() {
         hideArrows();
     }
     
-    console.log(`OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+    cLog(`OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
 }
 
 function updateOrbitButton() {
@@ -352,7 +353,7 @@ function onWindowResize() { // <-- Отдельная функция
 }
 
 texture_grass.onError = () => {
-    console.warn('Не удалось загрузить текстуру травы');
+    cWarn('Не удалось загрузить текстуру травы');
     texture_grass = new THREE.MeshLambertMaterial({ color: 0x00aa00 });
 };
 
@@ -404,7 +405,7 @@ function initThree() {
         controls.enabled = false;
         camera = cameraPlayer;
         CurrentActiveCam = 'player';
-        console.log('Камера: Игрок');
+        cLog('Камера: Игрок');
         updateCam();
     });
 
@@ -412,7 +413,7 @@ function initThree() {
         controls.enabled = false;
         camera = observerCamera;
         CurrentActiveCam = 'observer';
-        console.log('Камера: Наблюдатель');
+        cLog('Камера: Наблюдатель');
         updateCam();
     });
 
@@ -455,7 +456,7 @@ function initThree() {
 export function updateProgressBar(percentage){
     const progressFill = document.getElementById('progressFill');
     const progress_text = document.getElementById('progtext')
-    console.log(`${percentage}%`)
+    cLog(`${percentage}%`)
     if (progressFill){
         progressFill.style.width = `${percentage}%`;       
         progress_text.style.color = '#ffff00'
@@ -515,7 +516,7 @@ function createArrow(position, direction, color = 0x00ff00, isRotate = false, fa
 
 function showArrows(cube, mouseCoords) {
     if (!mouseCoords){
-        console.warn("showArrows: координаты не переданы, невозможно определить грань.");
+        cWarn("showArrows: координаты не переданы, невозможно определить грань.");
         return;
     }
     const blurM = document.getElementById('blurmenu')
@@ -594,7 +595,7 @@ function showArrows(cube, mouseCoords) {
         const clockwiseSphere = createArrow(blackPos, normal, 0x000001, true); // Чёрный шар 
         arrows.push(clockwiseSphere, counterclockwiseSphere);
     }   
-    console.log(`Total arrows created: ${arrows.length}`);
+    cLog(`Total arrows created: ${arrows.length}`);
 }
 
 
@@ -665,7 +666,7 @@ function setupTriggerInteraction(triggerZones) {
             selectedCube = startObject.parent; // Получаем группу кубика
 
             // Если выбран режим "Мышь", запоминаем выбранный кубик
-            console.log('проверка режима: ', getControlMode())
+            cLog('проверка режима: ', getControlMode())
             if (getControlMode() === 'control_mouse_move'){
                 isMouseDown = true;
                 rotationInProgress = false;
@@ -676,10 +677,10 @@ function setupTriggerInteraction(triggerZones) {
             } else {                                 
                 showArrows(selectedCube, mouse); 
             }
-            console.log('mousedown: object=', startObject.name, 'parent=', selectedCube.name);
+            cLog('mousedown: object=', startObject.name, 'parent=', selectedCube.name);
         } else {
             hideArrows();
-            console.log('mousedown: no cube hit');
+            cLog('mousedown: no cube hit');
         }
     });
 
@@ -713,12 +714,12 @@ function setupTriggerInteraction(triggerZones) {
                 const arrow = arrowIntersects[0].object;
                 let axis = arrow.userData.direction.clone();
                 const isCounterclockwise = arrow.userData.isRotate && !arrow.userData.rotationDirection
-                //console.log(`Rotate TRUE/FALSE ${isCounterclockwise ? 'ПРОТИВ' : 'ПО'}, axis=`, axis.toArray());           
+                //cLog(`Rotate TRUE/FALSE ${isCounterclockwise ? 'ПРОТИВ' : 'ПО'}, axis=`, axis.toArray());           
                 rotateLayer(selectedCube, axis, isCounterclockwise);
             }
 
             hideArrows();
-            console.log('mouseup: arrows cleared');
+            cLog('mouseup: arrows cleared');
         } else {
             isMouseDown = false;
             rotationInProgress = false;
@@ -759,14 +760,14 @@ function setupTriggerInteraction(triggerZones) {
                 isOrbiting = false;
             }, 500);
 
-            console.log(`Жест 3 пальцев: OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+            cLog(`Жест 3 пальцев: OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
             return;
 
         }
         
         // Автоматическое включение орбиты при 2+ пальцах (опционально)
         if (isTouchDevice && touchLen >= 2 && !controls.enabled) {
-            console.log('автовкл орбиты при 2+ пальцах');
+            cLog('автовкл орбиты при 2+ пальцах');
             controls.enabled = true;
             orbitControlSet.innerText = 'вкл';
             updateOrbitButton();
@@ -798,7 +799,7 @@ function setupTriggerInteraction(triggerZones) {
                     selectedCubeForMouse = selectedCube;
                     startX = touch.clientX;
                     startY = touch.clientY;
-                    console.log(document.body)                    
+                    cLog(document.body)                    
                     hideArrows();
                 }
             } else {
@@ -816,7 +817,7 @@ function setupTriggerInteraction(triggerZones) {
             isOrbiting = false;
             isMouseDown = false;
             hideArrows();
-            console.log('начат зум (два пальца)');
+            cLog('начат зум (два пальца)');
         }
     });
 
@@ -1009,7 +1010,7 @@ export function getControlMode() {
 }
 
 window.addEventListener('resize', (event) => {
-    console.log('Размер окна или ориентация изменились (resize)!');
+    cLog('Размер окна или ориентация изменились (resize)!');
 
     // Ваша функция обновления Three.js
     onWindowResize(); // Или тот код, что вы используете для resize
@@ -1056,7 +1057,7 @@ function initializeControlMode() {
 window.addEventListener('load', () => {
     initThree();
     initCube(scene, world, () => {
-        console.log('Cube loaded, Objects length=', getObjects().length);
+        cLog('Cube loaded, Objects length=', getObjects().length);
         const triggerZones = createTriggerZones(6.12);
         triggerZones.forEach(zone => scene.add(zone));
         setupTriggerInteraction(triggerZones);

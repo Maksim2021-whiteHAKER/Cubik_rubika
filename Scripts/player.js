@@ -3,6 +3,7 @@ import DRACOLoader from './lib/DRACOLoader.js';
 import { GLTFLoader } from './lib/GLTFLoader.js';
 import { cameraPlayer } from './index.js';
 import { checkFpsHit } from './cube.js';
+import { cLog, cWarn } from './utils/logger.js'
 
 let playerModel = null;
 let playerSpeed = 0.35;
@@ -80,7 +81,7 @@ function setupCameraControl(cameraPlayer, controlsPointer) {
 }
 
 function handlePlayerMovement(event) {
-    // if (event.code !== arrayKeys[0]) {console.log('HandPlaMov: '+ event.code)}
+    // if (event.code !== arrayKeys[0]) {cLog('HandPlaMov: '+ event.code)}
     if (!controlsPointerRef) return;
     
     switch (event.code) {
@@ -143,7 +144,7 @@ function updateCam(){
 }
 
 function updateCursor(){
-    //console.log('UC: '+!fpsCursor)
+    //cLog('UC: '+!fpsCursor)
     if (!fpsCursor) return null;
 
     const hit = checkFpsHit()
