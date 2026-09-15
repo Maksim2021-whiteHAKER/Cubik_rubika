@@ -1,5 +1,5 @@
 import * as THREE from '../Scripts/lib/three.module.js';
-import Stats from 'https://unpkg.com/three@0.122.0/examples/jsm/libs/stats.module.js';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../Scripts/lib/OrbitControls.js';
 import { PointerLockControls } from '../Scripts/lib/PointerLockControls.js';
 import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, getstaticObjects, getReferenceDynamicObjects } from './cube.js';
@@ -57,7 +57,6 @@ const rotationDelay = 150;
 const MOUSE_CONTROL_SENSITIVITY = 5;
 
 // переменные для телефона
-let currentTouches = [];
 let isPinching = false;
 let isOrbiting = false;
 let initialPinchDistance = 0;
