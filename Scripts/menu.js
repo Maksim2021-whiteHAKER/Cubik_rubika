@@ -1,4 +1,4 @@
-import { showWheel, spinWheelThemes } from "./adManager.js";
+import { showWheel, spinWheelThemes } from "./rkUpravlenie.js";
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
 import { getControlMode, updateProgressBar, getDeviceType, controls } from "./index.js";
 import { applyTextures } from "./texturing.js";
