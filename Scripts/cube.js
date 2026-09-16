@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
+import { camera, cameraPlayer, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
 import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { cLog, cWarn } from './utils/logger.js';
@@ -77,7 +77,6 @@ const NO_COLOR_OVERLAY_THEME = {
     'white': 0xf0f0f0
 }
 
-let currentTheme = 'classic';
 
 /**
  * Применяет выбраную цветовую схему ко всем цветовым плоскостям кубика.
@@ -85,12 +84,9 @@ let currentTheme = 'classic';
  */
 
 export function applyColorTheme(themeName) {
-    let theme;
-    let itSpecialMode = false;
-    
+    let theme;    
     if (themeName === 'non_cassat'){
         theme = NO_COLOR_OVERLAY_THEME;
-        itSpecialMode = true;
     } else {
         theme = colorThemes[themeName];
         if (!theme) {
@@ -98,9 +94,7 @@ export function applyColorTheme(themeName) {
             return;
         }
     }
-    
 
-    currentTheme = themeName;
     cLog(`Применение цветовой темы: ${themeName}`);
 
     const objects = getObjects(); // Получаем массив динамических объектов (_objects)
@@ -295,10 +289,10 @@ export function initCube(sceneArg, worldArg, onLoadCallback) {
 
                     // cLog(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x.toFixed(2)}, ${worldPos.y.toFixed(2)}, ${worldPos.z.toFixed(2)}]`);
                     // cLog(` Полное обозначение Объекта: ${child.name}, Тип: ${child.type}, Позиция: [${worldPos.x}, ${worldPos.y}, ${worldPos.z}]`);
-                    child.children.forEach(color => {
-                        const colormat = color.material
-                        // cLog(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
-                    })
+                    // child.children.forEach(color => {
+                    //     // const colormat = color.material
+                    //     // cLog(`Название цвета: ${colormat.name}, цвет: ${colormat.color.toArray()}, тип: ${colormat.type} \n -------------------`)                                                
+                    // })
                 }
             });
 
@@ -373,7 +367,9 @@ export function getCubesInLayer(normal, clickedObject) {
 export function checkFpsHit(mousePos) {
     if (CurrentActiveCam !== 'player') return null;
     // Используем координаты мыши вместо центра экрана
-    raycaster.setFromCamera(mousePos || new THREE.Vector2(0, 0), camera);
+    cameraPlayer.updateMatrixWorld(true);
+
+    raycaster.setFromCamera(mousePos || new THREE.Vector2(0, 0), cameraPlayer);
     const intersects = raycaster.intersectObjects(_objects, true);
     return intersects[0] || null;
 }
@@ -774,27 +770,27 @@ export async function solveCube() {
     cLog("Сборка кубика завершена");
 }
 
-function optimizeHistory() {
-    const optimized = [];
-    for (let i = 0; i < historyrotation.length; i++) {
-        const current = historyrotation[i];
-        if (optimized.length > 0) {
-            const last = optimized[optimized.length - 1];
-            if (
-                current.type === last.type &&
-                current.objectName === last.objectName &&
-                current.normal.equals(last.normal) &&
-                current.isCounterclockwise === !last.isCounterclockwise
-            ) {
-                optimized.pop(); // Удаляем противоположные вращения
-                continue;
-            }
-        }
-        optimized.push(current);
-    }
-    historyrotation = optimized;
-    cLog(`История оптимизирована, длина: ${historyrotation.length}`);
-}
+// function optimizeHistory() {
+//     const optimized = [];
+//     for (let i = 0; i < historyrotation.length; i++) {
+//         const current = historyrotation[i];
+//         if (optimized.length > 0) {
+//             const last = optimized[optimized.length - 1];
+//             if (
+//                 current.type === last.type &&
+//                 current.objectName === last.objectName &&
+//                 current.normal.equals(last.normal) &&
+//                 current.isCounterclockwise === !last.isCounterclockwise
+//             ) {
+//                 optimized.pop(); // Удаляем противоположные вращения
+//                 continue;
+//             }
+//         }
+//         optimized.push(current);
+//     }
+//     historyrotation = optimized;
+//     cLog(`История оптимизирована, длина: ${historyrotation.length}`);
+// }
 
 export function checkCubeSolved(){
     return isCubeSolved()

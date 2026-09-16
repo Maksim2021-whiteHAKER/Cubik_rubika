@@ -1,21 +1,20 @@
 import * as THREE  from 'three';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { cameraPlayer } from './index.js';
+import { cameraPlayer, orbitControlSet } from './index.js';
 import { checkFpsHit } from './cube.js';
-import { cLog, cWarn } from './utils/logger.js'
 
 let playerModel = null;
 let playerSpeed = 0.35;
 let currentCam;
 let controlsPointerRef;
+let orbitConFullText = document.getElementById('OrbitCon');
 let orbitControlsRef;
-let rendererRef
+let rendererRef;
 let zoomEnable = false;
-let arrayKeys = ['F12']
-let mouse = new THREE.Vector2();
+const keys = { KeyW: false, KeyS: false, KeyA: false, KeyD: false };
 
-let fpsCursor ;
+let fpsCursor;
 let isCursorVisible = true;
 
 export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
@@ -39,120 +38,116 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
         playerModel.position.set(-1, -1.5, -13);
         playerModel.rotateY(Math.PI);
         sceneArg.add(playerModel);
-              
+
         cameraPlayer.position.set(0, 0.8, 0);
-        cameraPlayer.lookAt(new THREE.Vector3(0, 0.8, 0));
         cameraPlayer.rotation.order = 'YXZ';
         playerModel.add(cameraPlayer);
-        
 
-        // Проверяем наличие orbitControls перед использованием
         if (!orbitControlsRef) {
             console.error("OrbitControls not initialized!");
             return;
         }
 
         setupCameraControl(cameraPlayer, controlsPointerRef);
-        window.addEventListener('keydown', handlePlayerMovement);
         updateCursor();
-    }, undefined, function (error){
+    }, undefined, function (error) {
         console.error('Ошибка загрузки модели игрока: ', error);
     });
+
+    // Слушатели клавиатуры — регистрируем один раз
+    window.addEventListener('keydown', handlePlayerMovement);
+    window.addEventListener('keyup', handlePlayerMovement);
+
+    // Запускаем циклы один раз
+    updateCam();
+    applyMovement();
 }
 
 function setupCameraControl(cameraPlayer, controlsPointer) {
     controlsPointer.addEventListener('lock', () => {
-        if (orbitControlsRef) orbitControlsRef.enabled = false;
+        if (orbitControlsRef) orbitControlsRef.enabled = false; 
+        if (orbitControlSet) orbitControlSet.style.display = 'none'; orbitConFullText.style.display = 'none';
         zoomEnable = true;
         currentCam = cameraPlayer;
-        fpsCursor.style.display = 'block'
-        document.getElementById('selected-cursor').style.display = 'none'
+        fpsCursor.style.display = 'block';
+        document.getElementById('menu_settings').style.display = 'block';
     });
 
     controlsPointer.addEventListener('unlock', () => {
-        if (orbitControlsRef) orbitControlsRef.enabled = true;
+        if (orbitControlsRef) orbitControlsRef.enabled = false;
+        if (orbitControlSet) orbitControlSet.innerText = 'вкл'; orbitConFullText.style.display = 'block';
         zoomEnable = false;
-        currentCam = orbitControlsRef.object; // Используем камеру OrbitControls
-        fpsCursor.style.display = 'none'
+        currentCam = orbitControlsRef.object;
+        fpsCursor.style.display = 'none';
+        document.getElementById('menu_settings').style.display = 'none';
     });
 
-    // Устанавливаем начальную камеру
     currentCam = orbitControlsRef ? orbitControlsRef.object : cameraPlayer;
 }
 
 function handlePlayerMovement(event) {
-    // if (event.code !== arrayKeys[0]) {cLog('HandPlaMov: '+ event.code)}
     if (!controlsPointerRef) return;
-    
-    switch (event.code) {
-        case 'KeyW':
-            controlsPointerRef.moveForward(playerSpeed);
-            break;
-        case 'KeyS':
-            controlsPointerRef.moveForward(-playerSpeed);
-            break;
-        case 'KeyD':
-            controlsPointerRef.moveRight(playerSpeed);
-            break;
-        case 'KeyA':
-            controlsPointerRef.moveRight(-playerSpeed);
-            break;
-        // case 'KeyF':
-        //     toggleCam();
-        //     break;
+    if (event.repeat) return;
+
+    if (event.code in keys) {
+        keys[event.code] = event.type === 'keydown';
+    }
+
+    if (event.code === 'KeyF' && event.type === 'keydown') {
+        toggleCam();
     }
 }
 
 function toggleCam() {
     if (!controlsPointerRef || !orbitControlsRef) return;
-    
-    if (document.pointerLockElement === rendererRef.domElement) {
-        controlsPointerRef.unlock();
-        document.getElementById('menu_settings').style.display = 'none'
-    } else {
-        controlsPointerRef.lock();
-        document.getElementById('menu_settings').style.display = 'block'
-    }
+    if (document.pointerLockElement === rendererRef.domElement) { controlsPointerRef.unlock(); } else { controlsPointerRef.lock(); }
 }
 
-function zoomWheel(event){
+function zoomWheel(event) {
     if (!zoomEnable) return;
-    const delta = event.deltaY * 0.1; // наименьший множитель для плавности
-    currentCam.fov = THREE.MathUtils.clamp(currentCam.fov + delta,
-        30, // мин
-        75, // макс   
-    );
+    const delta = event.deltaY * 0.1;
+    currentCam.fov = THREE.MathUtils.clamp(currentCam.fov + delta, 30, 75);
     document.getElementById("CurntCamFOV").innerHTML = currentCam.fov;
     currentCam.updateProjectionMatrix();
 }
 
-window.addEventListener('wheel', zoomWheel, {passive: false})
+window.addEventListener('wheel', zoomWheel, { passive: false });
 
-
-function updateCam(){
+function updateCam() {
     if (!controlsPointerRef) return;
 
-    if (fpsCursor && isCursorVisible){
-        fpsCursor.style.left = `${mouse.x * 0.5 * window.innerWidth + window.innerWidth/2}px`;
-        fpsCursor.style.top = `${-mouse.y * 0.5 * window.innerHeight + window.innerHeight/2}px`;
+    currentCam = (document.pointerLockElement === rendererRef.domElement)
+        ? cameraPlayer
+        : (orbitControlsRef?.object || cameraPlayer);
+
+    if (fpsCursor && isCursorVisible) {
+        fpsCursor.style.left = '50%';
+        fpsCursor.style.top = '50%';
+        fpsCursor.style.transform = 'translate(-50%, -50%)';
     }
 
-    currentCam = (document.pointerLockElement === rendererRef.domElement)
-    ? cameraPlayer : orbitControlsRef.object
-     
-    requestAnimationFrame(updateCam)
+    requestAnimationFrame(updateCam);
 }
 
-function updateCursor(){
-    //cLog('UC: '+!fpsCursor)
-    if (!fpsCursor) return null;
+function applyMovement() {
+    if (document.pointerLockElement === rendererRef.domElement) {
+        if (keys.KeyW) controlsPointerRef.moveForward(playerSpeed);
+        if (keys.KeyS) controlsPointerRef.moveForward(-playerSpeed);
+        if (keys.KeyD) controlsPointerRef.moveRight(playerSpeed);
+        if (keys.KeyA) controlsPointerRef.moveRight(-playerSpeed);
+    }
 
-    const hit = checkFpsHit()
-    if (hit)
-    { /*цвет попадания*/ fpsCursor.classList.add('highlight');} 
-    else 
-    { /*Обычный цвет*/ fpsCursor.classList.remove('highlight'); }
+    requestAnimationFrame(applyMovement);
+}
+
+function updateCursor() {
+    if (!fpsCursor) return;
+
+    const hit = checkFpsHit();
+    if (hit) {
+        fpsCursor.classList.add('highlight');
+    } else {
+        fpsCursor.classList.remove('highlight');
+    }
     requestAnimationFrame(updateCursor);
 }
-
-updateCam();

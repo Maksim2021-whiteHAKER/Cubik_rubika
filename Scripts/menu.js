@@ -1,4 +1,4 @@
-import { showWheel, spinWheelThemes } from "./rkUpravlenie.js";
+import { showWheel, spinWheelThemes, updateTextureSelectorOptions, loadSpinWheelFromStorage, updateWheelSegments } from "./rkUpravlenie.js";
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
 import { getControlMode, updateProgressBar, getDeviceType, controls } from "./index.js";
 import { applyTextures } from "./texturing.js";
@@ -149,13 +149,13 @@ export function updateFormStyle(textureValue, themeValue){
     }
 }
 
-function updateCursorMode(){
-    document.body.classList.remove('control-mouse-move');
+// function updateCursorMode(){
+//     document.body.classList.remove('control-mouse-move');
 
-    if (getControlMode() === 'control_mouse_move'){
-        document.body.classList.add('control-mouse-move');
-    }
-}
+//     if (getControlMode() === 'control_mouse_move'){
+//         document.body.classList.add('control-mouse-move');
+//     }
+// }
 
 export function updateHelpContent(){
     const deviceType = getDeviceType(); // Не используется в этом примере, но может быть нужна для логики
@@ -232,8 +232,8 @@ export function updateHelpContent(){
 
 window.updateHelpContent = updateHelpContent;
 
-export function updateSettingTitle(){
-    const settingsInfoElement = document.getElementById('settings-info');
+export function updateSettingTitle(){0
+    settingsInfoElement = document.getElementById('settings-info');
     if (!settingsInfoElement) {cWarn("Элемент #settings-info не найден для обновления заголовка."); return;}
 
     const isTouchDevice = navigator.maxTouchPoints > 0;
@@ -649,8 +649,7 @@ function updateSettingsStats() {
         'control_touch_move': 'Сенсор',
         'control_touch_trigger': 'Триггеры'
     };
-    // document.getElementById('current-control-mode').textContent = 
-    //     controlNames[controlMode] || 'Неизвестно';
+    document.getElementById('current-control-mode').textContent = controlNames[controlMode] || 'Неизвестно';
 }
 
 // Кнопка сброса настроек

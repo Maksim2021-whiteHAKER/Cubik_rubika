@@ -8,6 +8,7 @@ import { createTriggerZones } from './cubeInteraction.js';
 import { gameState, congratsModal, stopTimer, togglePauseMenu, updateHelpContent, setupGameEventListeners } from './menu.js';
 import { cLog, cWarn } from './utils/logger.js';
 
+
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
 let stats;
@@ -18,15 +19,15 @@ texture_grass.wrapT = THREE.RepeatWrapping;
 texture_grass.repeat.set(2.3, 2.3);
 document.getElementById('menu_settings').style.display = 'none';
 const lightControls = document.getElementById('lightControls');
-let orbitControlSet = document.getElementById('OrbitConSet')
+export let orbitControlSet = document.getElementById('OrbitConSet')
 let isDragging = false;
 let startObject = null;
 const raycaster = new THREE.Raycaster();
 let arrows = []; // Массив для стрелок
 let selectedCube = null;
-
 let ambientLight;
 let directionalLight;
+let isDev = import.meta.env.DEV
 
 // сопоставление цвета грани на повороты
 const rotationMap = {
@@ -59,12 +60,26 @@ let startX = 0, startY = 0;
 let selectedCubeForMouse = null;
 const rotationDelay = 150;
 const MOUSE_CONTROL_SENSITIVITY = 5;
+let currentTouches;
 
 // переменные для телефона
 let isPinching = false;
 let isOrbiting = false;
 let initialPinchDistance = 0;
 let initialOrbitCenter = new THREE.Vector2();
+
+// получение нормали координат девайса
+function getMouseNCD(event) { 
+    if (CurrentActiveCam === 'player' && document.pointerLockElement === renderer.domElement) {
+        return new THREE.Vector2(0, 0);
+    }    
+
+    const rect = renderer.domElement.getBoundingClientRect();
+    return new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
+    )
+}
 
 export function getDeviceType(){
     if (navigator.maxTouchPoints > 0){
@@ -405,19 +420,15 @@ function initThree() {
     createMobileControls()
 
     controlsPointer.addEventListener('lock', () => {
-        controls.enabled = false;
         camera = cameraPlayer;
         CurrentActiveCam = 'player';
         cLog('Камера: Игрок');
-        updateCam();
     });
 
     controlsPointer.addEventListener('unlock', () => {
-        controls.enabled = false;
         camera = observerCamera;
         CurrentActiveCam = 'observer';
         cLog('Камера: Наблюдатель');
-        updateCam();
     });
 
     controls.update();
@@ -426,7 +437,7 @@ function initThree() {
     document.body.appendChild(stats.dom);
 
     // --- Освещение ---
-    import.meta.env.DEV === true ? lightControls.style.display = 'block' : lightControls.style.display = 'none';
+    isDev ? lightControls.style.display = 'block' : lightControls.style.display = 'none';
     ambientLight = new THREE.AmbientLight(0x666666, 6);
     scene.add(ambientLight);
 
@@ -436,7 +447,7 @@ function initThree() {
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    if (import.meta.env.DEV) {
+    if (isDev) {
         // --- Ползунки ---
         const ambientRange = document.getElementById('ambientRange');
         const directionalRange = document.getElementById('directionalRange');
@@ -560,8 +571,6 @@ function showArrows(cube, mouseCoords) {
     const sphereOffset = cubeSize * 0.101; // Смещение шаров по вертикале
 
     // Находим грань, на которую кликнули
-    const {x, y} = mouseCoords;
-    const mouse = new THREE.Vector2();
     raycaster.setFromCamera(mouseCoords, camera);
     const intersects = raycaster.intersectObjects([cube], true);
     if (intersects.length === 0) return;
@@ -638,36 +647,37 @@ document.addEventListener('keydown', async (event) => {
     const blurM = document.getElementById('blurmenu')
     if (blurM && blurM.style.display === 'block') { return; }
     if (!gameState.active) return
+    if (CurrentActiveCam === 'player') return;
     if (event.code === 'KeyO') {
         orbitMobileControl();
-    } else if (event.code === 'KeyR' && CurrentActiveCam === 'observer') {
+    } else if (event.code === 'KeyR') {
         camera.position.set(15, 15, 15);
         camera.lookAt(0, 5, 0);
         controls.update();
-    } else if (event.code === 'KeyT' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'KeyT'){
         camera.position.set(1.20, 6, 21.74);
         camera.lookAt(0, 5, 0);
         controls.update();
-    } else if (event.code === 'KeyB' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'KeyB'){
         camera.position.set(-0.31, 14.50, -21.44);
         camera.lookAt(0, 5, 0);
         controls.update();
-    } else if (event.code === 'KeyI' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'KeyI'){
         camera.position.set(-21.20, 15, -0.82);
         camera.lookAt(0, 5, 0);
         controls.update();
-    } else if (event.code === 'KeyY' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'KeyY'){
         camera.position.set(0, -18.45, 0);
         camera.lookAt(0, 5, 0);
         controls.update();
-    } else if (event.code === 'KeyS' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'KeyS'){
         alert("Начато перемешивание куба");
         scrambleCube(20);
-    } else if (event.code === 'KeyC' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'KeyC'){
         solveCube();
-    } else if (event.code === 'ArrowLeft' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'ArrowLeft' ){
         await rotateWholeCube(new THREE.Vector3(0, 1, 0), true)
-    } else if (event.code === 'ArrowRight' && CurrentActiveCam === 'observer'){
+    } else if (event.code === 'ArrowRight'){
         await rotateWholeCube(new THREE.Vector3(0, 1, 0), false)
     } else if (event.code === 'ArrowUp'){
         await rotateWholeCube(new THREE.Vector3(1, 0, 0), false)
@@ -680,9 +690,7 @@ function setupTriggerInteraction(triggerZones) {
     window.addEventListener('mousedown', (event) => {
         if (!gameState.active || event.button !== 0) return;
 
-        const mouse = new THREE.Vector2();
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+        const mouse = getMouseNCD(event)
 
         raycaster.setFromCamera(mouse, camera);
         const staticObjects = getstaticObjects();
@@ -732,9 +740,7 @@ function setupTriggerInteraction(triggerZones) {
         if (!selectedCube) return;
 
         if (getControlMode() === 'control_arrows'){
-            const mouse = new THREE.Vector2();
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+            const mouse = getMouseNCD(event)
 
             raycaster.setFromCamera(mouse, camera);
             const arrowIntersects = raycaster.intersectObjects(arrows, true);
@@ -767,7 +773,6 @@ function setupTriggerInteraction(triggerZones) {
         if (touchLen === 3) {          
 
             // Только если не в процессе других действий
-
             // Переключаем орбиту
             controls.enabled = !controls.enabled;
             orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
@@ -836,6 +841,11 @@ function setupTriggerInteraction(triggerZones) {
             }
 
             currentTouches = Array.from(event.touches);
+            cLog('touches after start:', {
+                remaining: event.touches.length,
+                changed: event.changedTouches.length,
+                mode: getControlMode()
+            });
 
         } else if (touchLen === 2 && controls.enabled) {
             // Логика zoom
@@ -886,16 +896,6 @@ function setupTriggerInteraction(triggerZones) {
             const currentPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
             const scalaDelta = currentPinchDistance / initialPinchDistance;
 
-            // Применяем зум через OrbitControls
-            // controls.dolly(scaleDelta); // Увеличивает/уменьшает приближение
-            // controls.update(); // Обновляем камеру после зума
-
-            // Или, более грубый способ (меняет FOV):
-            // camera.fov /= scaleDelta; // Уменьшаем fov -> приближение
-            // camera.fov = Math.max(controls.minPolarAngle, Math.min(controls.maxPolarAngle, camera.fov)); // Ограничиваем fov
-            // camera.updateProjectionMatrix();
-
-            // Лучше использовать dolly
             controls.dolly(scalaDelta);
             controls.update();
 
@@ -907,9 +907,7 @@ function setupTriggerInteraction(triggerZones) {
         if (!isPinching && !isOrbiting && touchLen >= 1) {
 
             const touch = event.touches[0];
-            const mouse = new THREE.Vector2();
-            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+            const mouse = getMouseNCD(event)
 
             if (getControlMode() === 'control_touch_trigger') {
                 control_arrows_mode({ clientX: touch.clientX, clientY: touch.clientY });
@@ -919,6 +917,11 @@ function setupTriggerInteraction(triggerZones) {
             }
 
             currentTouches = Array.from(event.touches);
+            cLog('touches after move:', {
+                remaining: event.touches.length,
+                changed: event.changedTouches.length,
+                mode: getControlMode()
+            });
         }
     });
 
@@ -932,9 +935,7 @@ function setupTriggerInteraction(triggerZones) {
 
         if ((!isPinching && !isOrbiting && getControlMode() === 'control_touch_trigger') && selectedCube) {
             const touch = event.changedTouches[0];
-            const mouse = new THREE.Vector2();
-            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+            const mouse = getMouseNCD(event);
 
             raycaster.setFromCamera(mouse, camera);
             const arrowIntersects = raycaster.intersectObjects(arrows, true);
@@ -954,15 +955,19 @@ function setupTriggerInteraction(triggerZones) {
             hideArrows();
         }
         currentTouches = Array.from(event.touches);
+        
+        cLog('touches after end:', {
+            remaining: event.touches.length,
+            changed: event.changedTouches.length,
+            mode: getControlMode()
+        });
     });
 }
 
 function control_arrows_mode(event) {
     if (!isDragging && selectedCube) {                           
         
-        const mouse = new THREE.Vector2();
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+        const mouse = getMouseNCD(event);
 
         raycaster.setFromCamera(mouse, camera);
         const arrowIntersects = raycaster.intersectObjects(arrows, true);
@@ -990,9 +995,7 @@ function control_mouseRotation_mode(event) {
     if (!selectedCubeForMouse || !isMouseDown || rotationInProgress) return;
 
     // получаем новое пересечение
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+    const mouse = getMouseNCD(event);
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(getReferenceDynamicObjects(), true);
@@ -1058,18 +1061,20 @@ function startworld() {
             controls.update();
         }
 
-        const pos = camera.position;
-        const rot = camera.rotation;
-        const rotDeg = {
-            x: (rot.x * 180 / Math.PI).toFixed(2),
-            y: (rot.y * 180 / Math.PI).toFixed(2),
-            z: (rot.z * 180 / Math.PI).toFixed(2)
-        };
-        cameraInfoDiv.innerHTML = `
-            Camera: ${CurrentActiveCam}<br>
+        if (isDev) {
+            const pos = camera.position;
+            const rot = camera.rotation;
+            const rotDeg = {
+                x: (rot.x * 180 / Math.PI).toFixed(2),
+                y: (rot.y * 180 / Math.PI).toFixed(2),
+                z: (rot.z * 180 / Math.PI).toFixed(2)
+            };
+            cameraInfoDiv.innerHTML = `
+                Camera: ${CurrentActiveCam}<br>
+                Position: [${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}]<br>
+                Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
             `;
-            // Position: [${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}]<br>
-            // Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
+        }
 
         renderer.render(scene, camera);
         stats.update();

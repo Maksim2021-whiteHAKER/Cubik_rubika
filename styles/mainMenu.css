@@ -7,7 +7,7 @@
     height: 100%; /* Ограничение максимальной ширины */
     padding: 2rem;
     background: rgba(0,0,0,0.9);
-    background-image: url("../public/textures/hypercubecompress.jpg");
+    background-image: url("../textures/hypercubecompress.jpg");
     background-size: cover;
     background-position: center;
     border-radius: 15px;
@@ -459,6 +459,7 @@ p {
 @media (max-width: 768px) {
     #cameraInfo {
         font-size: 12px;
+        border-radius: 5px;
         padding: 5px;
     }
     

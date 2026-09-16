@@ -120,7 +120,7 @@ function removeThemeFromWheel(themeId) {
 }
 
 // Загрузка спина из localStorage
-function loadSpinWheelFromStorage() {
+export function loadSpinWheelFromStorage() {
     try {
         const saved = localStorage.getItem('spinWheelThemes');
         if (saved) {
@@ -141,7 +141,7 @@ function loadSpinWheelFromStorage() {
 }
 
 // Обновление сегментов колеса
-function updateWheelSegments() {
+export function updateWheelSegments() {
     segments = [];
     
     // Создаем сегменты на основе доступных тем

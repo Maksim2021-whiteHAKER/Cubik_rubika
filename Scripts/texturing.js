@@ -3,9 +3,6 @@ import * as THREE  from 'three';
 import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
 import { cLog, cWarn } from './utils/logger.js';
 
-const infomore = document.getElementById('infomore');
-// cLog(`infomore: ${infomore.innerHTML}`)
-
 class CubeTextureManager {
     constructor() {
         this.textures = new Map();
@@ -79,7 +76,7 @@ class CubeTextureManager {
                 unlockedThemes.push(themeData);
             }
         }
-        const themesArray = Object.entries(unlockedThemes).map(([id, config]) => ({ id, config }));
+        // const themesArray = Object.entries(unlockedThemes).map(([id, config]) => ({ id, config }));
         localStorage.setItem('unlockedCustomThemes', JSON.stringify(unlockedThemes));
         cLog('Разблокированные кастомные темы сохранены в localStorage.');
     }
