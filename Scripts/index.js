@@ -1,4 +1,4 @@
-import * as THREE from '../Scripts/lib/three.module.js';
+import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../Scripts/lib/OrbitControls.js';
 import { PointerLockControls } from '../Scripts/lib/PointerLockControls.js';

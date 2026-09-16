@@ -1,4 +1,4 @@
-import * as THREE from '../Scripts/lib/three.module.js';
+import * as THREE  from 'three';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { GLTFLoader } from './lib/GLTFLoader.js';
 import { cameraPlayer } from './index.js';

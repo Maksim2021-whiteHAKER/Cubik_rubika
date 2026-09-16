@@ -4,7 +4,7 @@
  */
 
 // Импортируем THREE напрямую
-import * as THREE from './three.module.js'; // Укажите правильный путь
+import * as THREE from 'three'; // Укажите правильный путь
 
 // Создаём класс DRACOLoader, но не добавляем его к THREE напрямую
 class DRACOLoader extends THREE.Loader {

@@ -47,7 +47,6 @@ import {
 	PointsMaterial,
 	PropertyBinding,
 	QuaternionKeyframeTrack,
-	RGBFormat,
 	RepeatWrapping,
 	Skeleton,
 	SkinnedMesh,
@@ -61,7 +60,7 @@ import {
 	Vector3,
 	VectorKeyframeTrack,
 	sRGBEncoding
-} from "../lib/three.module.js";
+} from "three";
 
 var GLTFLoader = ( function () {
 
@@ -2543,7 +2542,7 @@ var GLTFLoader = ( function () {
 			if ( textureDef.name ) texture.name = textureDef.name;
 
 			// When there is definitely no alpha channel in the texture, set RGBFormat to save space.
-			if ( ! hasAlpha ) texture.format = RGBFormat;
+			/* RBGFormat удалён в three r137 - формат текстуры WebGL выбирает автоматом*/
 
 			var samplers = json.samplers || {};
 			var sampler = samplers[ textureDef.sampler ] || {};

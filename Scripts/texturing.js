@@ -1,5 +1,5 @@
 // texturing.js
-import * as THREE from '../Scripts/lib/three.module.js';
+import * as THREE  from 'three';
 import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
 import { cLog, cWarn } from './utils/logger.js';
 

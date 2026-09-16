@@ -1,5 +1,5 @@
 // CubeInteraction.js
-import * as THREE from 'https://unpkg.com/three@0.122.0/build/three.module.js';
+import * as THREE  from 'three';
 
 /**
  * Создает невидимые триггерные зоны вокруг кубика для определения вращений по свайпу на ребрах.
