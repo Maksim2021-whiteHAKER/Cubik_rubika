@@ -1,4 +1,6 @@
 .git/
+
+# файл есть в локалке, но нет в облаке
 /help/
 
 node_modules/
@@ -8,5 +10,4 @@ dist/
 .env
 
 public/textures/icon_cube128.webp
-three.module.js
-GLTFLoader.js
+*.docx
