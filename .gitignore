@@ -9,3 +9,4 @@ dist/
 
 public/textures/icon_cube128.webp
 three.module.js
+GLTFLoader.js

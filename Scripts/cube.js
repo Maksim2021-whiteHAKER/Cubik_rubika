@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { GLTFLoader } from '../Scripts/lib/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { camera, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
 import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 import DRACOLoader from './lib/DRACOLoader.js';

@@ -1,6 +1,6 @@
 import * as THREE  from 'three';
 import DRACOLoader from './lib/DRACOLoader.js';
-import { GLTFLoader } from './lib/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { cameraPlayer } from './index.js';
 import { checkFpsHit } from './cube.js';
 import { cLog, cWarn } from './utils/logger.js'
