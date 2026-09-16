@@ -28,11 +28,11 @@ body.page-error {
 }
 
 body.control-mouse-move {
-  cursor: url('../textures/grab50.png') 25 25, auto;
+  cursor: url('../public/textures/grab50.png') 25 25, auto;
 }
 
 body.control-mouse-move.dragging {
-  cursor: url('../textures/grabbing50.png') 25 25, auto;
+  cursor: url('../public/textures/grabbing50.png') 25 25, auto;
 }
 
 canvas {
@@ -339,12 +339,12 @@ canvas {
 
 #helpM {
     left: calc(50% + 210px); /* 200px - половина ширины прогрессбара + 10px отступ */
-    background-image: url("../textures/question-sign.svg");
+    background-image: url("../public/textures/question-sign.svg");
 }
 
 #mainMenu_g {
     right: calc(50% + 210px); /* 200px - половина ширины прогрессбара + 50px отступ */
-    background-image: url("../textures/home-page-100.svg");
+    background-image: url("../public/textures/home-page-100.svg");
 }
 
 #sound_setting {
