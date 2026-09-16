@@ -17,12 +17,16 @@ texture_grass.wrapS = THREE.RepeatWrapping;
 texture_grass.wrapT = THREE.RepeatWrapping;
 texture_grass.repeat.set(2.3, 2.3);
 document.getElementById('menu_settings').style.display = 'none';
+const lightControls = document.getElementById('lightControls');
 let orbitControlSet = document.getElementById('OrbitConSet')
 let isDragging = false;
 let startObject = null;
 const raycaster = new THREE.Raycaster();
 let arrows = []; // Массив для стрелок
 let selectedCube = null;
+
+let ambientLight;
+let directionalLight;
 
 // сопоставление цвета грани на повороты
 const rotationMap = {
@@ -421,14 +425,40 @@ function initThree() {
     stats = new Stats();
     document.body.appendChild(stats.dom);
 
-    const ambientLight = new THREE.AmbientLight(0x666666);
+    // --- Освещение ---
+    import.meta.env.DEV === true ? lightControls.style.display = 'block' : lightControls.style.display = 'none';
+    ambientLight = new THREE.AmbientLight(0x666666, 6);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    directionalLight = new THREE.DirectionalLight(0xffffff, 5);
     const distance = 20;
     directionalLight.position.set(-distance, distance, distance);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
+
+    if (import.meta.env.DEV) {
+        // --- Ползунки ---
+        const ambientRange = document.getElementById('ambientRange');
+        const directionalRange = document.getElementById('directionalRange');
+        const ambientValueLabel = document.getElementById('ambientValue');
+        const directionalValueLabel = document.getElementById('directionalValue');
+    
+        if (ambientRange) {
+            ambientRange.addEventListener('input', (e) => {
+                const value = Number(e.target.value);
+                ambientLight.intensity = value;
+                if (ambientValueLabel) ambientValueLabel.textContent = value.toFixed(2);
+            });
+        }
+    
+        if (directionalRange) {
+            directionalRange.addEventListener('input', (e) => {
+                const value = Number(e.target.value);
+                directionalLight.intensity = value;
+                if (directionalValueLabel) directionalValueLabel.textContent = value.toFixed(2);
+            });
+        }
+    }
 
     const floorGeometry = new THREE.PlaneGeometry(100, 100, 25, 25);
     floorGeometry.rotateX(-Math.PI / 2);
@@ -448,7 +478,7 @@ function initThree() {
         if (helpModal) helpModal.style.display = 'block';
     });
 
-    mainmenu_game.addEventListener('click', togglePauseMenu);
+    mainmenu_game.addEventListener('click', togglePauseMenu); 
 }
 
 // функция для обновления прогресса
