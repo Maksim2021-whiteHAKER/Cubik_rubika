@@ -336,6 +336,7 @@ texture_grass.onError = () => {
 
 const cameraInfoDiv = document.createElement('div');
 cameraInfoDiv.id = 'cameraInfo';
+cameraInfoDiv.style.display = 'none'
 document.body.appendChild(cameraInfoDiv);
 
 function initThree() {
@@ -392,9 +393,6 @@ function initThree() {
 
     controls.update();
 
-    stats = new Stats();
-    document.body.appendChild(stats.dom);
-
     // --- Освещение ---
     isDev ? lightControls.style.display = 'block' : lightControls.style.display = 'none';
     ambientLight = new THREE.AmbientLight(0x666666, 6);
@@ -407,9 +405,12 @@ function initThree() {
     scene.add(directionalLight);
 
     if (isDev) {
+        stats = new Stats();
+        document.body.appendChild(stats.dom);
+    
         // --- Ползунки ---
         const ambientRange = document.getElementById('ambientRange');
-        const directionalRange = document.getElementById('directionalRange');
+        const directionalRange = document.getElementById('d5irectionalRange');
         const ambientValueLabel = document.getElementById('ambientValue');
         const directionalValueLabel = document.getElementById('directionalValue');
     
@@ -1008,6 +1009,7 @@ function startworld() {
         }
 
         if (isDev) {
+            cameraInfoDiv.style.display = 'block';
             const pos = camera.position;
             const rot = camera.rotation;
             const rotDeg = {

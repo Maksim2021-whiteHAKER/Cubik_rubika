@@ -305,12 +305,6 @@
         </div>
 
         </div>
-        <div id="menu_settings">
-            Fov: <span id="CurntCamFOV"></span>
-        </div>
-        <div id="OrbitCon">
-            кнп. Щ(вкл/выкл) Орбита: <span id="OrbitConSet">выкл</span>
-        </div>
 
         <div id="lightControls">
             <div style="margin-bottom: 8px;">
@@ -324,21 +318,28 @@
         </div>
           
         <div id="uiOverlay">
-            <div id="progressBarContainer">
-                <div id="progressBar">
-                    <div id="progressFill"></div>
-                </div>
-                <div style="user-select: none;" id="progtext">0%</div>
+            <div id="uiLeft">
+                <div id="menu_settings">Fov: <span id="CurntCamFOV"></span></div>
+                <div id="OrbitCon">кнп. Щ(вкл/выкл)<br>Орбита: <span id="OrbitConSet">выкл</span></div>
             </div>
-            <button id="helpM" aria-label="Help"></button>
-            <button id="mainMenu_g" aria-label="Main_menu"></button>
-            <button class="sound_setting" id="sound_setting" aria-label="sound_setting"></button>
-            <button class="currency_balance" id="balance_rub" aria-label="Money">
-                <span id="currency_rub_count">0</span>
-                <span class="currency-icon-wrapper">
-                    <img id="icon_money" src="textures/money.svg" alt="Куб-рублик" width="64" height="64">
-                </span>
-            </button>
+            
+            <div id="uiCenter">
+                <button id="mainMenu_g" aria-label="Main_menu"></button>
+                <div id="progressBarContainer">
+                    <div id="progressBar">
+                        <div id="progressFill"></div>
+                    </div>
+                    <div id="progtext">0%</div>
+                </div>
+                <button id="helpM" aria-label="Help"></button>
+                <button class="sound_setting" id="sound_setting" aria-label="sound_setting"></button>
+            </div>
+            <div id="uiRight">
+                <button class="currency_balance" id="balance_rub" aria-label="Money">
+                    <span id="currency_rub_count">0</span>
+                    <span class="currency-icon-wrapper"><img id="icon_money" src="textures/money.svg" alt="Куб-рублик" height="72px" width="72px"></span>
+                </button>
+            </div>
         </div>
 
         <script src="Scripts/translations.js" type="module"></script>
