@@ -262,6 +262,19 @@ canvas {
 
 /* конец селектора */
 
+#rotate-device-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #fff;
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
 #uiOverlay {
   position: fixed;
   top: 50px;
@@ -320,6 +333,26 @@ canvas {
   background-color: #1caf5f;
   border-radius: 15px;
   accent-color: white;
+}
+
+#speedRotateControls {
+  position: fixed; 
+  top: 340px; 
+  left: 10px; 
+  z-index: 100; 
+  background:
+  rgba(0,0,0,0.6); 
+  color: #fff; 
+  padding: 10px; 
+  border-radius: 8px; 
+  font-size: 13px;
+}
+
+#speedRotateControls input{
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  font-size: 25px;
+  text-align: center;
 }
 
 #progressBarContainer {

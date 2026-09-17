@@ -11,6 +11,7 @@ import { cLog, cWarn } from './utils/logger.js';
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
 let stats;
+export let speedSet = 300;
 let textureLoader = new THREE.TextureLoader();
 let texture_grass = textureLoader.load('textures/grasslightmin.jpg');
 texture_grass.wrapS = THREE.RepeatWrapping;
@@ -410,9 +411,10 @@ function initThree() {
     
         // --- Ползунки ---
         const ambientRange = document.getElementById('ambientRange');
-        const directionalRange = document.getElementById('d5irectionalRange');
+        const directionalRange = document.getElementById('directionalRange');
         const ambientValueLabel = document.getElementById('ambientValue');
         const directionalValueLabel = document.getElementById('directionalValue');
+        const speedNumber = document.getElementById('speedNumber')
     
         if (ambientRange) {
             ambientRange.addEventListener('input', (e) => {
@@ -428,6 +430,13 @@ function initThree() {
                 directionalLight.intensity = value;
                 if (directionalValueLabel) directionalValueLabel.textContent = value.toFixed(2);
             });
+        }
+
+        if (speedNumber) {
+            speedNumber.addEventListener('input', (e) => {
+                const value = Number(e.target.value);
+                speedSet = value;
+            })
         }
     }
 
@@ -710,7 +719,7 @@ function setupTriggerInteraction(triggerZones) {
                 let axis = arrow.userData.direction.clone();
                 const isCounterclockwise = arrow.userData.isRotate && !arrow.userData.rotationDirection
                 //cLog(`Rotate TRUE/FALSE ${isCounterclockwise ? 'ПРОТИВ' : 'ПО'}, axis=`, axis.toArray());           
-                rotateLayer(selectedCube, axis, isCounterclockwise);
+                rotateLayer(selectedCube, axis, isCounterclockwise, speedSet);
             }
 
             hideArrows();

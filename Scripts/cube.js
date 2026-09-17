@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { cameraPlayer, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
+import { cameraPlayer, CurrentActiveCam, isMouseDown, speedSet, updateProgressBar } from './index.js';
 import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { cLog, cWarn } from './utils/logger.js';
@@ -374,7 +374,7 @@ export function checkFpsHit(mousePos) {
     return validIntersect || null;
 }
 
-export function rotateLayer(object, normal, isCounterclockwise = false, speedRotate = 300) {
+export function rotateLayer(object, normal, isCounterclockwise = false, speedRotate) {
     return new Promise((resolve) => {
         if (isRotating || !object.parent || !normal.lengthSq()) {
             cLog('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
@@ -388,6 +388,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false, speedRot
         //     direction: isCounterclockwise ? 'против часовой' : 'по часовой'
         // });
 
+        speedRotate = speedSet;
         const layerData = getCubesInLayer(normal, object);
         cubesToRotate = layerData.cubes;
 

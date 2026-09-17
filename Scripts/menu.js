@@ -4,6 +4,7 @@ import { getControlMode, updateProgressBar, getDeviceType } from "./index.js";
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
+import { lockToLandscape } from "./utils/orientation.js";
 
 // Элементы интерфейса
 export let exitMenu = false;
@@ -320,6 +321,7 @@ export function setupGameEventListeners(){
             };
             checkAndScrumble();
         }
+        lockToLandscape();
         startGameTimer();
     });
 
@@ -328,6 +330,7 @@ export function setupGameEventListeners(){
         gameState.mode = 'free';
         mainMenu.style.display = 'none';
         startGameTimer();
+        lockToLandscape()
     });
 
     // document.getElementById('trainingMode').addEventListener('click', ()=> {
