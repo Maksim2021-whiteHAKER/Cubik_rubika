@@ -28,11 +28,11 @@ body.page-error {
 }
 
 body.control-mouse-move {
-  cursor: url('../public/textures/grab50.png') 25 25, auto;
+  cursor: url('../textures/grab50.png') 25 25, auto;
 }
 
 body.control-mouse-move.dragging {
-  cursor: url('../public/textures/grabbing50.png') 25 25, auto;
+  cursor: url('../textures/grabbing50.png') 25 25, auto;
 }
 
 canvas {
@@ -553,7 +553,7 @@ canvas {
   pointer-events: auto;
 }
 
-#theme-select, #theme-select_2 {
+#theme-select, #control-selecter {
   /* position: relative; */
   /* top: -15px; */
   color: #99ff4e;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { camera, cameraPlayer, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
+import { cameraPlayer, CurrentActiveCam, isMouseDown, updateProgressBar } from './index.js';
 import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { cLog, cWarn } from './utils/logger.js';
@@ -20,7 +20,6 @@ let _staticobjects = []; // эталлоные объекты
 let _referenceDynamicObjects = []; // эталонные объекты для динамики
 export const originalMaterials = new Map();
 export const referencePositions = new Map(); // Позиции эталонный позиций и кватернионов
-// export const cubeState = new Map(); // Динамическая матрица состояния кубика
 export let historyrotation = [];
 const raycaster = new THREE.Raycaster()
 export let isScrambling = false;
@@ -371,10 +370,11 @@ export function checkFpsHit(mousePos) {
 
     raycaster.setFromCamera(mousePos || new THREE.Vector2(0, 0), cameraPlayer);
     const intersects = raycaster.intersectObjects(_objects, true);
-    return intersects[0] || null;
+    const validIntersect = intersects.find(i => _objects.some(cube => i.object.parent === cube || i.object === cube))
+    return validIntersect || null;
 }
 
-export function rotateLayer(object, normal, isCounterclockwise = false) {
+export function rotateLayer(object, normal, isCounterclockwise = false, speedRotate = 300) {
     return new Promise((resolve) => {
         if (isRotating || !object.parent || !normal.lengthSq()) {
             cLog('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
@@ -441,7 +441,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
         scene.add(arrowHelper);
 
         const targetAngle = isCounterclockwise ? -Math.PI / 2 : Math.PI / 2;
-        const duration = 300;
+        const duration =  speedRotate;
         const startTime = performance.now();
 
         function animateRotation(currentTime) {            

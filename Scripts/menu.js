@@ -1,6 +1,6 @@
 import { showWheel, spinWheelThemes, updateTextureSelectorOptions, loadSpinWheelFromStorage, updateWheelSegments } from "./rkUpravlenie.js";
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
-import { getControlMode, updateProgressBar, getDeviceType, controls } from "./index.js";
+import { getControlMode, updateProgressBar, getDeviceType } from "./index.js";
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
@@ -27,7 +27,7 @@ let music, musicBtn, selector_color_theme, mcTextPhoneEl;
 let blurMenu, pauseMenu;
 let settingsInfoElement, viewWheelFortune, helpBtn, creatorBtn, supportBtn, settingsBtn;
 let soundSettingBtn, resetAndExitBtn, resumeBtn;
-let themeSelect2;
+let controlSelecter;
 
 const helpTemplates = {
     'touch_move': `
@@ -149,13 +149,13 @@ export function updateFormStyle(textureValue, themeValue){
     }
 }
 
-// function updateCursorMode(){
-//     document.body.classList.remove('control-mouse-move');
+function updateCursorMode(){
+    document.body.classList.remove('control-mouse-move');
 
-//     if (getControlMode() === 'control_mouse_move'){
-//         document.body.classList.add('control-mouse-move');
-//     }
-// }
+    if (getControlMode() === 'control_mouse_move'){
+        document.body.classList.add('control-mouse-move');
+    }
+}
 
 export function updateHelpContent(){
     const deviceType = getDeviceType(); // Не используется в этом примере, но может быть нужна для логики
@@ -232,7 +232,7 @@ export function updateHelpContent(){
 
 window.updateHelpContent = updateHelpContent;
 
-export function updateSettingTitle(){0
+export function updateSettingTitle(){
     settingsInfoElement = document.getElementById('settings-info');
     if (!settingsInfoElement) {cWarn("Элемент #settings-info не найден для обновления заголовка."); return;}
 
@@ -420,7 +420,7 @@ export function initMenu() {
     soundSettingBtn = document.getElementById('sound_setting');
     resetAndExitBtn = document.getElementById('resetAndExitBtn');
     resumeBtn = document.getElementById('resumeBtn');
-    themeSelect2 = document.getElementById('theme-select_2');
+    controlSelecter = document.getElementById('control-selecter');
 
     // 2. Создаем динамические элементы
     blurMenu = document.createElement('div');
@@ -534,8 +534,9 @@ export function initMenu() {
     }
 
     // Управление курсором
-    if (themeSelect2) {
-        themeSelect2.addEventListener('change', () => {
+    if (controlSelecter) {
+        controlSelecter.addEventListener('change', () => {
+            updateCursorMode();
             updateHelpContent();
         });
     }
@@ -636,20 +637,12 @@ function updateSettingsStats() {
     // Количество разблокированных тем
     const unlockedCount = Object.keys(textureManager.configTheme)
         .filter(key => key.startsWith('custom_')).length;
-    document.getElementById('unlocked-count').textContent = unlockedCount;
+    const unlockedEl = document.getElementById('unlocked-count');
+    const wheelEl = document.getElementById('wheel-count');
+    if (unlockedEl) unlockedEl.textContent = unlockedCount;
     
     // Количество тем в колесе
-    document.getElementById('wheel-count').textContent = spinWheelThemes.length;
-    
-    // Текущий режим управления
-    const controlMode = document.getElementById('theme-select_2').value;
-    const controlNames = {
-        'control_arrows': 'Стрелки',
-        'control_mouse_move': 'Мышь',
-        'control_touch_move': 'Сенсор',
-        'control_touch_trigger': 'Триггеры'
-    };
-    document.getElementById('current-control-mode').textContent = controlNames[controlMode] || 'Неизвестно';
+    if (wheelEl) wheelEl.textContent = spinWheelThemes.length;
 }
 
 // Кнопка сброса настроек
@@ -675,23 +668,7 @@ document.getElementById('settingsBtn')?.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     initSettingsTabs();
     initSoundPresets();
-    
-    // Обновляем статус орбиты
-    const orbitStatus = document.getElementById('orbit-status');
-    if (orbitStatus && controls) {
-        const updateOrbitStatus = () => {
-            orbitStatus.textContent = controls.enabled ? 'вкл' : 'выкл';
-            orbitStatus.style.color = controls.enabled ? '#2ecc71' : '#e74c3c';
-        };
-        
-        // Обновляем при изменении
-        controls.addEventListener('change', updateOrbitStatus);
-        updateOrbitStatus();
-    }
 });
-
-// Очистка инфы:
-// Добавьте в menu.js после инициализации элементов
 
 // Функция для подтверждения действия
 function showConfirmationDialog(message, onConfirm) {
@@ -876,6 +853,13 @@ function resetAllSettings() {
     // Сбрасываем настройки звука
     document.getElementById('music_range').value = 50;
     document.getElementById('sound_range').value = 50;
+
+    const sel = document.getElementById('control-selecter');
+    if (sel) {
+        const fallback = sel.querySelector("option")?.value;
+        if (fallback) sel.value = fallback;
+    }
+    
     if (music) {
         music.volume = 0.5;
     }
@@ -883,10 +867,7 @@ function resetAllSettings() {
     // Сбрасываем выбор темы
     document.getElementById('theme-select').value = 'default';
     document.getElementById('color-theme-select').value = 'classic';
-    
-    // Сбрасываем управление
-    document.getElementById('theme-select_2').value = 'control_arrows';
-    
+      
     // Обновляем отображение
     if (typeof updateTextureSelectorOptions === 'function') {
         updateTextureSelectorOptions();
