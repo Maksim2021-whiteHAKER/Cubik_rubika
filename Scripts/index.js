@@ -415,6 +415,7 @@ function initThree() {
         const ambientValueLabel = document.getElementById('ambientValue');
         const directionalValueLabel = document.getElementById('directionalValue');
         const speedNumber = document.getElementById('speedNumber')
+        const speedRotateControls = document.getElementById("speedRotateControls")
     
         if (ambientRange) {
             ambientRange.addEventListener('input', (e) => {
@@ -433,6 +434,7 @@ function initThree() {
         }
 
         if (speedNumber) {
+            speedRotateControls.style.display = "block";
             speedNumber.addEventListener('input', (e) => {
                 const value = Number(e.target.value);
                 speedSet = value;
@@ -1031,10 +1033,10 @@ function startworld() {
                 Position: [${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}]<br>
                 Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
             `;
+            stats.update();
         }
 
         renderer.render(scene, camera);
-        stats.update();
     } catch (err) {
         console.error('Ошибка в игровом цикле: ', err);
     }

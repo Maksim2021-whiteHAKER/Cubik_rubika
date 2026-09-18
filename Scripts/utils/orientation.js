@@ -48,12 +48,19 @@ export function unlockOrientation() {
  * Включается автоматически через matchMedia, без ручного вызова.
  */
 export function initRotateOverlay(overlayEl) {
-    if (!overlayEl || !isTouchDevice) return;
+    if (!overlayEl || !isTouchDevice) return () => {};
 
     const mq = window.matchMedia('(orientation: portrait)');
+
     const update = () => {
         overlayEl.style.display = mq.matches ? 'flex' : 'none';
     };
+
     mq.addEventListener('change', update);
     update();
+
+    // очистка
+    return () => {
+         mq.removeEventListener('change', update);
+    };
 }

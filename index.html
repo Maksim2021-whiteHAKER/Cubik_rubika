@@ -319,13 +319,16 @@
 
         <div id="speedRotateControls">
             <div>
-                <label>Скорость вращения стороны<span id="speedValue"></span></label><br>
-                <input type="number" id="speedNumber" min="150" max="1000" value="300">                
+                <label>Длительность вращения стороны<span id="speedValue"></span></label><br>
+                <input type="number" id="speedNumber" min="0.25" max="800" value="300">                
             </div>
         </div>
 
         <div id="rotate-device-overlay">
-            <p>Пожалуйста, поверните устройство горизонтально</p>
+            <div class="rotate-hint" style="max-width: 320px; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📱🔁</div>
+                <p>Пожалуйста поверните устройство для вашего удобства и правильного отображения интерфейса</p>
+            </div>
         </div>
           
         <div id="uiOverlay">

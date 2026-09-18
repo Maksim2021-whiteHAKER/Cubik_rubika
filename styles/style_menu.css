@@ -261,6 +261,10 @@ canvas {
 }
 
 /* конец селектора */
+.rotate-hint {
+  max-width: 320px;
+  animation: pulse 2s infinite;
+}
 
 #rotate-device-overlay {
   display: none;
@@ -346,6 +350,7 @@ canvas {
   padding: 10px; 
   border-radius: 8px; 
   font-size: 13px;
+  display: none;
 }
 
 #speedRotateControls input{

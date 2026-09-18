@@ -4,7 +4,7 @@ import { getControlMode, updateProgressBar, getDeviceType } from "./index.js";
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
-import { lockToLandscape } from "./utils/orientation.js";
+import { lockToLandscape, initRotateOverlay } from "./utils/orientation.js";
 
 // Элементы интерфейса
 export let exitMenu = false;
@@ -965,14 +965,14 @@ document.head.appendChild(clearStyles);
 document.addEventListener('DOMContentLoaded', () => {
     const clearCustomThemesBtn = document.getElementById('clearCustomThemes');
     const clearAllDataBtn = document.getElementById('clearAllData');
+    const rotateOverlay = document.getElementById('rotate-device-overlay');
     
-    if (clearCustomThemesBtn) {
-        clearCustomThemesBtn.addEventListener('click', clearCustomThemes);
-    }
-    
-    if (clearAllDataBtn) {
-        clearAllDataBtn.addEventListener('click', clearAllData);
-    }
+    if (clearCustomThemesBtn) clearCustomThemesBtn.addEventListener('click', clearCustomThemes);
+
+    if (clearAllDataBtn) clearAllDataBtn.addEventListener('click', clearAllData);
+
+    if (rotateOverlay) initRotateOverlay(rotateOverlay);
+
 });
 
 // Экспортируем функции для использования в других модулях
