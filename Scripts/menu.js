@@ -1,6 +1,7 @@
 import { showWheel, spinWheelThemes, updateTextureSelectorOptions, loadSpinWheelFromStorage, updateWheelSegments } from "./rkUpravlenie.js";
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
-import { getControlMode, updateProgressBar, getDeviceType } from "./index.js";
+import { getControlMode, updateProgressBar } from "./index.js";
+import { getInputType as getDeviceType } from './utils/device.js';
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
@@ -237,10 +238,7 @@ export function updateSettingTitle(){
     settingsInfoElement = document.getElementById('settings-info');
     if (!settingsInfoElement) {cWarn("Элемент #settings-info не найден для обновления заголовка."); return;}
 
-    const isTouchDevice = navigator.maxTouchPoints > 0;
-
-    const emojiDev = isTouchDevice ? '📱' : '💻';
-
+    const emojiDev = getDeviceType() === "touch"  ? '📱' : '💻';
     settingsInfoElement.textContent = `${window.t('settings-info')} ${emojiDev}`
 }
 

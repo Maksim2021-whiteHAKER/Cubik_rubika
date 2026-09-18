@@ -7,8 +7,8 @@ import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
 import { gameState, congratsModal, stopTimer, togglePauseMenu, updateHelpContent, setupGameEventListeners } from './menu.js';
 import { cLog, cWarn } from './utils/logger.js';
-import { isMobile, isTablet } from './utils/useDeviceType.js';
 import { COLORS } from './utils/colors.js';
+import { isMobile, isTablet, isTouch } from './utils/device.js';
 
 export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
 export let CurrentActiveCam = 'observer';
@@ -88,14 +88,7 @@ function getMouseNCD(event) {
     )
 }
 
-export function getDeviceType(){
-    if (navigator.maxTouchPoints > 0){
-        return 'touch' // сенсорное уст.
-    }
-    return 'desktop'
-}
-
-export const isTouchDevice = getDeviceType() === 'touch';
+export const isTouchDevice = isTouch();
 
 function updateControlModeSelector(){
     const selecter = document.getElementById('control-selecter');
