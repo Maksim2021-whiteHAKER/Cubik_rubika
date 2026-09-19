@@ -36,6 +36,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm run test:run
+
       - name: Build
         run: npm run build
 
@@ -49,4 +52,4 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4  # <-- Исправлено здесь
+        uses: actions/deploy-pages@v4 

@@ -1,7 +1,8 @@
 // Scripts/orientation.js
-import { cLog, cWarn } from './logger';
+import { isTouch } from './device.js';
+import { cLog, cWarn } from './logger.js';
 
-const isTouchDevice = navigator.maxTouchPoints > 0;
+const isTouchDevice = isTouch();
 const isYandexGames = typeof window.YaGames !== 'undefined';
 
 /**
