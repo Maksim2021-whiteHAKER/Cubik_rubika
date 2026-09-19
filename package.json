@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "dev": "vite",
-    "build": "vite build --base=/Cubik_rubika/",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
