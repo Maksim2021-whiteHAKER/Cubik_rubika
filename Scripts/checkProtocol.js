@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Приложение не может работать через file:// из-за ограничений CORS.');
     } else {
         const versionGame = document.getElementById('ver')
-        versionGame.textContent = version + "++ beta";
+        versionGame.textContent = version + "++ beta (fix)";
         let versionConv = conversionVer(version);
         document.getElementById('titleHead').textContent = "Кубик-Рубика v" + versionConv
         initMenu()

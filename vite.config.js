@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: process.env.VERCEL === 1 ? '/' : '/Cubik_rubika/',
+  base: process.env.VERCEL === '1' ? '/' : '/Cubik_rubika/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
