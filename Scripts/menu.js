@@ -1,28 +1,17 @@
+// Scripts/menu.js
 import { showWheel, spinWheelThemes, updateTextureSelectorOptions, loadSpinWheelFromStorage, updateWheelSegments } from "./rkUpravlenie.js";
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
-import { getControlMode, updateProgressBar } from "./index.js";
+import { getControlMode } from "./controlMode.js";
+import { updateProgressBar } from "./ui.js";
 import { getInputType as getDeviceType } from './utils/device.js';
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
 import { lockToLandscape, initRotateOverlay } from "./utils/orientation.js";
+import { pauseTimer, resumeTimer, startGameTimer } from "./timer.js";
+import { game, ui } from "./state.js";
 
 // Элементы интерфейса
-export let exitMenu = false;
-export let congratsModal = null;
-export let selector_theme = null;
-export let state_sounds = 3;
-export let gameState = {
-    active: false,
-    mode: null,
-    startTime: 0,
-    solved: false // Флаг, что кубик собран
-}
-
-export let timerInterval;
-export let pausedDuration = 0; // общая длительность пауз
-let pauseStart = 0; // время начала текущей паузы
-
 let mainMenu, helpModal, settingsModal, creatorModal, supportModal;
 let resetButton, backToMenuButton, acceptStyleButton;
 let music, musicBtn, selector_color_theme, mcTextPhoneEl;
@@ -243,12 +232,12 @@ export function updateSettingTitle(){
 }
 
 function resetGame() {
-    if (gameState.active) {
+    if (game.active) {
         cLog("Сброс игры");
         stopTimer();
         updateProgressBar(0);
-        gameState.active = false;
-        gameState.solved = false;
+        game.active = false;
+        game.solved = false;
 
         // Очищаем стрелки
         const arrows = document.querySelectorAll('.arrow');
@@ -257,7 +246,7 @@ function resetGame() {
         // Перемешиваем кубик снова
         setTimeout(() => {
             scrambleCube(20);
-            gameState.active = true;
+            game.active = true;
             startGameTimer();
         }, 300);
     }
@@ -269,16 +258,16 @@ function goToMainMenu() {
 
     stopTimer();
     updateProgressBar(0);
-    gameState.active = false;
-    gameState.mode = null;
-    exitMenu = false;
+    game.active = false;
+    game.mode = null;
+    game.exitMenu = false;
 
     // Скрываем всё, кроме главного меню
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
     mainMenu.style.display = 'flex';
 
     // Очищаем состояние кубика
-    congratsModal.style.display = 'none';
+    ui.congratsModal.style.display = 'none';
     blurMenu.style.display = 'none';
 }
 
@@ -302,9 +291,9 @@ function hideModalWF(){
 export function setupGameEventListeners(){
     // Обработчики кнопок главного меню
     document.getElementById('normalMode').addEventListener('click', () => {
-        gameState.active = true
-        gameState.mode = 'normal';
-        gameState.solved = false
+        game.active = true
+        game.mode = 'normal';
+        game.solved = false
         mainMenu.style.display = 'none';
         cLog(`_objectsNM: ${getObjects().length}`);
         if (getObjects().length === 27){
@@ -324,8 +313,8 @@ export function setupGameEventListeners(){
     });
 
     document.getElementById('freeMode').addEventListener('click', () => {
-        gameState.active = true
-        gameState.mode = 'free';
+        game.active = true
+        game.mode = 'free';
         mainMenu.style.display = 'none';
         startGameTimer();
         lockToLandscape()
@@ -356,41 +345,9 @@ export function togglePauseMenu(){
     pauseMenu.style.display = isPause ? 'none' : 'block';
     blurMenu.style.display = isPause ? 'none' : 'block';   
     if (!isPause){
-        pauseStart = Date.now(); // Запоминаем время начала паузы
-        stopTimer(); // Останавливаем таймер при паузе        
+        pauseTimer();
     } else {
-        const pauseTime = Date.now() - pauseStart; // Длительность текущей паузы
-        pausedDuration += pauseTime; // Добавляем к общему времени пауз
-        startGameTimer(true); // Возобновляем таймер без сброса времени
-    }
-}
-
-function formatTime(milliseconds) {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-    const seconds = String(totalSeconds % 60).padStart(2, '0');
-
-    return `${hours}:${minutes}:${seconds}`;
-}
-
-// Таймер игры
-function startGameTimer(resume = false) {
-    if (timerInterval) clearInterval(timerInterval); // Удаляем старый интервал
-    if (!resume){
-        gameState.startTime = Date.now(); // Сброс времени при новой игре
-        pausedDuration = 0; // Сбрасываем накопленную паузу
-    }
-    timerInterval = setInterval(() => {
-        const elapsed = Date.now() - gameState.startTime - pausedDuration;
-        document.getElementById('solveTime').textContent = formatTime(elapsed)
-    }, 100);
-}
-
-export function stopTimer() {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+        resumeTimer();        
     }
 }
 
@@ -401,7 +358,7 @@ export function initMenu() {
     settingsModal = document.getElementById('settingsModal');
     creatorModal = document.getElementById('creatorModal');
     supportModal = document.getElementById('supportModal');
-    congratsModal = document.getElementById('congratsModal');
+    ui.congratsModal = document.getElementById('congratsModal');
 
     resetButton = document.getElementById('resetBtn');
     backToMenuButton = document.getElementById('BackToMenuBtn');
@@ -409,7 +366,7 @@ export function initMenu() {
     
     music = document.getElementById('background_music');
     musicBtn = document.getElementById('sound_setting');
-    selector_theme = document.getElementById('theme-select');
+    game.selector_theme = document.getElementById('theme-select');
     selector_color_theme = document.getElementById('color-theme-select');
     mcTextPhoneEl = document.getElementById('mcTextPhone');
 
@@ -446,7 +403,7 @@ export function initMenu() {
 
     // 3. Инициализация состояния
     if (musicBtn) musicBtn.innerHTML = sound_pic.BOTH_ON;
-    state_sounds = sounds.BOTH_ON;
+    game.state_sounds = sounds.BOTH_ON;
 
     updateHelpContent();
     updateSliderValue('music_range', 'prog_music');
@@ -457,7 +414,7 @@ export function initMenu() {
     if (resetButton) {
         resetButton.addEventListener('click', () => {
             if (confirm("Вы действительно хотите начать игру заново?")) {
-                if (congratsModal) congratsModal.style.display = 'none';
+                if (ui.congratsModal) ui.congratsModal.style.display = 'none';
                 resetGame();
             }
         });
@@ -472,7 +429,7 @@ export function initMenu() {
             const val = selector_color_theme.value;
             try {
                 applyColorTheme(val);
-                if (selector_theme) updateFormStyle(selector_theme.value, val);
+                if (game.selector_theme) updateFormStyle(game.selector_theme.value, val);
             } catch (e) { console.error(e); }
         });
     }
@@ -493,8 +450,8 @@ export function initMenu() {
     // Звук
     if (soundSettingBtn && music) {
         soundSettingBtn.addEventListener('click', () => {
-            state_sounds = (state_sounds + 1) % 4;
-            switch(state_sounds) {
+            game.state_sounds = (game.state_sounds + 1) % 4;
+            switch(game.state_sounds) {
                 case sounds.PAUSED:
                     if (musicBtn) musicBtn.innerHTML = sound_pic.PAUSED;
                     music.pause();
@@ -516,20 +473,20 @@ export function initMenu() {
     }
 
     // Текстуры
-    if (selector_theme) {
-        selector_theme.addEventListener('change', async () => {
+    if (game.selector_theme) {
+        game.selector_theme.addEventListener('change', async () => {
             try {
-                await applyTextures(selector_theme.value, selector_theme, selector_color_theme);
-                if (selector_color_theme) updateFormStyle(selector_theme.value, selector_color_theme.value);
+                await applyTextures(game.selector_theme.value, game.selector_theme, selector_color_theme);
+                if (selector_color_theme) updateFormStyle(game.selector_theme.value, selector_color_theme.value);
             } catch (e) { console.error(e); }
         });
     }
 
-    if (acceptStyleButton && selector_theme) {
+    if (acceptStyleButton && game.selector_theme) {
         acceptStyleButton.addEventListener('click', async () => {
             try {
-                await applyTextures(selector_theme.value);
-                alert(`Тема "${selector_theme.value}" применена!`);
+                await applyTextures(game.selector_theme.value);
+                alert(`Тема "${game.selector_theme.value}" применена!`);
             } catch (e) { console.error(e); }
         });
     }
@@ -545,7 +502,7 @@ export function initMenu() {
     // Пауза
     if (resetAndExitBtn) {
         resetAndExitBtn.addEventListener('click', () => {
-            exitMenu = true;
+            game.exitMenu = true;
             if (pauseMenu) pauseMenu.style.display = 'none';
             if (blurMenu) blurMenu.style.display = 'none';
             solveCube().then(goToMainMenu);

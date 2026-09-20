@@ -1,3 +1,4 @@
+// Scripts/index.js
 import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../Scripts/lib/OrbitControls.js';
@@ -5,15 +6,14 @@ import { PointerLockControls } from '../Scripts/lib/PointerLockControls.js';
 import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateLayer, rotateWholeCube, getstaticObjects, getReferenceDynamicObjects } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
-import { gameState, congratsModal, stopTimer, togglePauseMenu, updateHelpContent, setupGameEventListeners } from './menu.js';
+import { togglePauseMenu, updateHelpContent, setupGameEventListeners } from './menu.js';
 import { cLog, cWarn } from './utils/logger.js';
 import { COLORS } from './utils/colors.js';
 import { isMobile, isTablet, isTouch } from './utils/device.js';
+import { three, app, ui, game } from './state.js';
+import { getControlMode } from './controlMode.js'
 
-export let scene, camera, controlsPointer, observerCamera, cameraPlayer, renderer, controls;
-export let CurrentActiveCam = 'observer';
 let stats;
-export let speedSet = 300;
 let textureLoader = new THREE.TextureLoader();
 let texture_grass = textureLoader.load('textures/grasslightmin.jpg');
 texture_grass.wrapS = THREE.RepeatWrapping;
@@ -21,7 +21,7 @@ texture_grass.wrapT = THREE.RepeatWrapping;
 texture_grass.repeat.set(2.3, 2.3);
 document.getElementById('menu_settings').style.display = 'none';
 const lightControls = document.getElementById('lightControls');
-export let orbitControlSet = document.getElementById('OrbitConSet')
+ui.orbitControlSet = document.getElementById('OrbitConSet')
 let startObject = null;
 const raycaster = new THREE.Raycaster();
 let arrows = []; // Массив для стрелок
@@ -55,7 +55,7 @@ const rotationMap = {
 };
 
 // переменные для управления мышью
-export let isMouseDown = false;
+app.isMouseDown = false;
 let rotationInProgress = false; 
 let startX = 0, startY = 0;
 let selectedCubeForMouse = null;
@@ -77,18 +77,18 @@ const sizeObjectsControls = {
 
 // получение нормали координат девайса
 function getMouseNCD(event) { 
-    if (CurrentActiveCam === 'player' && document.pointerLockElement === renderer.domElement) {
+    if (app.CurrentActiveCam === 'player' && document.pointerLockElement === three.renderer.domElement) {
         return new THREE.Vector2(0, 0);
     }    
 
-    const rect = renderer.domElement.getBoundingClientRect();
+    const rect = three.renderer.domElement.getBoundingClientRect();
     return new THREE.Vector2(
         ((event.clientX - rect.left) / rect.width) * 2 - 1,
         -((event.clientY - rect.top) / rect.height) * 2 + 1
     )
 }
 
-export const isTouchDevice = isTouch();
+app.isTouchDevice = isTouch();
 
 function updateControlModeSelector(){
     const selecter = document.getElementById('control-selecter');
@@ -106,7 +106,7 @@ function updateControlModeSelector(){
 
     selecter.innerText = "";
         
-    if (isTouchDevice){
+    if (app.isTouchDevice){
         // селектор изменен на сенсор
         selecter.appendChild(new Option("Зажатие + Стрелки на кубе", controls.touch_arrows))
         selecter.appendChild(new Option("Зажатие + Движение пальцем", controls.touch_move))
@@ -120,7 +120,7 @@ function updateControlModeSelector(){
 }
 
 function createMobileControls(){
-    if (!isTouchDevice) return;
+    if (!app.isTouchDevice) return;
 
     const mobileControls = document.createElement('div');
     mobileControls.id = 'mobile-controls'
@@ -199,7 +199,7 @@ function createMobileControls(){
 }
 
 function handleMobileControl(direction) {
-    if (!gameState.active) return;
+    if (!game.active) return;
 
     switch (direction) {
         case 'up':
@@ -227,31 +227,31 @@ function handleMobileControl(direction) {
 }
 
 function orbitMobileControl() {
-    if (!gameState.active) return;
+    if (!game.active) return;
     
     // Переключаем состояние орбиты
-    controls.enabled = !controls.enabled;
-    orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
+    three.controls.enabled = !three.controls.enabled;
+    ui.orbitControlSet.innerText = three.controls.enabled ? 'вкл' : 'выкл';
     
     // Обновляем внешний вид кнопки
     updateOrbitButton();
     
     // Показываем уведомление
-    showOrbitNotification(controls.enabled);
+    showOrbitNotification(three.controls.enabled);
     
     // Скрываем стрелки при включении орбиты
-    if (controls.enabled) {
+    if (three.controls.enabled) {
         hideArrows();
     }
     
-    cLog(`OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+    cLog(`OrbitControls ${three.controls.enabled ? 'включены' : 'выключены'}`);
 }
 
 function updateOrbitButton() {
     const orbitBtn = document.getElementById('mobile-orbit');
     if (!orbitBtn) return;
     
-    if (controls.enabled) {
+    if (three.controls.enabled) {
         orbitBtn.textContent = '✖';
         orbitBtn.classList.add('orbit-active');
         orbitBtn.title = 'Выключить управление камерой';
@@ -322,14 +322,14 @@ function onWindowResize() { // <-- Отдельная функция
     const newHeight = window.innerHeight;
     // --- КОНЕЦ ---
 
-    observerCamera.aspect = newWidth / newHeight;
-    observerCamera.updateProjectionMatrix();
-    cameraPlayer.aspect = newWidth / newHeight;
-    cameraPlayer.updateProjectionMatrix();
-    renderer.setSize(newWidth, newHeight);
+    three.observerCamera.aspect = newWidth / newHeight;
+    three.observerCamera.updateProjectionMatrix();
+    three.cameraPlayer.aspect = newWidth / newHeight;
+    three.cameraPlayer.updateProjectionMatrix();
+    three.renderer.setSize(newWidth, newHeight);
 
     // Опционально: обновить OrbitControls, если камера изменилась
-    // controls.update(); // Обычно не требуется при изменении размера, но можно вызвать
+    // three.controls.update(); // Обычно не требуется при изменении размера, но можно вызвать
 }
 
 texture_grass.onError = () => {
@@ -346,66 +346,66 @@ function initThree() {
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    observerCamera = new THREE.PerspectiveCamera(30, width / height, 0.5, 1000);
-    cameraPlayer = new THREE.PerspectiveCamera(60, width / height, 0.5, 1000);
-    observerCamera.name = 'observer';
-    cameraPlayer.name = 'player';
+    three.observerCamera = new THREE.PerspectiveCamera(30, width / height, 0.5, 1000);
+    three.cameraPlayer = new THREE.PerspectiveCamera(60, width / height, 0.5, 1000);
+    three.observerCamera.name = 'observer';
+    three.cameraPlayer.name = 'player';
 
-    camera = observerCamera;
-    camera.position.set(15, 15, 15);
-    camera.lookAt(0, 5, 0);
+    three.camera = three.observerCamera;
+    three.camera.position.set(15, 15, 15);
+    three.camera.lookAt(0, 5, 0);
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x86ceeb);
-    scene.fog = new THREE.Fog(0x000000, 500, 1000);
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(scene.fog.color);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild(renderer.domElement);
+    three.scene = new THREE.Scene();
+    three.scene.background = new THREE.Color(0x86ceeb);
+    three.scene.fog = new THREE.Fog(0x000000, 500, 1000);
+    three.renderer = new THREE.WebGLRenderer({ antialias: true });
+    three.renderer.setSize(window.innerWidth, window.innerHeight);
+    three.renderer.setClearColor(three.scene.fog.color);
+    three.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    three.renderer.shadowMap.enabled = true;
+    three.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(three.renderer.domElement);
 
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enabled = false;
-    controls.target.set(0, 5, 0);
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.dampingFactor = 0.2;
-    controls.minDistance = 10;
-    controls.maxDistance = 70;
+    three.controls = new OrbitControls(three.camera, three.renderer.domElement);
+    three.controls.enabled = false;
+    three.controls.target.set(0, 5, 0);
+    three.controls.rotateSpeed = 1.0;
+    three.controls.zoomSpeed = 1.2;
+    three.controls.enableDamping = true;
+    three.controls.enablePan = false;
+    three.controls.dampingFactor = 0.2;
+    three.controls.minDistance = 10;
+    three.controls.maxDistance = 70;
 
-    controlsPointer = new PointerLockControls(cameraPlayer, renderer.domElement);
-    scene.add(controlsPointer.getObject());
+    three.controlsPointer = new PointerLockControls(three.cameraPlayer, three.renderer.domElement);
+    three.scene.add(three.controlsPointer.getObject());
 
     createMobileControls()
 
-    controlsPointer.addEventListener('lock', () => {
-        camera = cameraPlayer;
-        CurrentActiveCam = 'player';
+    three.controlsPointer.addEventListener('lock', () => {
+        three.camera = three.cameraPlayer;
+        app.CurrentActiveCam = 'player';
         cLog('Камера: Игрок');
     });
 
-    controlsPointer.addEventListener('unlock', () => {
-        camera = observerCamera;
-        CurrentActiveCam = 'observer';
+    three.controlsPointer.addEventListener('unlock', () => {
+        three.camera = three.observerCamera;
+        app.CurrentActiveCam = 'observer';
         cLog('Камера: Наблюдатель');
     });
 
-    controls.update();
+    three.controls.update();
 
     // --- Освещение ---
     isDev ? lightControls.style.display = 'block' : lightControls.style.display = 'none';
     ambientLight = new THREE.AmbientLight(0x666666, 6);
-    scene.add(ambientLight);
+    three.scene.add(ambientLight);
 
     directionalLight = new THREE.DirectionalLight(0xffffff, 5);
     const distance = 20;
     directionalLight.position.set(-distance, distance, distance);
     directionalLight.castShadow = true;
-    scene.add(directionalLight);
+    three.scene.add(directionalLight);
 
     if (isDev) {
         stats = new Stats();
@@ -439,7 +439,7 @@ function initThree() {
             speedRotateControls.style.display = "block";
             speedNumber.addEventListener('input', (e) => {
                 const value = Number(e.target.value);
-                speedSet = value;
+                app.speedSet = value;
             })
         }
     }
@@ -450,7 +450,7 @@ function initThree() {
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.translateY(-2.7);
     floor.receiveShadow = true;
-    scene.add(floor);
+    three.scene.add(floor);
 
     const helpMenu = document.getElementById('helpM');
     const mainmenu_game = document.getElementById('mainMenu_g')
@@ -465,32 +465,6 @@ function initThree() {
     mainmenu_game.addEventListener('click', togglePauseMenu); 
 }
 
-// функция для обновления прогресса
-export function updateProgressBar(percentage){
-    const progressFill = document.getElementById('progressFill');
-    const progress_text = document.getElementById('progtext')
-    cLog(`${percentage}%`)
-    if (progressFill){
-        progressFill.style.width = `${percentage}%`;       
-        progress_text.style.color = '#ffff00'
-        progress_text.textContent = `${Math.round(percentage)}%`       
-    
-        // Показываем модальное окно при достижении 100%
-        if (percentage >= 100) {
-            // Небольшая задержка для завершения анимации
-            setTimeout(() => {
-                if (congratsModal && gameState.mode === 'normal') {
-                    congratsModal.style.display = 'block';
-                    gameState.active = false;
-                    stopTimer();
-                }
-            }, 300);
-        }
-    } else {
-        console.error('Элементы прогресс-бара не найдены!');
-    }
-}
-
 function pickArrowGeometry(isRotate) {
     const set = isMobile() ? sizeObjectsControls.bigSizePhone 
     : isTablet() ? sizeObjectsControls.midSizeTablet
@@ -499,7 +473,7 @@ function pickArrowGeometry(isRotate) {
 }
 
 function createArrow(position, direction, color = COLORS.GREEN, isRotate = false, faceColor = COLORS.GREEN) {
-    if (!gameState.active) return; 
+    if (!game.active) return; 
     const geometry = pickArrowGeometry(isRotate);
     const material = new THREE.MeshBasicMaterial({ color });
     const arrow = new THREE.Mesh(geometry, material);
@@ -530,7 +504,7 @@ function createArrow(position, direction, color = COLORS.GREEN, isRotate = false
         // Указываем направление вращения: по часовой (true) или против (false)
         arrow.userData.rotationDirection = color === COLORS.DARK_TURQUOISE ? false : true;
     }
-    scene.add(arrow);
+    three.scene.add(arrow);
     return arrow;
 }
 
@@ -542,7 +516,7 @@ function showArrows(cube, mouseCoords) {
     const blurM = document.getElementById('blurmenu')
     if (blurM && blurM.style.display === 'block') { return; }
     // Удаляем старые стрелки
-    arrows.forEach(arrow => scene.remove(arrow));
+    arrows.forEach(arrow => three.scene.remove(arrow));
     arrows = [];
 
     let extraOffsetCone = 1;
@@ -557,7 +531,7 @@ function showArrows(cube, mouseCoords) {
     const sphereOffset = (cubeSize * 0.101) * extraOffsetSphere; // Смещение шаров по вертикале
 
     // Находим грань, на которую кликнули
-    raycaster.setFromCamera(mouseCoords, camera);
+    raycaster.setFromCamera(mouseCoords, three.camera);
     const intersects = raycaster.intersectObjects([cube], true);
     if (intersects.length === 0) return;
 
@@ -624,7 +598,7 @@ function showArrows(cube, mouseCoords) {
 
 
 function hideArrows() {
-    arrows.forEach(arrow => scene.remove(arrow));
+    arrows.forEach(arrow => three.scene.remove(arrow));
     arrows = [];
     selectedCube = null;
 }
@@ -632,30 +606,30 @@ function hideArrows() {
 document.addEventListener('keydown', async (event) => {
     const blurM = document.getElementById('blurmenu')
     if (blurM && blurM.style.display === 'block') { return; }
-    if (!gameState.active) return
-    if (CurrentActiveCam === 'player') return;
+    if (!game.active) return
+    if (app.CurrentActiveCam === 'player') return;
     if (event.code === 'KeyO') {
         orbitMobileControl();
     } else if (event.code === 'KeyR') {
-        camera.position.set(15, 15, 15);
-        camera.lookAt(0, 5, 0);
-        controls.update();
+        three.camera.position.set(15, 15, 15);
+        three.camera.lookAt(0, 5, 0);
+        three.controls.update();
     } else if (event.code === 'KeyT'){
-        camera.position.set(1.20, 6, 21.74);
-        camera.lookAt(0, 5, 0);
-        controls.update();
+        three.camera.position.set(1.20, 6, 21.74);
+        three.camera.lookAt(0, 5, 0);
+        three.controls.update();
     } else if (event.code === 'KeyB'){
-        camera.position.set(-0.31, 14.50, -21.44);
-        camera.lookAt(0, 5, 0);
-        controls.update();
+        three.camera.position.set(-0.31, 14.50, -21.44);
+        three.camera.lookAt(0, 5, 0);
+        three.controls.update();
     } else if (event.code === 'KeyI'){
-        camera.position.set(-21.20, 15, -0.82);
-        camera.lookAt(0, 5, 0);
-        controls.update();
+        three.camera.position.set(-21.20, 15, -0.82);
+        three.camera.lookAt(0, 5, 0);
+        three.controls.update();
     } else if (event.code === 'KeyY'){
-        camera.position.set(0, -18.45, 0);
-        camera.lookAt(0, 5, 0);
-        controls.update();
+        three.camera.position.set(0, -18.45, 0);
+        three.camera.lookAt(0, 5, 0);
+        three.controls.update();
     } else if (event.code === 'KeyS'){
         alert("Начато перемешивание куба");
         scrambleCube(20);
@@ -674,11 +648,12 @@ document.addEventListener('keydown', async (event) => {
 
 function setupTriggerInteraction(triggerZones) {
     window.addEventListener('mousedown', (event) => {
-        if (!gameState.active || event.button !== 0) return;
+        if (!game.active || event.button !== 0) return;
+        if (three.controls.enabled) return;
 
         const mouse = getMouseNCD(event)
 
-        raycaster.setFromCamera(mouse, camera);
+        raycaster.setFromCamera(mouse, three.camera);
         const staticObjects = getstaticObjects();
 
         const intersects = raycaster.intersectObjects(staticObjects, true); // статический
@@ -691,7 +666,7 @@ function setupTriggerInteraction(triggerZones) {
             // Если выбран режим "Мышь", запоминаем выбранный кубик
             cLog('проверка режима: ', getControlMode())
             if (getControlMode() === 'control_mouse_move'){
-                isMouseDown = true;
+                app.isMouseDown = true;
                 rotationInProgress = false;
                 selectedCubeForMouse = selectedCube;
                 startX = event.clientX;
@@ -708,27 +683,29 @@ function setupTriggerInteraction(triggerZones) {
     });
 
     window.addEventListener('mousemove', (event) => {
-        if (!gameState.active) return
+        if (!game.active) return
+        if (three.controls.enabled) return;
         switch (getControlMode()){
             case 'control_arrows':
                 document.body.classList.remove('dragging');
                 control_arrows_mode(event);
                 break;
             case 'control_mouse_move':
-                if (isMouseDown) {document.body.classList.add('dragging')};
+                if (app.isMouseDown) {document.body.classList.add('dragging')};
                 control_mouseRotation_mode(event);
                 break;
         }
     });
     
     window.addEventListener('mouseup', (event) => {
-        if (!gameState.active) return
+        if (!game.active) return
+        if (three.controls.enabled) return;
         if (!selectedCube) return;
 
         if (getControlMode() === 'control_arrows'){
             const mouse = getMouseNCD(event)
 
-            raycaster.setFromCamera(mouse, camera);
+            raycaster.setFromCamera(mouse, three.camera);
             const arrowIntersects = raycaster.intersectObjects(arrows, true);
 
             if (arrowIntersects.length > 0) {
@@ -736,13 +713,13 @@ function setupTriggerInteraction(triggerZones) {
                 let axis = arrow.userData.direction.clone();
                 const isCounterclockwise = arrow.userData.isRotate && !arrow.userData.rotationDirection
                 //cLog(`Rotate TRUE/FALSE ${isCounterclockwise ? 'ПРОТИВ' : 'ПО'}, axis=`, axis.toArray());           
-                rotateLayer(selectedCube, axis, isCounterclockwise, speedSet);
+                rotateLayer(selectedCube, axis, isCounterclockwise);
             }
 
             hideArrows();
             cLog('mouseup: arrows cleared');
         } else {
-            isMouseDown = false;
+            app.isMouseDown = false;
             rotationInProgress = false;
             selectedCubeForMouse = null;
             document.body.classList.remove('dragging')
@@ -751,55 +728,51 @@ function setupTriggerInteraction(triggerZones) {
     });
 
     window.addEventListener('touchstart', (event) => {
-        if (!gameState.active) return;
+        if (!game.active) return;
 
         const touchLen = event.touches.length;
 
         // Жест тремя пальцами - переключает орбиту
         if (touchLen === 3) {          
-
             // Только если не в процессе других действий
             // Переключаем орбиту
-            controls.enabled = !controls.enabled;
-            orbitControlSet.innerText = controls.enabled ? 'вкл' : 'выкл';
+            three.controls.enabled = !three.controls.enabled;
+            ui.orbitControlSet.innerText = three.controls.enabled ? 'вкл' : 'выкл';
 
             // Обновляем кнопку
             updateOrbitButton();
-
             // Показываем уведомление
-            showOrbitNotification(controls.enabled);
-
+            showOrbitNotification(three.controls.enabled);
             // Скрываем стрелки при включении
-            if (controls.enabled) {
+            if (three.controls.enabled) {
                 hideArrows();
             }
-
             // Блокируем другие жесты на короткое время
             isOrbiting = true;
             setTimeout(() => {
                 isOrbiting = false;
             }, 500);
 
-            cLog(`Жест 3 пальцев: OrbitControls ${controls.enabled ? 'включены' : 'выключены'}`);
+            cLog(`Жест 3 пальцев: OrbitControls ${three.controls.enabled ? 'включены' : 'выключены'}`);
             return;
-
         }
         
         // Автоматическое включение орбиты при 2+ пальцах (опционально)
-        if (isTouchDevice && touchLen >= 2 && !controls.enabled) {
+        if (app.isTouchDevice && touchLen >= 2 && !three.controls.enabled) {
             cLog('автовкл орбиты при 2+ пальцах');
-            controls.enabled = true;
-            orbitControlSet.innerText = 'вкл';
+            three.controls.enabled = true;
+            ui.orbitControlSet.innerText = 'вкл';
             updateOrbitButton();
             showOrbitNotification(true);
             hideArrows();
         }
 
         if (touchLen === 1) {
+            if (three.controls.enabled) return;
             const touch = event.touches[0];
             const mouseCoords = getMouseNCD(touch)
 
-            raycaster.setFromCamera(mouseCoords, camera);
+            raycaster.setFromCamera(mouseCoords, three.camera);
             const staticObjects = getstaticObjects();
 
             const intersects = raycaster.intersectObjects(staticObjects, true);
@@ -812,7 +785,7 @@ function setupTriggerInteraction(triggerZones) {
                 if (getControlMode() === 'control_touch_trigger') {
                     showArrows(selectedCube, mouseCoords);
                 } else if (getControlMode() === 'control_touch_move') {
-                    isMouseDown = true;
+                    app.isMouseDown = true;
                     rotationInProgress = false;
                     selectedCubeForMouse = selectedCube;
                     startX = touch.clientX;
@@ -824,14 +797,14 @@ function setupTriggerInteraction(triggerZones) {
                 hideArrows();
             }
 
-        } else if (touchLen === 2 && controls.enabled) {
+        } else if (touchLen === 2 && three.controls.enabled) {
             // Логика zoom
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
             initialPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
             isPinching = true;
             isOrbiting = false;
-            isMouseDown = false;
+            app.isMouseDown = false;
             hideArrows();
             cLog('начат зум (два пальца)');
         }
@@ -839,7 +812,7 @@ function setupTriggerInteraction(triggerZones) {
     });
 
     window.addEventListener('touchmove', (event) => {
-        if (!gameState.active) return;
+        if (!game.active) return;
 
         const touchLen = event.touches.length;
 
@@ -861,9 +834,9 @@ function setupTriggerInteraction(triggerZones) {
             const deltaPhi = -deltaX * sensitivity; // Вращение вокруг Y (лево/право)
             const deltaTheta = -deltaY * sensitivity; // Вращение вокруг X (вверх/вниз)
 
-            controls.rotateLeft(deltaPhi);
-            controls.rotateUp(deltaTheta);
-            controls.update();
+            three.controls.rotateLeft(deltaPhi);
+            three.controls.rotateUp(deltaTheta);
+            three.controls.update();
 
             initialOrbitCenter.copy(currentOrbitCenter);
         }
@@ -873,14 +846,14 @@ function setupTriggerInteraction(triggerZones) {
             return;
         }
 
-        if (isPinching && touchLen === 2 && controls.enabled) {
+        if (isPinching && touchLen === 2 && three.controls.enabled) {
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
             const currentPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
             const scalaDelta = currentPinchDistance / initialPinchDistance;
 
-            controls.dolly(scalaDelta);
-            controls.update();
+            three.controls.dolly(scalaDelta);
+            three.controls.update();
 
             // Обновляем initialPinchDistance для следующего шага
             initialPinchDistance = currentPinchDistance;
@@ -888,12 +861,13 @@ function setupTriggerInteraction(triggerZones) {
         }
 
         if (!isPinching && !isOrbiting && touchLen >= 1) {
+            if (three.controls.enabled) return;
 
             const touch = event.touches[0];
 
             if (getControlMode() === 'control_touch_trigger') {
                 control_arrows_mode(touch);
-            } else if (getControlMode() === 'control_touch_move' && isMouseDown) {
+            } else if (getControlMode() === 'control_touch_move' && app.isMouseDown) {
                 control_mouseRotation_mode({ clientX: touch.clientX, clientY: touch.clientY });
                 hideArrows()
             }
@@ -901,22 +875,23 @@ function setupTriggerInteraction(triggerZones) {
     });
 
     window.addEventListener('touchend', (event) => {
-        if (!gameState.active) return;
+        if (!game.active) return;
 
         // Если был жест 3 пальцев
-        if (isOrbiting && event.touches.length < 3) {
-            isOrbiting = false;
-        }
+        if (isOrbiting && event.touches.length < 3) { isOrbiting = false; }
+        
+        if (isPinching && event.touches.length < 2) { isPinching = false; }
 
-        if (isPinching && event.touches.length < 2) {
-            isPinching = false;
+        if (three.controls.enabled) {
+            prevTouchesCount = event.touches.length;
+            return;
         }
 
         if ((!isPinching && !isOrbiting && getControlMode() === 'control_touch_trigger') && selectedCube) {
             const touch = event.changedTouches[0];
             const mouse = getMouseNCD(touch)
 
-            raycaster.setFromCamera(mouse, camera);
+            raycaster.setFromCamera(mouse, three.camera);
             const arrowIntersects = raycaster.intersectObjects(arrows, true);
 
             if (arrowIntersects.length > 0) {
@@ -928,7 +903,7 @@ function setupTriggerInteraction(triggerZones) {
 
             hideArrows();
         } else if (!isPinching && !isOrbiting && getControlMode() === 'control_touch_move') {
-            isMouseDown = false;
+            app.isMouseDown = false;
             rotationInProgress = false;
             selectedCubeForMouse = null;
             hideArrows();
@@ -942,7 +917,7 @@ function control_arrows_mode(event) {
         
         const mouse = getMouseNCD(event);
 
-        raycaster.setFromCamera(mouse, camera);
+        raycaster.setFromCamera(mouse, three.camera);
         const arrowIntersects = raycaster.intersectObjects(arrows, true);
 
         // Сбрасываем цвет всех стрелок до оригинального
@@ -965,12 +940,12 @@ function control_mouseRotation_mode(event) {
 
     const sensitivity = MOUSE_CONTROL_SENSITIVITY;
 
-    if (!selectedCubeForMouse || !isMouseDown || rotationInProgress) return;
+    if (!selectedCubeForMouse || !app.isMouseDown || rotationInProgress) return;
 
     // получаем новое пересечение
     const mouse = getMouseNCD(event);
 
-    raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouse, three.camera);
     const intersects = raycaster.intersectObjects(getReferenceDynamicObjects(), true);
 
     if (intersects.length === 0) return;
@@ -1007,11 +982,7 @@ function control_mouseRotation_mode(event) {
 }
 
 export function getCurrentCam() {
-    return camera;
-}
-
-export function getControlMode() {
-    return document.getElementById('control-selecter')?.value || 'control_arrows';
+    return three.camera;
 }
 
 window.addEventListener('resize', (event) => {
@@ -1030,28 +1001,28 @@ function startworld() {
             mesh.quaternion.copy(body.quaternion);
         });
 
-        if (controls.enabled){
-            controls.update();
+        if (three.controls.enabled){
+            three.controls.update();
         }
 
         if (isDev) {
             cameraInfoDiv.style.display = 'block';
-            const pos = camera.position;
-            const rot = camera.rotation;
+            const pos = three.camera.position;
+            const rot = three.camera.rotation;
             const rotDeg = {
                 x: (rot.x * 180 / Math.PI).toFixed(2),
                 y: (rot.y * 180 / Math.PI).toFixed(2),
                 z: (rot.z * 180 / Math.PI).toFixed(2)
             };
             cameraInfoDiv.innerHTML = `
-                Camera: ${CurrentActiveCam}<br>
+                Camera: ${app.CurrentActiveCam}<br>
                 Position: [${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}]<br>
                 Rotation: [${rotDeg.x}, ${rotDeg.y}, ${rotDeg.z}]°
             `;
             stats.update();
         }
 
-        renderer.render(scene, camera);
+        three.renderer.render(three.scene, three.camera);
     } catch (err) {
         console.error('Ошибка в игровом цикле: ', err);
     }
@@ -1064,12 +1035,12 @@ function initializeControlMode() {
 
 window.addEventListener('load', () => {
     initThree();
-    initCube(scene, world, () => {
+    initCube(three.scene, world, () => {
         cLog('Cube loaded, Objects length=', getObjects().length);
         const triggerZones = createTriggerZones(6.12);
-        triggerZones.forEach(zone => scene.add(zone));
+        triggerZones.forEach(zone => three.scene.add(zone));
         setupTriggerInteraction(triggerZones);
-        initPlayer(scene, renderer, controls, controlsPointer);
+        initPlayer(three.scene, three.renderer, three.controls, three.controlsPointer);
         initializeControlMode();
         setupGameEventListeners();
         startworld();

@@ -1,7 +1,8 @@
+// Scripts/player.js
 import * as THREE  from 'three';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { cameraPlayer, orbitControlSet } from './index.js';
+import { three, ui } from './state.js'
 import { checkFpsHit } from './cube.js';
 
 let playerModel = null;
@@ -16,6 +17,7 @@ const keys = { KeyW: false, KeyS: false, KeyA: false, KeyD: false };
 
 let fpsCursor;
 let isCursorVisible = true;
+let orbitWasEnabledBeforeFps = false;
 
 export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
     controlsPointerRef = controlsPointer;
@@ -39,16 +41,16 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
         playerModel.rotateY(Math.PI);
         sceneArg.add(playerModel);
 
-        cameraPlayer.position.set(0, 0.8, 0);
-        cameraPlayer.rotation.order = 'YXZ';
-        playerModel.add(cameraPlayer);
+        three.cameraPlayer.position.set(0, 0.8, 0);
+        three.cameraPlayer.rotation.order = 'YXZ';
+        playerModel.add(three.cameraPlayer);
 
         if (!orbitControlsRef) {
             console.error("OrbitControls not initialized!");
             return;
         }
 
-        setupCameraControl(cameraPlayer, controlsPointerRef);
+        setupCameraControl(three.cameraPlayer, controlsPointerRef);
         updateCursor();
     }, undefined, function (error) {
         console.error('Ошибка загрузки модели игрока: ', error);
@@ -65,24 +67,28 @@ export function initPlayer(sceneArg, renderer, orbitControls, controlsPointer) {
 
 function setupCameraControl(cameraPlayer, controlsPointer) {
     controlsPointer.addEventListener('lock', () => {
+        orbitWasEnabledBeforeFps = orbitControlsRef?.enabled ?? false;
         if (orbitControlsRef) orbitControlsRef.enabled = false; 
-        if (orbitControlSet) orbitControlSet.style.display = 'none'; orbitConFullText.style.display = 'none';
+        if (orbitConFullText) orbitConFullText.style.display = 'none';
         zoomEnable = true;
         currentCam = cameraPlayer;
-        fpsCursor.style.display = 'block';
-        document.getElementById('menu_settings').style.display = 'block';
+        if (fpsCursor) fpsCursor.style.display = 'block';
+        const menuSettings = document.getElementById('menu_settings')
+        if (menuSettings) menuSettings.style.display = 'block';
     });
 
     controlsPointer.addEventListener('unlock', () => {
-        if (orbitControlsRef) orbitControlsRef.enabled = false;
-        if (orbitControlSet) orbitControlSet.innerText = 'вкл'; orbitConFullText.style.display = 'block';
+        if (orbitControlsRef) orbitControlsRef.enabled = orbitWasEnabledBeforeFps;
+        if (ui.orbitControlSet) ui.orbitControlSet.innerText = orbitControlsRef?.enabled ? "вкл" : "выкл"; 
+        if (orbitConFullText) orbitConFullText.style.display = 'block';
         zoomEnable = false;
-        currentCam = orbitControlsRef.object;
-        fpsCursor.style.display = 'none';
-        document.getElementById('menu_settings').style.display = 'none';
+        currentCam = orbitControlsRef?.object ?? three.cameraPlayer;
+        if (fpsCursor) fpsCursor.style.display = 'none';
+        const menuSettings = document.getElementById('menu_settings')
+        if (menuSettings) menuSettings.style.display = 'none';
     });
 
-    currentCam = orbitControlsRef ? orbitControlsRef.object : cameraPlayer;
+    currentCam = orbitControlsRef?.object ?? three.cameraPlayer;
 }
 
 function handlePlayerMovement(event) {
@@ -117,8 +123,8 @@ function updateCam() {
     if (!controlsPointerRef) return;
 
     currentCam = (document.pointerLockElement === rendererRef.domElement)
-        ? cameraPlayer
-        : (orbitControlsRef?.object || cameraPlayer);
+        ? three.cameraPlayer
+        : (orbitControlsRef?.object || three.cameraPlayer);
 
     if (fpsCursor && isCursorVisible) {
         fpsCursor.style.left = '50%';

@@ -1,10 +1,11 @@
+// Scripts/cube.js
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { cameraPlayer, CurrentActiveCam, isMouseDown, speedSet, updateProgressBar } from './index.js';
-import { exitMenu, gameState, selector_theme, state_sounds } from './menu.js';
 import DRACOLoader from './lib/DRACOLoader.js';
 import { cLog, cWarn } from './utils/logger.js';
+import { three, app, game } from './state.js';
+import { updateProgressBar } from './ui.js';
 
 let scene;
 export let world;
@@ -364,17 +365,17 @@ export function getCubesInLayer(normal, clickedObject) {
 }
 
 export function checkFpsHit(mousePos) {
-    if (CurrentActiveCam !== 'player') return null;
+    if (app.CurrentActiveCam !== 'player') return null;
     // Используем координаты мыши вместо центра экрана
-    cameraPlayer.updateMatrixWorld(true);
+    three.cameraPlayer.updateMatrixWorld(true);
 
-    raycaster.setFromCamera(mousePos || new THREE.Vector2(0, 0), cameraPlayer);
+    raycaster.setFromCamera(mousePos || new THREE.Vector2(0, 0), three.cameraPlayer);
     const intersects = raycaster.intersectObjects(_objects, true);
     const validIntersect = intersects.find(i => _objects.some(cube => i.object.parent === cube || i.object === cube))
     return validIntersect || null;
 }
 
-export function rotateLayer(object, normal, isCounterclockwise = false, speedRotate) {
+export function rotateLayer(object, normal, isCounterclockwise = false) {
     return new Promise((resolve) => {
         if (isRotating || !object.parent || !normal.lengthSq()) {
             cLog('rotateLayer: blocked', { isRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
@@ -384,15 +385,15 @@ export function rotateLayer(object, normal, isCounterclockwise = false, speedRot
         // cLog('Вращение🔃: ', {
         //     object: object.name,
         //     normal: { x: normal.x, y: normal.y, z: normal.z },
-        //     camMode: CurrentActiveCam,
+        //     camMode: app.CurrentActiveCam,
         //     direction: isCounterclockwise ? 'против часовой' : 'по часовой'
         // });
 
-        speedRotate = speedSet;
+        const speedRotate = app.speedSet;
         const layerData = getCubesInLayer(normal, object);
         cubesToRotate = layerData.cubes;
 
-  //      cLog('rotateLayer: cubes to rotate=', cubesToRotate.length);
+        // cLog('rotateLayer: cubes to rotate=', cubesToRotate.length);
         if (cubesToRotate.length === 0) {
             cLog('rotateLayer: no cubes to rotate');
             resolve();
@@ -476,7 +477,7 @@ export function rotateLayer(object, normal, isCounterclockwise = false, speedRot
 
         const audio = document.getElementById('rotation_sound');
         audio.currentTime = 0;
-        if (state_sounds === 2 || state_sounds === 3){
+        if (game.state_sounds === 2 || game.state_sounds === 3){
             audio.play().catch(e => console.error('не удалось загрузить музыку'));
         }
     });
@@ -622,7 +623,7 @@ function finishWholeRotation(initialStates) {
         // Кватернион физического тела не обновляем, так как вращение затрагивает только визуальные кубики
     }
 
-    if (!isScrambling && gameState.active) {
+    if (!isScrambling && game.active) {
         // Используем обновленную логику isCubeSolved
         isCubeSolved(false);
     }
@@ -707,7 +708,7 @@ function finishRotation() {
     }
 
 
-    if (!isScrambling && gameState.active) {
+    if (!isScrambling && game.active) {
         // Используем обновленную логику isCubeSolved
         isCubeSolved(false);
     }
@@ -741,11 +742,11 @@ export async function scrambleCube(numMoves = 20){
 
 export async function solveCube() {
     if (isRotating) { alert("Сборка не может быть выполнена, т.к сейчас кубик вращается"); updateProgressBar(0); return; }
-    if (gameState.mode === 'normal' && exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
+    if (game.mode === 'normal' && game.exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
 
     // optimizeHistory()
     
-    exitMenu === false ? alert("Начата сборка") : 0;
+    game.exitMenu === false ? alert("Начата сборка") : 0;
     
     // проходим по истории в обратном направлении
     for (let i = historyrotation.length - 1; i>=0; i--){
@@ -763,7 +764,7 @@ export async function solveCube() {
     }
     if (isCubeSolved()){
         cLog("Кубик собран, очищаем историю вращений");
-        exitMenu === false ? updateProgressBar(100) : updateProgressBar(0);
+        game.exitMenu === false ? updateProgressBar(100) : updateProgressBar(0);
         historyrotation = [];
     } else {
         cWarn("Кубик не собран после выполнения истории");
@@ -809,7 +810,7 @@ function isCubeSolved(debugMode = false) {
         return result;
     }
     
-    if (isMouseDown === true) return;
+    if (app.isMouseDown === true) return;
 
     // Список центральных кубиков, для которых игнорируем проверку кватернионов
     const centerCubes = [
@@ -825,7 +826,7 @@ function isCubeSolved(debugMode = false) {
     let correctCubes = 0;
     let isSolved = true;
     const unsolvedObjects = [];
-    const isDefaultTheme = selector_theme.value === 'default'
+    const isDefaultTheme = game.selector_theme.value === 'default'
 
     _objects.forEach((dynamicCube, index) => {
         const staticCube = _staticobjects[index];
@@ -896,7 +897,7 @@ function isCubeSolved(debugMode = false) {
     }
 
     // Обновляем прогресс-бар только если игра активна и не идет перемешивание
-    if (!isScrambling && gameState.active) {
+    if (!isScrambling && game.active) {
         updateProgressBar(progressPercentage);
     }
 
