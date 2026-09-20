@@ -8,7 +8,7 @@ import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
 import { lockToLandscape, initRotateOverlay } from "./utils/orientation.js";
-import { pauseTimer, resumeTimer, startGameTimer } from "./timer.js";
+import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from "./timer.js";
 import { game, ui } from "./state.js";
 
 // Элементы интерфейса
