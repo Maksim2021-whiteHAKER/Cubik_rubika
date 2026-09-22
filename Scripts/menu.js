@@ -3,7 +3,7 @@ import { showWheel, spinWheelThemes, updateTextureSelectorOptions, loadSpinWheel
 import { applyColorTheme, getObjects, scrambleCube, solveCube } from "./cube.js";
 import { getControlMode } from "./controlMode.js";
 import { updateProgressBar } from "./ui.js";
-import { getInputType as getDeviceType } from './utils/device.js';
+import { getInputType as getDeviceType, isMobile, isTablet } from './utils/device.js';
 import { applyTextures } from "./texturing.js";
 import { textureManager } from "./texturing.js";
 import { cLog, cWarn } from './utils/logger.js'
@@ -12,7 +12,7 @@ import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from "./timer.js";
 import { game, ui } from "./state.js";
 
 // Элементы интерфейса
-let mainMenu, helpModal, settingsModal, creatorModal, supportModal;
+let mainMenu, helpModal, settingsModal, creatorModal, supportModal, importantText;
 let resetButton, backToMenuButton, acceptStyleButton;
 let music, musicBtn, selector_color_theme, mcTextPhoneEl;
 let blurMenu, pauseMenu;
@@ -359,6 +359,7 @@ export function initMenu() {
     creatorModal = document.getElementById('creatorModal');
     supportModal = document.getElementById('supportModal');
     ui.congratsModal = document.getElementById('congratsModal');
+    importantText = document.getElementById('importantText');
 
     resetButton = document.getElementById('resetBtn');
     backToMenuButton = document.getElementById('BackToMenuBtn');
@@ -379,6 +380,10 @@ export function initMenu() {
     resetAndExitBtn = document.getElementById('resetAndExitBtn');
     resumeBtn = document.getElementById('resumeBtn');
     controlSelecter = document.getElementById('control-selecter');
+
+    if (isMobile() || isTablet()) {
+        importantText.style.display = 'block'
+    }
 
     // 2. Создаем динамические элементы
     blurMenu = document.createElement('div');

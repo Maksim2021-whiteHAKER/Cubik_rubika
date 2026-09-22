@@ -637,6 +637,12 @@ canvas {
   /* top: 15px; */
 }
 
+#importantText {
+  display: none;
+  color: yellow;
+  font-size: 15px;
+}
+
 /* Мобильная адаптация */
 @media (max-width: 768px) {
   #menu_info {
