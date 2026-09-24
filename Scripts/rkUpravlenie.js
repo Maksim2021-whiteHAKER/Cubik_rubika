@@ -1,6 +1,6 @@
 // rkUpravlenie.js т.е rk === рк т.е реклама (управление заработком)
 import { textureManager } from "./texturing.js";
-import { updateFormStyle } from "./menu.js";
+import { updateFormStyle } from "./menu/form.js"
 import { cLog, cWarn } from "./utils/logger.js";
 export {spinWheelThemes}
 

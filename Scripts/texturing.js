@@ -30,7 +30,7 @@ class CubeTextureManager {
                 'back': 'textures/cube/sapphire512c.jpg',
                 'right': 'textures/cube/ruby512c.jpg',
                 'left': 'textures/cube/citrine512c.jpg',
-                'top': 'textures/cube/amber512.jpgc',
+                'top': 'textures/cube/amber512c.jpg',
                 'bottom': 'textures/cube/rock_crystal512c.jpg'
             }
         };
@@ -144,8 +144,8 @@ class CubeTextureManager {
                 // infomore.style.display = 'block';
                 // selector_theme.value = 'default'; // <-- Не меняем значение селектора тут, пусть меню решает
                 cWarn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
-                return; // if TP === false, return
-            } // if TP === false, return
+                continue; // if TP === false, continue
+            } // if TP === false, continues
         }
     }
 

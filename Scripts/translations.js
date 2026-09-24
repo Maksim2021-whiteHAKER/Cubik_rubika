@@ -1,7 +1,7 @@
 // Scripts/translations.js
-import { showClearNotification } from "./menu";
-import { cLog, cWarn } from "./utils/logger";
-import { translations } from "./translationsLanguages";
+import { showClearNotification } from "./menu/data.js";
+import { cLog, cWarn } from "./utils/logger.js";
+import { translations } from "./translationsLanguages.js";
 
 let version_game = 'lite'
 
