@@ -1,4 +1,3 @@
-import { initMenu } from "./menu";
 import { version } from '../package.json' 
 import { conversionVer } from '../Scripts/utils/version.js'
 
@@ -28,6 +27,5 @@ document.addEventListener('DOMContentLoaded', () => {
         versionGame.textContent = version + " beta";
         let versionConv = conversionVer(version);
         document.getElementById('titleHead').textContent = "Кубик-Рубика v" + versionConv
-        initMenu()
     }
 });

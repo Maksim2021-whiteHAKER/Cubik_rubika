@@ -174,6 +174,7 @@ let cubesToRotate = [];
 let arrowHelper = null;
 let progressArrows = [];
 let isRotating = false;
+let dontRepeat = false;
 let rotationAxis = new THREE.Vector3();
 
 export function initCube(sceneArg, worldArg, onLoadCallback) {
@@ -461,10 +462,11 @@ export function rotateLayer(object, normal, isCounterclockwise = false) {
             if (progress < 1) {
                 requestAnimationFrame(animateRotation);
             } else {
+                cLog("вращение: " + isRotating);
                 finishRotation();
-                if (!isScrambling) { // <-- Не обновляем прогресс во время перемешивания
-                    isCubeSolved(); // Вызываем для обновления ProgressBar
-                    if (isCubeSolved()) { // Проверяем, собран ли кубик
+                cLog("завершено вр.: "+ isRotating)
+                if (!isScrambling) { // <-- Не обновляем прогресс во время перемешивания                   
+                    if (isCubeSolved()){ // Проверяем, собран ли кубик
                         historyrotation = [];
                         cLog('Куб собран');
                     }
@@ -554,8 +556,7 @@ export async function rotateWholeCube(axis, isCounterclockwise = false) {
             } else {
                 finishWholeRotation(initialStates);
                 if (!isScrambling) { // <-- Не обновляем прогресс во время перемешивания
-                    isCubeSolved(); // Вызываем для обновления ProgressBar
-                    if (isCubeSolved()) { // Проверяем, собран ли кубик
+                     if (isCubeSolved()){ // Проверяем, собран ли кубик
                         historyrotation = [];
                         cLog('Куб собран');
                     }
@@ -740,8 +741,26 @@ export async function scrambleCube(numMoves = 20){
     isScrambling = false
 }
 
+function waitForRotationToFinish() {
+    dontRepeat = false;
+    return new Promise(resolve => {
+        const check = () => {
+            if (!isRotating) { 
+                updateProgressBar(0); 
+                resolve();                 
+            }
+            else { 
+                if (dontRepeat === false) alert("Пожалуйста, подождите — кубик завершает вращение.");
+                dontRepeat = true;
+                setTimeout(check, 50); 
+            }
+        };
+        check();
+    });
+}
+
 export async function solveCube() {
-    if (isRotating) { alert("Сборка не может быть выполнена, т.к сейчас кубик вращается"); updateProgressBar(0); return; }
+    if (isRotating) { await waitForRotationToFinish();}           
     if (game.mode === 'normal' && game.exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
 
     // optimizeHistory()
@@ -810,7 +829,9 @@ function isCubeSolved(debugMode = false) {
         return result;
     }
     
-    if (app.isMouseDown === true) return;
+    if (app.isMouseDown === true) {
+        return debugMode ? { isSolved: false, progress: 0, unsolvedObjects: [] } : false;
+    }
 
     // Список центральных кубиков, для которых игнорируем проверку кватернионов
     const centerCubes = [
@@ -826,7 +847,7 @@ function isCubeSolved(debugMode = false) {
     let correctCubes = 0;
     let isSolved = true;
     const unsolvedObjects = [];
-    const isDefaultTheme = game.selector_theme.value === 'default'
+    const isDefaultTheme = game.selector_theme?.value === 'default'
 
     _objects.forEach((dynamicCube, index) => {
         const staticCube = _staticobjects[index];
