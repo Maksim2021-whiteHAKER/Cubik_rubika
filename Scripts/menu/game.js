@@ -57,7 +57,7 @@ export function initGameButtons(){
     document.getElementById('resetAndExitBtn')?.addEventListener('click', () => {
         game.exitMenu = true;
         getPauseMenu().style.display = 'none';
-        getBlurMenu().style.display = 'none';
+        getBlurMenu().classList.remove('active');
         solveCube().then(goToMainMenu);
 
     });
@@ -71,12 +71,9 @@ export function togglePauseMenu(){
     if (!pauseMenu || !blurMenu) return;
     const isPause = pauseMenu.style.display === 'block';
     pauseMenu.style.display = isPause ? 'none' : 'block';
-    blurMenu.style.display = isPause ? 'none' : 'block';   
-    if (!isPause){
-        pauseTimer();
-    } else {
-        resumeTimer();        
-    }
+    blurMenu.classList.toggle('active', !isPause)    
+    if (!isPause) pauseTimer();
+    else resumeTimer();
 }
 
 // Возврат в главное меню
@@ -95,7 +92,7 @@ export function goToMainMenu() {
 
     // Очищаем состояние кубика
     if (ui.congratsModal) ui.congratsModal.style.display = 'none';
-    getBlurMenu().style.display = 'none';
+    getBlurMenu().classList.remove('active')
 }
 
 function resetGame() {

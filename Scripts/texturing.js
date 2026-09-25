@@ -1,6 +1,7 @@
 // texturing.js
 import * as THREE  from 'three';
-import { getObjects, originalMaterials, applyColorTheme } from './cube.js';
+import { getObjects, applyColorTheme } from './cube.js'
+import { cube } from './state.js';
 import { cLog, cWarn } from './utils/logger.js';
 
 class CubeTextureManager {
@@ -156,8 +157,8 @@ class CubeTextureManager {
 
         const objects = getObjects();
 
-        objects.forEach(cube => {
-            cube.traverse(mesh => {
+        objects.forEach(cubeObj => {
+            cubeObj.traverse(mesh => {
                 if (mesh.isMesh){
                     const materialName = mesh.material.name?.toLowerCase() || '';
                     const colorMatches = this.doesMaterialMatchSide(materialName, side);
@@ -170,7 +171,7 @@ class CubeTextureManager {
                         newMaterial.map = texture;
                         newMaterial.needsUpdate = true;
 
-                        const originalMat = originalMaterials.get(mesh.uuid);
+                        const originalMat = cube.originalMaterials.get(mesh.uuid);
                         if (originalMat){
                             
                             originalMat.map = null;
@@ -207,10 +208,10 @@ class CubeTextureManager {
     async clearAllTextures() {
         const objects = getObjects();
 
-        objects.forEach(cube => {
-            cube.traverse(mesh => {
+        objects.forEach(cubeObj => {
+            cubeObj.traverse(mesh => {
                 if (mesh.isMesh){
-                    const originalMat = originalMaterials.get(mesh.uuid);
+                    const originalMat = cube.originalMaterials.get(mesh.uuid);
                     if (originalMat){
                         const cleanMaterial = originalMat.clone();
 

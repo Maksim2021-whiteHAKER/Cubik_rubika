@@ -9,8 +9,6 @@ export function ensureModalContainers() {
 
     blurMenu = document.createElement('div');
     blurMenu.id = 'blurmenu';
-    blurMenu.style.display = 'none';
-
     pauseMenu = document.createElement('div');
     pauseMenu.id = 'pause-menu';
     pauseMenu.style.display = 'none';

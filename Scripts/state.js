@@ -1,4 +1,6 @@
 // Scripts/state.js
+import * as THREE from 'three'
+
 export const three = {
     scene: null,
     camera: null,
@@ -30,3 +32,24 @@ export const ui = {
     orbitControlSet: null,
     congratsModal: null,
 };
+
+export const cube = {
+    scene: null,
+    world: null,
+    bodies: [],
+    objects: [],
+    staticObjects: [],
+    referenceDynamicObjects: [],
+    originalMaterials: new Map(),
+    referencePositions: new Map(),
+    referenceCube: null,
+
+    historyrotation: [],
+    isRotating: false,
+    isScrambling: false,
+    rotationGroup: null,
+    cubesToRotate: [],
+    arrowHelper: null,
+    progressArrows: [],
+    rotationAxis: new THREE.Vector3()
+}

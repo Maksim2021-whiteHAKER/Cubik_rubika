@@ -1,10 +1,10 @@
 // Scripts/index.js
 import * as THREE from 'three';
-import { initCube, world, bodies, getObjects, scrambleCube, solveCube, rotateWholeCube } from './cube.js';
+import { initCube, getObjects, scrambleCube, solveCube, rotateWholeCube } from './cube.js';
 import { initPlayer } from './player.js';
 import { createTriggerZones } from './cubeInteraction.js';
 import { initMenu } from "./menu/index.js";
-import { three, app, ui, game } from './state.js';
+import { three, app, ui, game, cube } from './state.js';
 import { initThree, onWindowResize, isDev, stats } from './main/scene.js';
 import { setupTriggerInteraction } from './main/controls.js';
 import { orbitMobileControl } from './main/mobileControls.js';
@@ -121,7 +121,7 @@ function startworld() {
     requestAnimationFrame(startworld);
 
     try {
-        bodies.forEach(({ mesh, body }) => {
+        cube.bodies.forEach(({ mesh, body }) => {
             mesh.position.copy(body.position);
             mesh.quaternion.copy(body.quaternion);
         });
@@ -162,7 +162,7 @@ ui.congratsModal = document.getElementById('congratsModal');
 
 window.addEventListener('load', () => {
     initThree(textureGrass);
-    initCube(three.scene, world, () => {
+    initCube(three.scene, cube.world, () => {
         cLog('Cube loaded, Objects length=', getObjects().length);
         const triggerZones = createTriggerZones(6.12);
         triggerZones.forEach(zone => three.scene.add(zone));
