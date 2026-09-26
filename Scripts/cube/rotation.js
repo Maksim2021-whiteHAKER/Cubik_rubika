@@ -6,171 +6,116 @@ import { cLog } from '../utils/logger.js'
 import { getCubesInLayer } from './raycaster.js';
 import { isCubeSolved } from './solved.js';
 
-export function rotateLayer(object, normal, isCounterclockwise = false) {
-    return new Promise((resolve) => {
-        if (cube.isRotating || !object.parent || !normal.lengthSq()) {
-            let cubeIsRotating = cube.isRotating
-            cLog('rotateLayer: blocked', { cubeIsRotating, hasParent: !!object.parent, normalLength: normal.lengthSq() });
-            resolve();
-            return;
-        }
-        // cLog('Вращение🔃: ', {
-        //     object: object.name,
-        //     normal: { x: normal.x, y: normal.y, z: normal.z },
-        //     camMode: app.CurrentActiveCam,
-        //     direction: isCounterclockwise ? 'против часовой' : 'по часовой'
-        // });
+export function rotateLayer(object, normal, isCounterclockwise = false, {record = true} = {}) {
+    if (cube.isRotating || !object.parent || !normal.lengthSq()) {
+        cLog('rotateLayer: blocked', {
+            cubeIsRotating: cube.isRotating,
+            hasParent: !!object.parent,
+            normalLength: normal.lengthSq()
+        });
+        return Promise.resolve();
+    }
 
-        const speedRotate = app.speedSet;
-        const layerData = getCubesInLayer(normal, object);
-        cube.cubesToRotate = layerData.cubes;
+    const layerData = getCubesInLayer(normal, object);
+    // cLog('rotateLayer: cubes to rotate=', cubesToRotate.length);
+    if (layerData.cubes.length === 0) {
+        cLog('rotateLayer: no cubes to rotate');
+        return Promise.resolve();
+    }
 
-        // cLog('rotateLayer: cubes to rotate=', cubesToRotate.length);
-        if (cube.cubesToRotate.length === 0) {
-            cLog('rotateLayer: no cubes to rotate');
-            resolve();
-            return;
-        }
+    cube.cubesToRotate = layerData.cubes;
 
-        // Сохранение истории вращения
+    // Сохранение истории вращения
+    if (record) {
         cube.historyrotation.push({
             type: 'layer',
             objectName: object.name,
             normal: normal.clone(),
-            isCounterclockWise: isCounterclockwise
-        })
-
-        if (cube.arrowHelper) {
-            cube.scene.remove(cube.arrowHelper);
-            cube.arrowHelper = null;
-        }
-        cube.progressArrows.forEach(arrow => cube.scene.remove(arrow));
-        cube.progressArrows = [];
-
-        cube.rotationGroup = new THREE.Group();
-        const centerPoint = new THREE.Vector3();
-        cube.cubesToRotate.forEach(cubeObj => {
-            const pos = new THREE.Vector3();
-            cubeObj.getWorldPosition(pos);
-            centerPoint.add(pos);
+            isCounterclockWise: isCounterclockwise,
+            layerAxis: layerData.axis,
+            layerCoord: layerData.coord
         });
-        centerPoint.divideScalar(cube.cubesToRotate.length);
+    }
 
-        cube.rotationGroup.position.copy(centerPoint);
-        cube.scene.add(cube.rotationGroup);
-
-        cube.cubesToRotate.forEach(cubeObj => {
-            const pos = new THREE.Vector3();
-            cubeObj.getWorldPosition(pos);
-            cubeObj.position.copy(pos.sub(centerPoint));
-            cube.scene.remove(cubeObj);
-            cube.rotationGroup.add(cubeObj);
-        });
-
-        cube.rotationAxis.copy(normal).normalize();
-        cube.isRotating = true;
-
-        updateProgressArrows(0);
-        cube.arrowHelper = new THREE.ArrowHelper(cube.rotationAxis, cube.rotationGroup.position, 2, 0xff0000);
-        cube.scene.add(cube.arrowHelper);
-
-        const targetAngle = isCounterclockwise ? -Math.PI / 2 : Math.PI / 2;
-        const duration =  speedRotate;
-        const startTime = performance.now();
-
-        function animateRotation(currentTime) {            
-            if (!cube.rotationGroup) {
-                resolve();
-                return;
-            }
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const angle = targetAngle * progress;
-
-            cube.rotationGroup.rotation.set(0, 0, 0);
-            cube.rotationGroup.rotateOnAxis(cube.rotationAxis, angle);
-
-            if (progress < 1) {
-                requestAnimationFrame(animateRotation);
-            } else {
-                finishRotation();
-                if (!cube.isScrambling) { // <-- Не обновляем прогресс во время перемешивания                   
-                    if (isCubeSolved()){ // Проверяем, собран ли кубик
-                        cube.historyrotation = [];
-                        cLog('Куб собран');
-                    }
-                }       
-                resolve();
-            }
-        }
-
-        requestAnimationFrame(animateRotation);
-
-        const audio = document.getElementById('rotation_sound');
-        audio.currentTime = 0;
-        if (game.state_sounds === 2 || game.state_sounds === 3){
-            audio.play().catch(e => console.error('не удалось загрузить музыку'));
-        }
+    return startRotationAnimation({
+        targets: layerData.cubes,
+        axis: normal,
+        isCounterclockwise,
+        duration: app.speedSet,
+        pivot: computeCubesPivot(layerData.cubes),
+        // отличия от вращения всего куба
+        restoreMaterials: true,
+        saveReferencePositions: false,
+        updateProgressInLoop: false,
+        playSound: true,
     });
 }
 
-export async function rotateWholeCube(axis, isCounterclockwise = false) {
-    return new Promise((resolve) => {
-        if (cube.isRotating) {
-            cLog('rotateWholeCube: blocked, rotation in progress');
-            resolve();
-            return;
-        }
+export async function rotateWholeCube(axis, isCounterclockwise = false, { record = true} = {}) { 
+    if (cube.isRotating) {
+        cLog('rotateWholeCube: blocked, rotation in progress');
+        return Promise.resolve();
+    }
 
-        // Сохранение истории вращения
+    // Сохранение истории вращения
+    if (record) {
         cube.historyrotation.push({
             type: 'whole',
             axis: axis.clone(),
             isCounterclockWise: isCounterclockwise
         })
+    }
 
-        // Создаём группу для вращения
-        cube.rotationGroup = new THREE.Group();
-        const centerPoint = new THREE.Vector3(0, 5, 0); // Центр кубика
-        cube.rotationGroup.position.copy(centerPoint);
-        cube.scene.add(cube.rotationGroup);
+    return startRotationAnimation({
+        targets: cube.objects,
+        axis: axis,
+        isCounterclockwise,
+        duration: 300,
+        pivot: new THREE.Vector3(0, 5, 0),
+        // отличия от вращения всего куба
+        restoreMaterials: false,
+        saveReferencePositions: true,
+        updateProgressInLoop: true,
+        playSound: false,
+    });
+}
 
-        // Сохраняем начальные позиции и кватернионы всех кубиков
-        const initialStates = new Map();
-        cube.objects.forEach(cubeObj => {
-            const pos = new THREE.Vector3();
-            cubeObj.getWorldPosition(pos);
-            const quat = cubeObj.getWorldQuaternion(new THREE.Quaternion());
-            initialStates.set(cubeObj, { position: pos.clone(), quaternion: quat.clone() });
-            // Перемещаем кубик в cube.rotationGroup
-            cubeObj.position.copy(pos.sub(centerPoint));
-            cube.scene.remove(cubeObj);
-            cube.rotationGroup.add(cubeObj);
-        });
-
-        cube.rotationAxis.copy(axis).normalize();
-        cube.isRotating = true;
-
-        // Очищаем и создаём стрелки
+function startRotationAnimation({targets, axis, isCounterclockwise, duration, pivot, restoreMaterials, saveReferencePositions, updateProgressInLoop, playSound}) {
+    return new Promise((resolve) => {
         if (cube.arrowHelper) {
-            cube.scene.remove(cube.arrowHelper);
+            cube.scene.remove(cube.arrowHelper)
             cube.arrowHelper = null;
         }
         cube.progressArrows.forEach(arrow => cube.scene.remove(arrow));
         cube.progressArrows = [];
+
+        cube.rotationGroup = new THREE.Group();
+        cube.rotationGroup.position.copy(pivot);
+        cube.scene.add(cube.rotationGroup);
+
+        targets.forEach(obj => {
+            const pos = new THREE.Vector3();
+            obj.getWorldPosition(pos);
+            obj.position.copy(pos.sub(pivot));
+            cube.scene.remove(obj);
+            cube.rotationGroup.add(obj);
+        })
+
+        cube.rotationAxis.copy(axis).normalize();
+        cube.isRotating = true;
+
         updateProgressArrows(0);
-        cube.arrowHelper = new THREE.ArrowHelper(cube.rotationAxis, cube.rotationGroup.position, 2, 0xff0000);
+        cube.arrowHelper = new THREE.ArrowHelper(
+            cube.rotationAxis, cube.rotationGroup.position, 2, 0xff0000
+        );
         cube.scene.add(cube.arrowHelper);
 
         const targetAngle = isCounterclockwise ? -Math.PI / 2 : Math.PI / 2;
-        const duration = 300;
         const startTime = performance.now();
 
         function animateRotation(currentTime) {
-            if (!cube.rotationGroup) {
-                resolve();
-                return;
-            }
+            if (!cube.rotationGroup) { resolve(); return }
+
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const angle = targetAngle * progress;
@@ -178,149 +123,120 @@ export async function rotateWholeCube(axis, isCounterclockwise = false) {
             cube.rotationGroup.rotation.set(0, 0, 0);
             cube.rotationGroup.rotateOnAxis(cube.rotationAxis, angle);
 
-            updateProgressArrows(angle);
+            if (updateProgressInLoop) updateProgressArrows(angle);
 
             if (progress < 1) {
                 requestAnimationFrame(animateRotation);
             } else {
-                finishWholeRotation(initialStates);
-                if (!cube.isScrambling) { // <-- Не обновляем прогресс во время перемешивания
-                     if (isCubeSolved()){ // Проверяем, собран ли кубик
-                        cube.historyrotation = [];
-                        cLog('Куб собран');
-                    }
-                }      
+                finishRotation({ restoreMaterials, saveReferencePositions});
+
+                if (!cube.isScrambling && isCubeSolved()) {
+                    cube.historyrotation = [];
+                    cLog('✅ Куб собран!');
+                }
                 resolve();
             }
         }
 
         requestAnimationFrame(animateRotation);
-    });
-}
 
-function finishWholeRotation(initialStates) {
-    if (!cube.rotationGroup) return;
-
-    // Переносим кубики обратно в сцену
-    const tempContainer = new THREE.Group();
-    cube.scene.add(tempContainer);
-    tempContainer.position.copy(cube.rotationGroup.position);
-    tempContainer.quaternion.copy(cube.rotationGroup.quaternion);
-
-    while (cube.rotationGroup.children.length > 0) {
-        const cubeNew = cube.rotationGroup.children[0];
-        const originalPos = new THREE.Vector3().copy(cubeNew.position);
-        cube.rotationGroup.remove(cubeNew);
-        tempContainer.add(cubeNew);
-        cubeNew.position.copy(originalPos);
-    }
-
-    while (tempContainer.children.length > 0) {
-        const cubeNew = tempContainer.children[0];
-        const worldPos = new THREE.Vector3();
-        cubeNew.getWorldPosition(worldPos);
-        const worldQuat = cubeNew.getWorldQuaternion(new THREE.Quaternion());
-
-        tempContainer.remove(cubeNew);
-        cube.scene.attach(cubeNew);
-        cubeNew.position.copy(worldPos);
-        cubeNew.quaternion.copy(worldQuat);
-
-        // Обновляем referencePositions для корректной работы других функций
-        cube.referencePositions.set(cubeNew.name, {
-            position: worldPos.clone(),
-            quaternion: worldQuat.clone()
-        });
-    }
-
-    cube.scene.remove(tempContainer);
-    if (cube.arrowHelper) {
-        cube.scene.remove(cube.arrowHelper);
-        cube.arrowHelper = null;
-    }
-    cube.progressArrows.forEach(arrow => cube.scene.remove(arrow));
-    cube.progressArrows = [];
-    cube.scene.remove(cube.rotationGroup);
-    cube.isRotating = false;
-    cube.rotationGroup = null;
-    cube.cubesToRotate = []; // Очищаем, чтобы не мешать rotateLayer
-
-    // Синхронизируем физику
-    if (cube.bodies.length > 0 && cube.bodies[0] && cube.bodies[0].body && cube.bodies[0].mesh) {
-        const centerPos = new THREE.Vector3(0, 5, 0);
-        cube.bodies[0].body.position.copy(new CANNON.Vec3(centerPos.x, centerPos.y, centerPos.z));
-        cube.bodies[0].mesh.position.copy(centerPos);
-        // Кватернион физического тела не обновляем, так как вращение затрагивает только визуальные кубики
-    }
-
-    if (!cube.isScrambling && game.active) {
-        // Используем обновленную логику isCubeSolved
-        isCubeSolved(false);
-    }
-}
-
-function finishRotation() {
-    if (!cube.rotationGroup) return;
-
-    cube.cubesToRotate.forEach(cubeObj => {
-        cubeObj.traverse(child => {
-            if (child.isMesh && cube.originalMaterials.has(child.uuid)) {
-                child.material = cube.originalMaterials.get(child.uuid).clone();
-                child.material.needsUpdate = true;
-                child.geometry.computeVertexNormals();
-                if (child.material.emissive) {
-                    child.material.emissiveIntensity = 0;
-                }
+        if (playSound) {
+            const audio = document.getElementById('rotation_sound');
+            audio.currentTime = 0;
+            if (game.state_sounds === 2 || game.state_sounds === 3) {
+                audio.play().catch(e => console.error('не удалось загрузить музыку'));
             }
-        });
+        }
     });
+}
 
+function computeCubesPivot(cubes) {
+    const center = new THREE.Vector3();
+    cubes.forEach((cObj) => {
+        const pos = new THREE.Vector3();
+        cObj.getWorldPosition(pos);
+        center.add(pos);
+    });
+    return center.divideScalar(cubes.length);
+}
+
+function finishRotation({ restoreMaterials, saveReferencePositions }) {
+    if (!cube.rotationGroup) return;
+
+    // 1. Восстановление материалов (только для слоя)
+    if (restoreMaterials) {
+        cube.cubesToRotate.forEach(cubeObj => {
+            cubeObj.traverse(child => {
+                if (child.isMesh && cube.originalMaterials.has(child.uuid)) {
+                    child.material = cube.originalMaterials.get(child.uuid).clone();
+                    child.material.needsUpdate = true;
+                    child.geometry.computeVertexNormals();
+                    if (child.material.emissive) {
+                        child.material.emissiveIntensity = 0;
+                    }
+                }
+            });
+        });
+    }
+
+    // 2. Bake world transform через temp container
     const tempContainer = new THREE.Group();
     cube.scene.add(tempContainer);
     tempContainer.position.copy(cube.rotationGroup.position);
     tempContainer.quaternion.copy(cube.rotationGroup.quaternion);
 
     while (cube.rotationGroup.children.length > 0) {
-        const cubeNew = cube.rotationGroup.children[0];
-        const originalPos = new THREE.Vector3().copy(cubeNew.position);
-        cube.rotationGroup.remove(cubeNew);
-        tempContainer.add(cubeNew);
-        cubeNew.position.copy(originalPos);
+        const c = cube.rotationGroup.children[0];
+        const originalPos = new THREE.Vector3().copy(c.position);
+        cube.rotationGroup.remove(c);
+        tempContainer.add(c);
+        c.position.copy(originalPos);
     }
 
     while (tempContainer.children.length > 0) {
-        const cubeNew = tempContainer.children[0];
+        const c = tempContainer.children[0];
         const worldPos = new THREE.Vector3();
-        cubeNew.getWorldPosition(worldPos);
-        const worldQuater = cubeNew.getWorldQuaternion(new THREE.Quaternion());
+        c.getWorldPosition(worldPos);
+        const worldQuat = c.getWorldQuaternion(new THREE.Quaternion());
 
-        tempContainer.remove(cubeNew);
-        cube.scene.attach(cubeNew);
-        cubeNew.position.copy(worldPos);
-        cubeNew.quaternion.copy(worldQuater);
+        tempContainer.remove(c);
+        cube.scene.attach(c);
+        c.position.copy(worldPos);
+        c.quaternion.copy(worldQuat);
+
+        // Обновление referencePositions (только для whole-cube)
+        if (saveReferencePositions) {
+            cube.referencePositions.set(c.name, {
+                position: worldPos.clone(),
+                quaternion: worldQuat.clone()
+            });
+        }
     }
 
     cube.scene.remove(tempContainer);
+
+    // 3. Уборка
     if (cube.arrowHelper) {
         cube.scene.remove(cube.arrowHelper);
         cube.arrowHelper = null;
     }
-    cube.progressArrows.forEach(arrow => cube.scene.remove(arrow));
+    cube.progressArrows.forEach(a => cube.scene.remove(a));
     cube.progressArrows = [];
     cube.scene.remove(cube.rotationGroup);
     cube.isRotating = false;
-    cube.cubesToRotate = [];
     cube.rotationGroup = null;
+    cube.cubesToRotate = [];
 
-    // физика
-    if (cube.bodies.length > 0 && cube.bodies[0] && cube.bodies[0].body && cube.bodies[0].mesh){
-        cube.bodies[0].body.position.copy(new CANNON.Vec3(0, 5, 0));
-        cube.bodies[0].mesh.position.copy(new THREE.Vector3(0, 5, 0));
+    // 4. Синхронизация якоря физики
+    const bodies = cube.bodies;
+    if (bodies.length > 0 && bodies[0] && bodies[0].body && bodies[0].mesh) {
+        const centerPos = new THREE.Vector3(0, 5, 0);
+        bodies[0].body.position.copy(new CANNON.Vec3(centerPos.x, centerPos.y, centerPos.z));
+        bodies[0].mesh.position.copy(centerPos);
     }
 
-
+    // 5. Проверка «собран ли куб» после вращения
     if (!cube.isScrambling && game.active) {
-        // Используем обновленную логику isCubeSolved
         isCubeSolved(false);
     }
 }
@@ -335,12 +251,15 @@ function updateProgressArrows(currentAngle) {
     const arrowColor = startColor.clone().lerp(endColor, progress);
 
     const arrowLength = 2 + progress * 1;
-    const arrow1 = new THREE.ArrowHelper(cube.rotationAxis, cube.rotationGroup.position, arrowLength, arrowColor.getHex(), 0.3, 0.1);
+    const arrow1 = new THREE.ArrowHelper(
+        cube.rotationAxis, cube.rotationGroup.position, arrowLength, arrowColor.getHex(), 0.3, 0.1
+    );
     cube.scene.add(arrow1);
     cube.progressArrows.push(arrow1);
 
-    const arrow2 = new THREE.ArrowHelper(cube.rotationAxis.clone().negate(), cube.rotationGroup.position, arrowLength, arrowColor.getHex(), 0.3, 0.1);
+    const arrow2 = new THREE.ArrowHelper(
+        cube.rotationAxis.clone().negate(), cube.rotationGroup.position, arrowLength, arrowColor.getHex(), 0.3, 0.1
+    );
     cube.scene.add(arrow2);
     cube.progressArrows.push(arrow2);
 }
-

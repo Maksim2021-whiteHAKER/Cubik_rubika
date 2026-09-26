@@ -89,7 +89,7 @@ export function showArrows(cube, mouseCoords) {
         return;
     }
     const blurM = document.getElementById('blurmenu')
-    if (blurM && blurM.style.display === 'block') { return; }
+    if (blurM && blurM.classList.contains('active')) { return; }
     // Удаляем старые стрелки
     arrows.forEach(arrow => three.scene.remove(arrow));
     arrows = [];

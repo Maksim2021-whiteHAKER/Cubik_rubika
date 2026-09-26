@@ -23,7 +23,7 @@ export function getCubesInLayer(normal, clickedObject) {
     });
 
 //    cLog(`Слой по оси: ${axis}, координата: ${layerCoord}, кубиков: ${layerCubes.length}`);
-    return { cubes: layerCubes };
+    return { cubes: layerCubes, axis, coord: layerCoord };
 }
 
 export function checkFpsHit(mousePos) {

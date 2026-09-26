@@ -43,7 +43,7 @@ function waitForRotationToFinish() {
                 resolve();                 
             }
             else { 
-                if (dontRepeat === false) alert("Пожалуйста, подождите — кубик завершает вращение.");
+                if (dontRepeat === false) alert("Пожалуйста, подождите — пока кубик не завершит вращение.");
                 dontRepeat = true;
                 setTimeout(check, 50); 
             }
@@ -59,21 +59,33 @@ export async function solveCube() {
     // optimizeHistory()
     
     game.exitMenu === false ? alert("Начата сборка") : 0;
-    
+
+    cLog('До solveCube: history =', cube.historyrotation.length);
+    const history = [...cube.historyrotation];
+
     // проходим по истории в обратном направлении
-    for (let i = cube.historyrotation.length - 1; i>=0; i--){
-        const move = cube.historyrotation[i];
+    for (let i = history.length - 1; i >= 0; i--){
+        const move = history[i];
+
         if (move.type === 'layer'){
+            const cubes = cube.objects.filter(obj => {
+                const pos = new THREE.Vector3();
+                obj.getWorldPosition(pos);
+                return Math.abs(pos[move.layerAxis] - move.layerCoord) < 0.1;
+            })
             // находим объект по имени
-            const object = cube.objects.find(obj => obj.name === move.objectName)
+            const object = cubes.find(obj => obj.name === move.objectName) || cubes[0]
             if (!object){
-                alert(`Объект: ${move.object} для вращения, не найден`)
+                cWarn(`Объект: ${move.object} для вращения, не найден`)
+                continue;
             }
-            await rotateLayer(object, move.normal, !move.isCounterclockWise); 
+            await rotateLayer(object, move.normal, !move.isCounterclockWise, { record: false}); 
         } else if (move.type === 'whole'){
-            await rotateWholeCube(move.axis, !move.isCounterclockWise)
+            await rotateWholeCube(move.axis, !move.isCounterclockWise, { record: false})
         }
     }
+    cLog('После solveCube: history =', cube.historyrotation.length);
+
     if (isCubeSolved()){
         cLog("Кубик собран, очищаем историю вращений");
         game.exitMenu === false ? updateProgressBar(100) : updateProgressBar(0);

@@ -69,7 +69,7 @@ document.body.appendChild(cameraInfoDiv);
 
 document.addEventListener('keydown', async (event) => {
     const blurM = document.getElementById('blurmenu')
-    if (blurM && blurM.style.display === 'block') { return; }
+    if (blurM && blurM.classList.contains('active')) { return; }
     if (!game.active) return
     if (app.CurrentActiveCam === 'player') return;
     if (event.code === 'KeyO') {
