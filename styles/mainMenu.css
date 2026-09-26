@@ -464,10 +464,6 @@ p {
         max-width: 90%;
     }
     
-    #mobile-controls {
-        bottom: 10px;
-    }
-    
     .control-btn {
         width: 50px;
         height: 50px;
@@ -491,37 +487,6 @@ button, .control-btn {
 }
 
 /* Мобильные элементы управления */
-#mobile-controls {
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    z-index: 100;
-}
-
-.mobile-control-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: rgba(52, 152, 219, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 50px;
-    user-select: none;
-    border: 2px solid #ecf0f1;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.mobile-control-btn:active {
-    background-color: rgba(41, 128, 185, 0.9);
-    transform: scale(0.95);
-}
-
 #rotate-controls {
     position: fixed;
     right: 20px;
@@ -581,13 +546,7 @@ button, .control-btn {
 }
 
 /* Адаптация для маленьких экранов */
-@media (max-width: 480px) {
-    .mobile-control-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 20px;
-    }
-    
+@media (max-width: 480px) {    
     .rotate-btn {
         width: 50px;
         height: 50px;

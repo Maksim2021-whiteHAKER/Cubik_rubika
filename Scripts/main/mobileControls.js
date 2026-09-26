@@ -2,85 +2,205 @@
 import * as THREE from 'three'
 import { three, ui, game, app } from '../state.js'
 import { hideArrows } from './arrows.js'
-import { rotateWholeCube } from '../cube.js'
+import { rotateWholeCube, solveCube, scrambleCube } from '../cube.js'
 import { cLog } from '../utils/logger.js'
 
-export function createMobileControls(){
+export function createMobileControls() {
     if (!app.isTouchDevice) return;
-
+  
+    // Контейнер основных кнопок
     const mobileControls = document.createElement('div');
-    mobileControls.id = 'mobile-controls'
-    mobileControls.innerHTML = `
-        <div class="mobile-control-btn" id="mobile-up">▼</div>
-        <div class="mobile-control-btn" id="mobile-left">◄</div>
-        <div class="mobile-control-btn" id="mobile-orbit">💫</div>
-        <div class="mobile-control-btn" id="mobile-down">▲</div>
-        <div class="mobile-control-btn" id="mobile-right">►</div>
-    `;
-    document.body.appendChild(mobileControls);
-
-    document.getElementById('mobile-up').addEventListener('touchstart', () => handleMobileControl('up'));
-    document.getElementById('mobile-left').addEventListener('touchstart', () => handleMobileControl('left'));
-    document.getElementById('mobile-orbit').addEventListener('touchstart', (e) => {
+    mobileControls.id = 'mobile-controls';
+    mobileControls.className = 'mobile-control-container';
+  
+    const directions = [
+      { id: 'mobile-up', symbol: '▼', dir: 'up' },
+      { id: 'mobile-left', symbol: '◄', dir: 'left' },
+      { id: 'mobile-orbit', symbol: '💫', dir: 'orbit' },
+      { id: 'mobile-down', symbol: '▲', dir: 'down' },
+      { id: 'mobile-right', symbol: '►', dir: 'right' },
+    ];
+  
+    directions.forEach(({ id, symbol, dir }) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = id;
+      btn.className = 'mobile-control-btn';
+      btn.textContent = symbol;
+      btn.setAttribute('aria-label', dir);
+      btn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        orbitMobileControl();
-    })
-    document.getElementById('mobile-down').addEventListener('touchstart', () => handleMobileControl('down'));
-    document.getElementById('mobile-right').addEventListener('touchstart', () => handleMobileControl('right'));
+        if (dir === 'orbit') {
+          orbitMobileControl();
+        } else {
+          handleMobileControl(dir);
+        }
+      });
+      mobileControls.appendChild(btn);
+    });
+  
+    document.body.appendChild(mobileControls);
+  
+    // Контейнер дополнительных кнопок
+    const extraControls = document.createElement('div');
+    extraControls.id = 'extra-mobile-controls';
+  
+    const extras = [
+      {
+        id: 'mobile-revers-solve',
+        symbol: '🔙',
+        label: 'сборка',
+        action: () => handleMobileControl('revers-solve'),
+        aria: 'Вернуться к сборке',
+      },
+      {
+        id: 'mobile-revers-scramble', // исправлено scrumble → scramble
+        symbol: '🎲',
+        label: 'разборка',
+        action: () => handleMobileControl('scramble'),
+        aria: 'Перемешать куб',
+      },
+    ];
+  
+    extras.forEach(({ id, symbol, label, action, aria }) => {
+      const wrapper = document.createElement('button');
+      wrapper.type = 'button';
+      wrapper.id = id;
+      wrapper.className = 'mobile-control-btn extra-mobile-control-btn';
+      wrapper.setAttribute('aria-label', aria);
+  
+      const icon = document.createElement('span');
+      icon.textContent = symbol;
+      icon.className = 'btn-icon';
+  
+      const text = document.createElement('span');
+      text.textContent = label;
+      text.className = 'btn-label';
+  
+      wrapper.appendChild(icon);
+      wrapper.appendChild(text);
+      wrapper.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        action();
+      });
+  
+      extraControls.appendChild(wrapper);
+    });
+  
+    document.body.appendChild(extraControls); 
 
     // Добавьте стили для мобильных элементов управления
     const style = document.createElement('style');
     style.textContent = `
+      .mobile-control-container {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        z-index: 100;
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+  
+      #extra-mobile-controls {
+        position: fixed;
+        top: 50%;
+        right: 50px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 100;
+      }
+  
+      .mobile-control-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(52, 152, 219, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        user-select: none;
+        touch-action: none;
+        margin: 0;
+        border: solid 1.5px transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+      }
+  
+      .extra-mobile-control-btn {
+        flex-direction: column;
+      }
+  
+      .btn-icon {
+        line-height: 1;
+      }
+  
+      .btn-label {
+        font-size: 11px;
+        line-height: 1.2;
+        text-align: center;
+        margin-top: 4px;
+        white-space: nowrap;
+      }
+  
+      #mobile-orbit {
+        background-color: rgba(155, 89, 182, 0.7);
+      }
+  
+      #mobile-orbit.orbit-active {
+        background-color: rgba(231, 76, 60, 0.9);
+        border-color: white;
+        box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+      }
+  
+      @media (max-width: 768px) {
+        .mobile-control-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+        }
+            
+        .extra-mobile-control-btn .btn-label {
+          font-size: 9px;
+        }
+
         #mobile-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            z-index: 100;
+          bottom: 10px;
+          padding: 5px;
         }
-        
-        .control-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: rgba(52, 152, 219, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            user-select: none;
-            touch-action: none;
-            margin: 5px;
-            transition all 0.2s;
-            border: solid 1.5px transparent
+      }
+
+      @media (max-width: 500px) {
+        .mobile-control-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
         }
 
-        #mobile-orbit {
-            background-color: rgba(155, 89, 182, 0.7);          
-            width: 60px;
-            height: 60px;
-            font-size: 30px;
+        #mobile-controls {
+            bottom: 5px;
+            padding: 3px;
         }
+      }
 
-        #mobile-orbit.orbit-active {
-            background-color: rgba(231, 76, 60, 0.9);
-            border-color: white;
-            box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+      @media (max-width: 400px) {
+        .mobile-control-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
         }
-        
-        @media (max-width: 768px) {
-            .control-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 16px;
-            }
-        }
+      }
+
     `;
-    document.head.appendChild(style);
 
+    document.head.appendChild(style);
     updateOrbitButton()
 }
 
@@ -109,6 +229,8 @@ export function handleMobileControl(direction) {
         case 'rotate-z':
             rotateWholeCube(new THREE.Vector3(0, 0, 1), Math.random() > 0.5);
             break;
+        case 'revers-solve': solveCube(); break;
+        case 'scramble': scrambleCube(20); break;
     }
 }
 
