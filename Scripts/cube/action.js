@@ -55,9 +55,7 @@ function waitForRotationToFinish() {
 export async function solveCube() {
     if (cube.isRotating) { await waitForRotationToFinish();}           
     if (game.mode === 'normal' && game.exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
-
-    // optimizeHistory()
-    
+   
     game.exitMenu === false ? alert("Начата сборка") : 0;
 
     cLog('До solveCube: history =', cube.historyrotation.length);
@@ -95,26 +93,3 @@ export async function solveCube() {
     }
     cLog("Сборка кубика завершена");
 }
-
-// TODO планируется доработать
-// function optimizeHistory() {
-//     const optimized = [];
-//     for (let i = 0; i < historyrotation.length; i++) {
-//         const current = historyrotation[i];
-//         if (optimized.length > 0) {
-//             const last = optimized[optimized.length - 1];
-//             if (
-//                 current.type === last.type &&
-//                 current.objectName === last.objectName &&
-//                 current.normal.equals(last.normal) &&
-//                 current.isCounterclockwise === !last.isCounterclockwise
-//             ) {
-//                 optimized.pop(); // Удаляем противоположные вращения
-//                 continue;
-//             }
-//         }
-//         optimized.push(current);
-//     }
-//     historyrotation = optimized;
-//     cLog(`История оптимизирована, длина: ${historyrotation.length}`);
-// }
