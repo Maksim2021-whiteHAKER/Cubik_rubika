@@ -6,6 +6,7 @@ import { game, ui } from '../state.js';
 import { lockToLandscape } from '../utils/orientation.js';
 import { cLog } from '../utils/logger.js';
 import { getPauseMenu, getBlurMenu } from './modals.js'
+import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
 
 const mainMenu = document.getElementById('mainMenu');
 
@@ -15,6 +16,7 @@ export function initGameButtons(){
     document.getElementById('normalMode').addEventListener('click', () => {
         game.active = true
         game.mode = 'normal';
+        updateExtraMobileControlsVisibility();
         game.solved = false
         if (mainMenu) mainMenu.style.display = 'none';
         cLog(`_objectsNM: ${getObjects().length}`);
@@ -37,6 +39,8 @@ export function initGameButtons(){
     document.getElementById('freeMode').addEventListener('click', () => {
         game.active = true
         game.mode = 'free';
+        createExtraMobileControls();
+        updateExtraMobileControlsVisibility();
         mainMenu.style.display = 'none';
         startGameTimer();
         lockToLandscape()
@@ -84,6 +88,7 @@ export function goToMainMenu() {
     updateProgressBar(0);
     game.active = false;
     game.mode = null;
+    updateExtraMobileControlsVisibility();
     game.exitMenu = false;
 
     // Скрываем всё, кроме главного меню

@@ -40,54 +40,6 @@ export function createMobileControls() {
     });
   
     document.body.appendChild(mobileControls);
-  
-    // Контейнер дополнительных кнопок
-    const extraControls = document.createElement('div');
-    extraControls.id = 'extra-mobile-controls';
-  
-    const extras = [
-      {
-        id: 'mobile-revers-solve',
-        symbol: '🔙',
-        label: 'сборка',
-        action: () => handleMobileControl('revers-solve'),
-        aria: 'Вернуться к сборке',
-      },
-      {
-        id: 'mobile-revers-scramble', // исправлено scrumble → scramble
-        symbol: '🎲',
-        label: 'разборка',
-        action: () => handleMobileControl('scramble'),
-        aria: 'Перемешать куб',
-      },
-    ];
-  
-    extras.forEach(({ id, symbol, label, action, aria }) => {
-      const wrapper = document.createElement('button');
-      wrapper.type = 'button';
-      wrapper.id = id;
-      wrapper.className = 'mobile-control-btn extra-mobile-control-btn';
-      wrapper.setAttribute('aria-label', aria);
-  
-      const icon = document.createElement('span');
-      icon.textContent = symbol;
-      icon.className = 'btn-icon';
-  
-      const text = document.createElement('span');
-      text.textContent = label;
-      text.className = 'btn-label';
-  
-      wrapper.appendChild(icon);
-      wrapper.appendChild(text);
-      wrapper.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        action();
-      });
-  
-      extraControls.appendChild(wrapper);
-    });
-  
-    document.body.appendChild(extraControls); 
 
     // Добавьте стили для мобильных элементов управления
     const style = document.createElement('style');
@@ -304,4 +256,64 @@ export function showOrbitNotification(isEnabled) {
             }
         }, 300);
     }, 1500);
+}
+
+export function createExtraMobileControls() {
+    if (!app.isTouchDevice) return;
+
+    if (document.getElementById('extra-mobile-controls')) return;
+
+    const extraControls = document.createElement('div');
+    extraControls.id = 'extra-mobile-controls';
+    extraControls.style.display = 'none';   // ← добавить
+
+    const extras = [
+        {
+            id: 'mobile-revers-solve',
+            symbol: '🔙',
+            label: 'сборка',
+            action: () => handleMobileControl('revers-solve'),
+            aria: 'Вернуться к сборке',
+        },
+        {
+            id: 'mobile-revers-scramble',
+            symbol: '🎲',
+            label: 'разборка',
+            action: () => handleMobileControl('scramble'),
+            aria: 'Перемешать куб',
+        },
+    ];
+
+    extras.forEach(({ id, symbol, label, action, aria }) => {
+        const wrapper = document.createElement('button');
+        wrapper.type = 'button';
+        wrapper.id = id;
+        wrapper.className = 'mobile-control-btn extra-mobile-control-btn';
+        wrapper.setAttribute('aria-label', aria);
+
+        const icon = document.createElement('span');
+        icon.textContent = symbol;
+        icon.className = 'btn-icon';
+
+        const text = document.createElement('span');
+        text.textContent = label;
+        text.className = 'btn-label';
+
+        wrapper.appendChild(icon);
+        wrapper.appendChild(text);
+        wrapper.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            action();
+        });
+
+        extraControls.appendChild(wrapper);
+    });
+
+    document.body.appendChild(extraControls);
+}
+
+export function updateExtraMobileControlsVisibility() {
+    const el = document.getElementById('extra-mobile-controls');
+    if (!el) return;
+    el.style.display = game.mode === 'free' ? 'flex' : 'none';
 }
