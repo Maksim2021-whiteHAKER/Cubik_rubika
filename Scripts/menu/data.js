@@ -4,6 +4,7 @@ import { applyTextures, textureManager } from '../texturing.js';
 import { updateTextureSelectorOptions, loadSpinWheelFromStorage, updateWheelSegments } from '../rkUpravlenie.js';
 import { cLog } from '../utils/logger.js';
 import { getMusic } from './sound.js';
+import { showConfirmationDialog } from './modals.js';
 
 // Функция очистки разблокированных тем
 export function clearCustomThemes() {
@@ -93,8 +94,8 @@ export function clearCustomThemes() {
 }
 
 // Функция полного сброса
-export function clearAllData() {
-    showConfirmationDialog(
+export async function clearAllData() {
+    await showConfirmationDialog(
         'ВНИМАНИЕ! Вы собираетесь сбросить ВСЕ настройки и данные.<br>' +
         'Будут удалены: темы, настройки звука, управление, прогресс.<br>' +
         'Это действие нельзя отменить!',
@@ -116,71 +117,6 @@ export function clearAllData() {
             }
         }
     );
-}
-
-// Функция для подтверждения действия
-function showConfirmationDialog(message, onConfirm) {
-    // Удаляем старый диалог, если есть
-    const oldDialog = document.querySelector('.confirmation-dialog');
-    if (oldDialog) {
-        oldDialog.remove();
-    }
-    
-    // Создаем диалог
-    const dialog = document.createElement('div');
-    dialog.className = 'confirmation-dialog';
-    dialog.innerHTML = `
-        <h3>⚠️ Подтверждение</h3>
-        <p>${message}</p>
-        <div class="confirmation-buttons">
-            <button class="confirm-btn confirm-yes">Да, удалить</button>
-            <button class="confirm-btn confirm-no">Отмена</button>
-        </div>
-    `;
-    
-    document.body.appendChild(dialog);
-    
-    // Добавляем оверлей
-    const overlay = document.createElement('div');
-    overlay.className = 'dialog-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 10000;
-    `;
-    document.body.appendChild(overlay);
-    
-    // Обработчики кнопок
-    dialog.querySelector('.confirm-yes').addEventListener('click', () => {
-        dialog.remove();
-        overlay.remove();
-        onConfirm();
-    });
-    
-    dialog.querySelector('.confirm-no').addEventListener('click', () => {
-        dialog.remove();
-        overlay.remove();
-    });
-    
-    // Закрытие по клику на оверлей
-    overlay.addEventListener('click', () => {
-        dialog.remove();
-        overlay.remove();
-    });
-    
-    // Закрытие по Escape
-    const closeOnEscape = (e) => {
-        if (e.key === 'Escape') {
-            dialog.remove();
-            overlay.remove();
-            document.removeEventListener('keydown', closeOnEscape);
-        }
-    };
-    document.addEventListener('keydown', closeOnEscape);
 }
 
 // Функция для показа уведомлений

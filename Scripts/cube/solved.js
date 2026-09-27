@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { cube, app, game } from '../state.js';
 import { cLog, cWarn } from "../utils/logger.js";
 import { updateProgressBar } from '../ui.js';
+import { showClearNotification } from '../menu/data.js';
 
 export function isCubeSolved(debugMode = false) {
     if (cube.objects.length !== cube.staticObjects.length) {
@@ -126,10 +127,10 @@ export function debugCheckCube() {
     cLog('test: ', result.isSolved)
     if (result.isSolved) {
         cLog('✅ Куб собран!');
-        alert('✅ Куб собран!');
+        showClearNotification('✅ Куб собран!');
     } else {
         cWarn('❌ Куб НЕ собран:');
         cWarn(result.unsolvedObjects);
-        alert(`❌ Куб НЕ собран:\n${result.unsolvedObjects.join('\n')}`);
+        showClearNotification(`❌ Куб НЕ собран:\n${result.unsolvedObjects.join('\n')}`);
     }
 }

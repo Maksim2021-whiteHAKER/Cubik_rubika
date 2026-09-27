@@ -55,7 +55,7 @@ function waitForRotationToFinish() {
 
 export async function solveCube() {
     if (cube.isRotating) { await waitForRotationToFinish();}           
-    if (game.mode === 'normal' && game.exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
+    if (game.mode === 'normal' && game.exitMenu === false ) { showClearNotification("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
    
     game.exitMenu === false ? showClearNotification("Начата сборка") : 0;
 

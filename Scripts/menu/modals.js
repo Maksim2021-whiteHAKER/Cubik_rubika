@@ -79,3 +79,48 @@ export function initMainMenuButtons() {
         updateSettingTitle()
     })
 }
+
+// Функция для подтверждения действия
+export async function showConfirmationDialog(message) {
+    return new Promise((resolve) => {
+        const oldDialog = document.querySelector('.confirmation-dialog');
+        if (oldDialog) oldDialog.remove();
+        const oldOverlay = document.querySelector('.dialog-overlay');
+        if (oldOverlay) oldOverlay.remove();
+
+        const dialog = document.createElement('div');
+        dialog.className = 'confirmation-dialog';
+        dialog.innerHTML = `
+            <h3>⚠️ Подтверждение</h3>
+            <p>${message}</p>
+            <div class="confirmation-buttons">
+                <button class="confirm-btn confirm-yes">Да</button>
+                <button class="confirm-btn confirm-no">Отмена</button>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+
+        const overlay = document.createElement('div');
+        overlay.className = 'dialog-overlay';
+        overlay.style.cssText = `
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+        `;
+        document.body.appendChild(overlay);
+
+        const cleanup = (result) => {
+            dialog.remove();
+            overlay.remove();
+            document.removeEventListener('keydown', onEsc);
+            resolve(result);
+        };
+
+        const onEsc = (e) => { if (e.key === 'Escape') cleanup(false); };
+
+        dialog.querySelector('.confirm-yes').addEventListener('click', () => cleanup(true));
+        dialog.querySelector('.confirm-no').addEventListener('click', () => cleanup(false));
+        overlay.addEventListener('click', () => cleanup(false));
+        document.addEventListener('keydown', onEsc);
+    });
+}

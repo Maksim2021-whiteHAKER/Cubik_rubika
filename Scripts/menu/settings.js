@@ -2,7 +2,7 @@
 import { spinWheelThemes } from '../rkUpravlenie.js';
 import { textureManager, applyTextures } from '../texturing.js';
 import { resetAllSettings, showClearNotification } from './data.js';
-import { showModal } from './modals.js';
+import { showConfirmationDialog, showModal } from './modals.js';
 import { updateFormStyle } from './form.js';
 import { applyColorTheme } from '../cube.js';
 
@@ -15,8 +15,8 @@ export function initSettings() {
     });
 
     // Кнопка сброса настроек
-    document.getElementById('reset-settings')?.addEventListener('click', () => {
-        if (confirm('Сбросить все настройки к значениям по умолчанию?')) {
+    document.getElementById('reset-settings')?.addEventListener('click', async () => {
+        if (showConfirmationDialog('Сбросить все настройки к значениям по умолчанию?')) {
             resetAllSettings();
             updateSettingsStats();
             showClearNotification('Настройки сброшены', 'success');
@@ -37,15 +37,15 @@ function initThemeSelectors() {
 
     if (themeSelect && colorSelect) {
         themeSelect.addEventListener('change', async () => {
-            console.log('[settings] change fired, value =', themeSelect.value);
+            cLog('[settings] change fired, value =', themeSelect.value);
             const selectedValue = themeSelect.value;
             const selectedColor = colorSelect.value;
             try {
-                console.log('[settings] calling applyTextures with', selectedValue);
+                cLog('[settings] calling applyTextures with', selectedValue);
                 await applyTextures(themeSelect.value, themeSelect, colorSelect);
-                console.log('[settings] applyTextures done, calling updateFormStyle');
+                cLog('[settings] applyTextures done, calling updateFormStyle');
                 updateFormStyle(selectedValue, selectedColor);
-                console.log('[settings] updateFormStyle done');
+                cLog('[settings] updateFormStyle done');
             } catch (e) {
                 console.error('[settings] ERROR:', e);
             }

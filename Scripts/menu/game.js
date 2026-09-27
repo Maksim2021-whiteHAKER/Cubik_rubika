@@ -5,7 +5,7 @@ import { updateProgressBar } from '../ui.js';
 import { game, ui } from '../state.js';
 import { lockToLandscape } from '../utils/orientation.js';
 import { cLog } from '../utils/logger.js';
-import { getPauseMenu, getBlurMenu } from './modals.js'
+import { getPauseMenu, getBlurMenu, showConfirmationDialog } from './modals.js'
 import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
 
 const mainMenu = document.getElementById('mainMenu');
@@ -21,7 +21,7 @@ export function initGameButtons(){
         if (mainMenu) mainMenu.style.display = 'none';
         cLog(`_objectsNM: ${getObjects().length}`);
         if (getObjects().length === 27){
-            scrambleCube(20);
+            scrambleCube(2);
         } else {
             const checkAndScrumble = () => {
                 if (getObjects().length === 27){
@@ -50,8 +50,8 @@ export function initGameButtons(){
     //     showClearNotification('🛠Пока в разработке🛠')
     // })
    
-    reset?.addEventListener('click', () => {
-        if (confirm("Вы действительно хотите начать игру заново?")) {
+    reset?.addEventListener('click', async () => {
+        if (await showConfirmationDialog("Вы действительно хотите начать игру заново?")) {
             if (ui.congratsModal) ui.congratsModal.style.display = 'none';
             resetGame();
         }
@@ -101,24 +101,23 @@ export function goToMainMenu() {
 }
 
 function resetGame() {
-    if (game.active) {
-        cLog("Сброс игры");
-        stopTimer();
-        updateProgressBar(0);
-        game.active = false;
-        game.solved = false;
+    if (!game.mode) return; 
 
-        // Очищаем стрелки
-        const arrows = document.querySelectorAll('.arrow');
-        arrows.forEach(arrow => arrow.remove());
+    cLog("Сброс игры");
+    stopTimer();
+    updateProgressBar(0);
+    game.solved = false;
 
-        // Перемешиваем кубик снова
-        setTimeout(() => {
-            scrambleCube(20);
-            game.active = true;
-            startGameTimer();
-        }, 300);
-    }
+    // Очищаем стрелки
+    const arrows = document.querySelectorAll('.arrow');
+    arrows.forEach(arrow => arrow.remove());
+
+    // Перемешиваем кубик снова
+    setTimeout(() => {
+        scrambleCube(20);
+        game.active = true;
+        startGameTimer();
+    }, 300);
 }
 
 document.addEventListener('keydown', (e) => {
