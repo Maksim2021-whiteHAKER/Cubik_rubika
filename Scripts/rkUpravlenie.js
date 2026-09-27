@@ -404,7 +404,7 @@ async function spinWheel() {
             wheel.style.transform = 'rotate(0deg)';
             isSpinning = false;
             spinButton.disabled = false;
-        }, 1500);
+        }, 3500);
     } else {
         // если реклама не досмотрена — вернуть колесо
         wheel.style.transition = 'transform 0.8s ease';

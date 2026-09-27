@@ -104,8 +104,10 @@ class CubeTextureManager {
     // Загрузка текстуры
     loadTexture(TexturePath){
         return new Promise((resolve) => {
-            const texture = new THREE.TextureLoader().load(TexturePath, () => {
-                resolve(texture);
+            new THREE.TextureLoader().load(TexturePath, (texture) => resolve(texture),
+            undefined, (error) => {
+                cWarn(`Текстура не загружена: ${TexturePath} `, error?.message || error);
+                resolve(null);
             });
         });
     }
@@ -123,36 +125,33 @@ class CubeTextureManager {
 
     // Применение текстур по теме
     async applyTextures(theme) {
-        // this.currentTheme = theme; // <-- Можно оставить или убрать, если не используется
-
-        // const config = configTheme[theme]; // <-- ЗАМЕНЕНО НА this.configTheme[theme]
-        const config = this.configTheme[theme];
-        if (!config) {
-            cWarn(`Тема текстур "${theme}" не найдена в конфигурации.`);
-            return;
-        }
+         const config = this.configTheme[theme];
+        if (!config) { cWarn(`Тема текстур "${theme}" не найдена в конфигурации.`); return; }
 
         if (config.clear) {
             await this.clearAllTextures();
             return;
         }
 
+        // нужно для определения решения проблемы
         // применяем текстуры для каждой стороны
         for (const [side, TexturePath] of Object.entries(config)) {
+            if (side.startsWith('_')) continue;   // ← добавить ЭТУ строку
+
             if (await this.checkTextureExists(TexturePath)) {
                 await this.applyTexturesToSide(side, TexturePath);
             } else {
-                // infomore.style.display = 'block';
-                // selector_theme.value = 'default'; // <-- Не меняем значение селектора тут, пусть меню решает
                 cWarn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
-                continue; // if TP === false, continue
-            } // if TP === false, continues
+                continue; 
+            }
         }
     }
 
     // Применение текстуры к конкретной стороне
     async applyTexturesToSide(side, TexturePath){
         const texture = await this.loadTexture(TexturePath);
+        if (!texture) { cWarn('Пропуск стороны ' + side); return; }
+
         this.textures.set(side, texture);
 
         const objects = getObjects();

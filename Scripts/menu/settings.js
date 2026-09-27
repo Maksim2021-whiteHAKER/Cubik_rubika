@@ -37,19 +37,29 @@ function initThemeSelectors() {
 
     if (themeSelect && colorSelect) {
         themeSelect.addEventListener('change', async () => {
+            console.log('[settings] change fired, value =', themeSelect.value);
+            const selectedValue = themeSelect.value;
+            const selectedColor = colorSelect.value;
             try {
+                console.log('[settings] calling applyTextures with', selectedValue);
                 await applyTextures(themeSelect.value, themeSelect, colorSelect);
-                updateFormStyle(themeSelect.value, colorSelect.value);
-            } catch (e) { console.error(e); }
+                console.log('[settings] applyTextures done, calling updateFormStyle');
+                updateFormStyle(selectedValue, selectedColor);
+                console.log('[settings] updateFormStyle done');
+            } catch (e) {
+                console.error('[settings] ERROR:', e);
+            }
         });
     }
 
     // цветовая схема — этот обработчик был потерян
     if (colorSelect && themeSelect) {
         colorSelect.addEventListener('change', () => {
+            const selectedValue = themeSelect.value;
+            const selectedColor = colorSelect.value;
             try {
                 applyColorTheme(colorSelect.value);
-                updateFormStyle(themeSelect.value, colorSelect.value);
+                updateFormStyle(selectedValue, selectedColor);
             } catch (e) { console.error(e); }
         });
     }
