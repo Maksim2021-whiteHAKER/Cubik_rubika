@@ -112,7 +112,7 @@ export function setupTriggerInteraction(triggerZones) {
             // Только если не в процессе других действий
             // Переключаем орбиту
             three.controls.enabled = !three.controls.enabled;
-            ui.orbitControlSet.innerText = three.controls.enabled ? 'вкл' : 'выкл';
+            ui.orbitControlSet.innerText = three.controls.enabled ? 'вкл(on)' : 'выкл(off)';
 
             // Обновляем кнопку
             updateOrbitButton();
@@ -136,7 +136,7 @@ export function setupTriggerInteraction(triggerZones) {
         if (app.isTouchDevice && touchLen >= 2 && !three.controls.enabled) {
             cLog('автовкл орбиты при 2+ пальцах');
             three.controls.enabled = true;
-            ui.orbitControlSet.innerText = 'вкл';
+            ui.orbitControlSet.innerText = 'вкл(on)';
             updateOrbitButton();
             showOrbitNotification(true);
             hideArrows();

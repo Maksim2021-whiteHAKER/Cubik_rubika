@@ -47,7 +47,7 @@ export function initGameButtons(){
     });
 
     // document.getElementById('trainingMode').addEventListener('click', ()=> {
-    //     alert('🛠Пока в разработке🛠')
+    //     showClearNotification('🛠Пока в разработке🛠')
     // })
    
     reset?.addEventListener('click', () => {

@@ -83,12 +83,12 @@ canvas {
  white-space: nowrap;
 }
 
-#OrbitCon {
- color: white;
- font-size: 20px;
- pointer-events: none;
- white-space: nowrap;
- line-height: 1.2;
+.OrbitCon {
+  color: white;
+  font-size: 20px;
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 #PosCAM {
@@ -668,7 +668,7 @@ canvas {
     font-size: 18px;
   }
   
-  #OrbitCon {
+  .OrbitCon {
     left: 10px;
     top: 30px;
     font-size: 14px;
@@ -810,7 +810,7 @@ canvas {
     font-size: 16px;
   }
   
-  #OrbitCon {
+  .OrbitCon {
     top: 25px;
     left: 5px;
     font-size: 12px;

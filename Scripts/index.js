@@ -10,6 +10,7 @@ import { setupTriggerInteraction } from './main/controls.js';
 import { orbitMobileControl } from './main/mobileControls.js';
 import { cLog, cWarn } from './utils/logger.js';
 import { isTouch } from './utils/device.js';
+import { showClearNotification } from './menu/data.js';
 
 let textureLoader = new THREE.TextureLoader();
 let textureGrass = textureLoader.load('textures/grasslightmin.jpg');
@@ -95,7 +96,7 @@ document.addEventListener('keydown', async (event) => {
         three.camera.lookAt(0, 5, 0);
         three.controls.update();
     } else if (event.code === 'KeyS'){
-        alert("Начато перемешивание куба");
+        showClearNotification("Начато перемешивание куба");
         scrambleCube(20);
     } else if (event.code === 'KeyC'){
         solveCube();

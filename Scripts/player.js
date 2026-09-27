@@ -79,7 +79,7 @@ function setupCameraControl(cameraPlayer, controlsPointer) {
 
     controlsPointer.addEventListener('unlock', () => {
         if (orbitControlsRef) orbitControlsRef.enabled = orbitWasEnabledBeforeFps;
-        if (ui.orbitControlSet) ui.orbitControlSet.innerText = orbitControlsRef?.enabled ? "вкл" : "выкл"; 
+        if (ui.orbitControlSet) ui.orbitControlSet.innerText = orbitControlsRef?.enabled ? "вкл(on)" : "выкл(off)"; 
         if (orbitConFullText) orbitConFullText.style.display = 'block';
         zoomEnable = false;
         currentCam = orbitControlsRef?.object ?? three.cameraPlayer;

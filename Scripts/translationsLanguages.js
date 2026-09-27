@@ -238,7 +238,7 @@ export const translations = {
         "tr": "Щ/O - yörüngeyi aç/kapat"
     },
     "mcText6": {
-        "ru": "Колесико мыши - зум (орбита вкл)",
+        "ru": "Колесико мыши - зум (орбита вкл(on))",
         "sr": "Точкић миша - зум (орбита укљ.)",
         "en": "Mouse wheel - zoom (orbit on)",
         "es": "Rueda del ratón - zoom (órbita activada)",
@@ -483,6 +483,19 @@ export const translations = {
         "pt-BR": "Movimento do mouse ao longo do eixo X/Y - rotação vertical/horizontal",
         "ar": "حركة الماوس على طول المحور X/Y - تدوير عمودي/أفقي",
         "tr": "Fare hareketi X/Y ekseni boyunca - dikey/yatay dönüş"
+    },
+    "OrbitConText": {
+        "ru": "кнп. Щ(вкл(on)/выкл(off))",
+        "sr": "дугме. O (укључено / искључено)",
+        "en": "button. O (on/off)",
+        "es": "botón. O (encendido/apagado)",
+        "zh-CN": "按钮。O（开/关）",
+        "fr": "bouton. O (marche/arrêt)",
+        "de": "Ein-/Ausschalter O (Ein/Aus)",
+        "ja": "Oボタン（オン/オフ）",
+        "pt-BR": "Botão O (on / off)",
+        "ar": "س زر (تشغيل / إيقاف)",
+        "tr": "O düğmesi (açık/kapalı)",
     },
     "name_textures": {
         "ru": "Текстуры",

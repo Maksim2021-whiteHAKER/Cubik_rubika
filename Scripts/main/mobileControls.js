@@ -191,7 +191,7 @@ export function orbitMobileControl() {
     
     // Переключаем состояние орбиты
     three.controls.enabled = !three.controls.enabled;
-    ui.orbitControlSet.innerText = three.controls.enabled ? 'вкл' : 'выкл';
+    ui.orbitControlSet.innerText = three.controls.enabled ? 'вкл(on)' : 'выкл(off)';
     
     // Обновляем внешний вид кнопки
     updateOrbitButton();

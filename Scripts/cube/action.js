@@ -5,6 +5,7 @@ import { cLog, cWarn } from "../utils/logger.js";
 import { updateProgressBar } from '../ui.js';
 import { rotateLayer, rotateWholeCube } from './rotation.js';
 import { isCubeSolved } from './solved.js';
+import { showClearNotification } from '../menu/data.js';
 
 let dontRepeat = false;
 
@@ -43,7 +44,7 @@ function waitForRotationToFinish() {
                 resolve();                 
             }
             else { 
-                if (dontRepeat === false) alert("Пожалуйста, подождите — пока кубик не завершит вращение.");
+                if (dontRepeat === false) showClearNotification("Пожалуйста, подождите — пока кубик не завершит вращение.");
                 dontRepeat = true;
                 setTimeout(check, 50); 
             }
@@ -56,7 +57,7 @@ export async function solveCube() {
     if (cube.isRotating) { await waitForRotationToFinish();}           
     if (game.mode === 'normal' && game.exitMenu === false ) { alert("Недоступно в обычном режиме"); updateProgressBar(0); return ;} 
    
-    game.exitMenu === false ? alert("Начата сборка") : 0;
+    game.exitMenu === false ? showClearNotification("Начата сборка") : 0;
 
     cLog('До solveCube: history =', cube.historyrotation.length);
     const history = [...cube.historyrotation];

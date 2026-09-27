@@ -59,7 +59,7 @@ function initThemeSelectors() {
         acceptStyleBtn.addEventListener('click', async () => {
             try {
                 await applyTextures(themeSelect.value);
-                alert(`Тема "${themeSelect.value}" применена!`);
+                showClearNotification(`Тема "${themeSelect.value}" применена!`);
             } catch (e) { console.error(e); }
         });
     }
