@@ -21,7 +21,7 @@ export function initGameButtons(){
         if (mainMenu) mainMenu.style.display = 'none';
         cLog(`_objectsNM: ${getObjects().length}`);
         if (getObjects().length === 27){
-            scrambleCube(2);
+            scrambleCube(20);
         } else {
             const checkAndScrumble = () => {
                 if (getObjects().length === 27){
