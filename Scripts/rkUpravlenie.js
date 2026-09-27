@@ -203,90 +203,43 @@ function createWheelSegments() {
 }
 
 // Основная функция разблокировки темы
-export async function unlockCustomThemeViaSpin() {
-    try {
-        // Проверяем, есть ли доступные темы
-        if (spinWheelThemes.length === 0) {
-            showNotification('Колесо Фортуны пусто! Новые темы появятся в следующих обновлениях.', 'info');
-            return null;
-        }
+async function grantTheme(chosenTheme) {
+    if (!chosenTheme) return false;
 
-        // Показываем рекламное видео
-        let rewardGranted = false;
+    let rewardGranted = false;
         
-        if (typeof admob !== 'undefined' && admob.rewarded) {
-            try {
-                await admob.rewarded.show();
-                
-                // Ожидаем награду
-                rewardGranted = await new Promise((resolve) => {
-                    admob.rewarded.onRewarded = () => {
-                        cLog('Видео успешно просмотрено');
-                        resolve(true);
-                    };
-                    
-                    admob.rewarded.onAdClosed = () => {
-                        if (!rewardGranted) {
-                            cLog('Реклама закрыта без награды');
-                            resolve(false);
-                        }
-                    };
-                    
-                    admob.rewarded.onAdFailedToLoad = (error) => {
-                        console.error('Ошибка загрузки рекламы:', error);
-                        resolve(false);
-                    };
-                    
-                    // Таймаут на случай, если событие не сработает
-                    setTimeout(() => resolve(false), 30000);
-                });
-                
-            } catch (error) {
-                console.error('Ошибка при показе рекламы:', error);
-                rewardGranted = false;
-            }
-        } else {
-            // Для тестирования без AdMob
-            // rewardGranted = true;
-            showNotification('--- Колесо Фортуны не доступно ---\nразработчик решает проблему (рекламы пока нет)\n\n --- Wheel of Fortune not denied --- \n develover WIP (there are not ads yet)');
+    if (typeof admob !== 'undefined' && admob.rewarded) {
+        try {
+            await admob.rewarded.show();           
+            // Ожидаем награду
+            rewardGranted = await new Promise((resolve) => {
+                admob.rewarded.onRewarded = () => resolve(true);                
+                admob.rewarded.onAdClosed = () => resolve(false);                               
+                admob.rewarded.onAdFailedToLoad = (error) => resolve(false);                
+                // Таймаут на случай, если событие не сработает
+                setTimeout(() => resolve(false), 30000);
+            });            
+        } catch (error) {
+            console.error('Ошибка при показе рекламы:', error);
+            rewardGranted = false;
         }
-
-        if (!rewardGranted) {
-            showNotification('Реклама не была просмотрена полностью', 'error');
-            return null;
-        }
-
-        // Выбираем и разблокируем тему
-        const chosenTheme = pickRandomThemeFromWheel();
-        if (!chosenTheme) {
-            showNotification('Не удалось выбрать тему', 'error');
-            return null;
-        }
-
-        // Добавляем тему через textureManager
-        const success = textureManager.addCustomTheme(chosenTheme.id, chosenTheme.config, chosenTheme.name);
-        
-        if (success) {
-            // Удаляем разблокированную тему из барабана
-            removeThemeFromWheel(chosenTheme.id);
-            
-            // Обновляем UI
-            updateTextureSelectorOptions();
-            
-            // Показываем уведомление об успехе
-            showNotification(`🎉 Поздравляем! Вы получили тему: "${chosenTheme.name}"`, 'success');
-            
-            return chosenTheme;
-        } else {
-            showNotification('Не удалось добавить тему', 'error');
-            return null;
-        }
-
-    } catch (error) {
-        console.error('Ошибка в unlockCustomThemeViaSpin:', error);
-        showNotification('Произошла ошибка при разблокировке темы', 'error');
-        return null;
+    } else {
+        showNotification('--- Колесо Фортуны не доступно ---\nразработчик решает проблему (рекламы пока нет)\n\n --- Wheel of Fortune not denied --- \n develover WIP (there are not ads yet)');
     }
+
+    if (!rewardGranted) { showNotification('Реклама не была просмотрена полностью', 'error'); return false; }
+
+    // Выбираем и разблокируем тему
+    
+    // Добавляем тему через textureManager
+    const success = textureManager.addCustomTheme(chosenTheme.id, chosenTheme.config, chosenTheme.name);
+    if (!success) { showNotification('Не удалось добавить тему', 'error'); return false; }   
+
+    // Обновляем UI
+    updateTextureSelectorOptions();
+    // Показываем уведомление об успехе
+    showNotification(`🎉 Поздравляем! Вы получили тему: "${chosenTheme.name}"`, 'success');
+    return true;
 }
 
 // Функция для показа уведомлений
@@ -392,6 +345,76 @@ export function updateTextureSelectorOptions() {
 }
 
 // Показать колесо фортуны
+async function spinWheel() {
+    if (isSpinning) return;
+    if (spinWheelThemes.length === 0) {
+        showNotification('Нет доступных тем для разблокировки', 'info');
+        return;
+    }
+    updateWheelSegments()
+
+    isSpinning = true;
+    spinButton.disabled = true;
+
+    // 1. ВЫБОР темы — до анимации
+    const chosenTheme = pickRandomThemeFromWheel();
+    if (!chosenTheme) { isSpinning = false; spinButton.disabled = false; return; }
+
+    const segIndex = segments.findIndex(s => s.themeId === chosenTheme.id);
+    if (segIndex === -1) {
+        cWarn('spinWheel: сегмент выбранной темы не найден', chosenTheme.id);
+        isSpinning = false; spinButton.disabled = false; return;
+    }
+
+    // 2. РАСЧЁТ УГЛА
+    // Сегмент segIndex отрисован с rotate(segIndex * segAngle)
+    // Его центр — на segIndex * segAngle + segAngle/2
+    // Стрелка сверху = 0° → нужно повернуть на -(угол_центра) + N полных оборотов
+    const segAngle = 360 / segments.length;
+    const jitter = (Math.random() - 0.5) * segAngle * 0.6; // небольшой разброс внутри сегмента
+    const spins = 5;                                        // полных оборотов
+    const targetAngle = spins * 360 - (segIndex * segAngle + segAngle / 2) + jitter;
+
+    // 3. АНИМАЦИЯ — inline transform с конкретным углом
+    wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.21, 0.99)';
+    // форсим reflow, чтобы transition точно поймался
+    void wheel.offsetWidth;
+    wheel.style.transform = `rotate(${targetAngle}deg)`;
+
+    // 4. ЖДЁМ окончания анимации — по transitionend, с fallback-таймером
+    await new Promise(resolve => {
+        let done = false;
+        const finish = () => { if (done) return; done = true; wheel.removeEventListener('transitionend', finish); resolve(); };
+        wheel.addEventListener('transitionend', finish, { once: true });
+        setTimeout(finish, 4200);
+    });
+
+    // 5. РЕКЛАМА + ВЫДАЧА награды
+    const granted = await grantTheme(chosenTheme);
+
+    // 6. УДАЛЯЕМ тему из колеса и сбрасываем угол
+    if (granted) {
+        wheel.classList.add('success');
+        setTimeout(() => wheel.classList.remove('success'), 1000);
+        // удаление отложим — чтобы юзер не видел «прыжок» сегментов сразу
+        setTimeout(() => {
+            removeThemeFromWheel(chosenTheme.id);
+            // сброс transform без анимации, чтобы не крутилось назад
+            wheel.style.transition = 'none';
+            wheel.style.transform = 'rotate(0deg)';
+            isSpinning = false;
+            spinButton.disabled = false;
+        }, 1500);
+    } else {
+        // если реклама не досмотрена — вернуть колесо
+        wheel.style.transition = 'transform 0.8s ease';
+        wheel.style.transform = 'rotate(0deg)';
+        isSpinning = false;
+        spinButton.disabled = false;
+    }
+}
+
+// Показать колесо фортуны
 export function showWheel() {
     if (!wheelContainer) {
         console.error('Контейнер колеса не найден');
@@ -415,48 +438,6 @@ export function hideWheel() {
     setTimeout(() => {
         wheelContainer.style.display = 'none';
     }, 300); // Время на анимацию
-}
-
-// Вращение колеса
-async function spinWheel() {
-    if (isSpinning) {
-        cLog('Колесо уже вращается');
-        return;
-    }
-
-    if (spinWheelThemes.length === 0) {
-        showNotification('Нет доступных тем для разблокировки', 'info');
-        return;
-    }
-
-    isSpinning = true;
-    spinButton.disabled = true;
-    
-    // Анимация вращения
-    wheel.classList.add('spinning');
-    
-    try {
-        // Ждем завершения анимации
-        await new Promise(resolve => setTimeout(resolve, 4000));
-        
-        // Разблокируем тему
-        const unlockedTheme = await unlockCustomThemeViaSpin();
-        
-        if (unlockedTheme) {
-            // Анимация успеха
-            wheel.classList.add('success');
-            setTimeout(() => wheel.classList.remove('success'), 1000);
-        }
-        
-    } catch (error) {
-        console.error('Ошибка при вращении колеса:', error);
-        showNotification('Произошла ошибка', 'error');
-    } finally {
-        // Завершаем анимацию
-        wheel.classList.remove('spinning');
-        spinButton.disabled = false;
-        isSpinning = false;
-    }
 }
 
 // Инициализация событий
@@ -514,20 +495,11 @@ style.textContent = `
         font-size: 12px;
         padding-top: 20px;
     }
-    
-    .wheel.spinning {
-        animation: spin 4s cubic-bezier(0.1, 0.7, 0.1, 1);
-    }
-    
+   
     .wheel.success {
         animation: pulse 1s;
     }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(720deg); }
-    }
-    
+       
     @keyframes pulse {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.05); }

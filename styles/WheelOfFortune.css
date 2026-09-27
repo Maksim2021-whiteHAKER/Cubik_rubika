@@ -147,7 +147,6 @@
 }
 
 .wheel-segment-content {
-    transform: rotate(45deg);
     color: white;
     font-weight: 800;
     font-size: clamp(0.65rem, 2vmin, 1.2rem);
@@ -277,14 +276,6 @@
 }
 
 /* ====== АНИМАЦИИ ====== */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(3600deg); /* 10 оборотов */
-    }
-}
 
 @keyframes pulse {
     0%, 100% {
@@ -295,10 +286,6 @@
         transform: scale(1.2);
         opacity: 0.8;
     }
-}
-
-.wheel.spinning {
-    animation: spin 4.5s cubic-bezier(0.17, 0.67, 0.21, 0.99) forwards;
 }
 
 /* ====== АДАПТИВНОСТЬ ====== */
