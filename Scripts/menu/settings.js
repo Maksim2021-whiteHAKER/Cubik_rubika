@@ -5,6 +5,7 @@ import { resetAllSettings, showClearNotification } from './data.js';
 import { showConfirmationDialog, showModal } from './modals.js';
 import { updateFormStyle } from './form.js';
 import { applyColorTheme } from '../cube.js';
+import { cLog } from '../utils/logger.js';
 
 export function initSettings() {
     initSettingsTabs();
