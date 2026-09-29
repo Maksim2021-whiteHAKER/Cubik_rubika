@@ -3,12 +3,10 @@ import { updateSettingTitle } from './help.js';
 import { showWheel } from '../rkUpravlenie.js';
 
 let blurMenu, pauseMenu;
-const mainMenu = document.getElementById('mainMenu');
-const gameModeSelect = document.getElementById('gameModeSelectModal');
 
 export function hideMenuContainers() {
-    if (mainMenu) mainMenu.style.display = 'none';
-    if (gameModeSelect) gameModeSelect.style.display = 'none';
+    document.getElementById('mainMenu').style.display = 'none';
+    document.getElementById('gameModeSelectModal').style.display = 'none';
 }
 
 export function ensureModalContainers() {
@@ -76,9 +74,10 @@ export function initMainMenuButtons() {
     const settingsModal = document.getElementById('settingsModal');
     const creatorModal = document.getElementById('creatorModal');
     const supportModal = document.getElementById('supportModal');
+    const gameModeSelectModal = document.getElementById('gameModeSelectModal');
 
     document.getElementById('viewWheelFortune')?.addEventListener('click', showWheel);
-    document.getElementById('playGameModeBtn')?.addEventListener('click', () => showModal(gameModeSelect));
+    document.getElementById('playGameModeBtn')?.addEventListener('click', () => showModal(gameModeSelectModal));
     document.getElementById('helpBtn')?.addEventListener('click', () => showModal(helpModal));
     document.getElementById('creatorBtn')?.addEventListener('click', () => showModal(creatorModal));
     document.getElementById('supportBtn')?.addEventListener('click', () => showModal(supportModal));

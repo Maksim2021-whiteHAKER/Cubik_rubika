@@ -5,6 +5,7 @@
 
 // Импортируем THREE напрямую
 import * as THREE from 'three'; // Укажите правильный путь
+import { cLog } from '../utils/logger';
 
 // Создаём класс DRACOLoader, но не добавляем его к THREE напрямую
 class DRACOLoader extends THREE.Loader {
@@ -238,11 +239,11 @@ class DRACOLoader extends THREE.Loader {
     _loadLibrary(url, responseType) {
 
         // ДОБАВЬ ЭТУ СТРОКУ ДЛЯ ОТЛАДКИ:
-        // console.log('--- DRACO DEBUG ---');
-        // console.log('Путь (decoderPath):', this.decoderPath); 
-        // console.log('Имя файла (url):', url);
-        // console.log('Итоговый URL:', this.decoderPath + url);
-        // console.log('-------------------');
+        // cLog('--- DRACO DEBUG ---');
+        // cLog('Путь (decoderPath):', this.decoderPath); 
+        // cLog('Имя файла (url):', url);
+        // cLog('Итоговый URL:', this.decoderPath + url);
+        // cLog('-------------------');
 
 
         var loader = new THREE.FileLoader(this.manager);
@@ -378,7 +379,7 @@ class DRACOLoader extends THREE.Loader {
 
     debug() {
 
-        console.log('Task load: ', this.workerPool.map((worker) => worker._taskLoad));
+        cLog('Task load: ', this.workerPool.map((worker) => worker._taskLoad));
 
     }
 

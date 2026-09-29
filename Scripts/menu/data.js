@@ -115,14 +115,14 @@ export async function clearAllData() {
                 cLog('Все данные очищены');
             } catch (error) {
                 console.error('Ошибка при сбросе данных:', error);
-                notif.error('Ошибка при сбросе данных', 'error', 'top-right', 4000);
+                notif.error('Ошибка при сбросе данных', 'top-right', 4000);
             }
         }
     );
 }
 
 // Функция для показа уведомлений
-export function showClearNotification(message, type = 'info', position = 'left', duration = DEFAULT_DURATION) {
+export function showClearNotification(message, type = 'info', position = 'top-right', duration = DEFAULT_DURATION) {
     const notification = document.createElement('div');
     notification.className = `clear-notification clear-notification--${type} clear-notification--${position}`;
     notification.innerHTML = `

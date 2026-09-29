@@ -9,8 +9,6 @@ import { getPauseMenu, getBlurMenu, showConfirmationDialog, hideMenuContainers }
 import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
 import { notif } from './data.js';
 
-const mainMenu = document.getElementById('mainMenu');
-
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
     // Обработчики кнопок главного меню
@@ -94,7 +92,7 @@ export function goToMainMenu() {
 
     // Скрываем всё, кроме главного меню
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-    mainMenu.style.display = 'flex';
+    document.getElementById('mainMenu').style.display = 'flex';
 
     // Очищаем состояние кубика
     if (ui.congratsModal) ui.congratsModal.style.display = 'none';

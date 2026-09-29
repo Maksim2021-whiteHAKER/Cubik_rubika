@@ -92,6 +92,9 @@ export function initThree(textureGrass) {
         const directionalValueLabel = document.getElementById('directionalValue');
         const speedNumber = document.getElementById('speedNumber')
         const speedRotateControls = document.getElementById("speedRotateControls")
+        const devElements = document.getElementById("devElements");
+        const testBtnWindowCongrats = document.getElementById("testBtnWindowCongrats")
+        devElements.style.display = 'block';
     
         if (ambientRange) {
             ambientRange.addEventListener('input', (e) => {
@@ -115,6 +118,10 @@ export function initThree(textureGrass) {
                 const value = Number(e.target.value);
                 app.speedSet = value;
             })
+        }
+
+        if (devElements && testBtnWindowCongrats) {
+            testBtnWindowCongrats.addEventListener('click', () => document.getElementById("congratsModal").style.display = 'block')
         }
     }
 

@@ -322,7 +322,7 @@ canvas {
 
 #lightControls {
   position: fixed; 
-  top: 220px; 
+  top: 300px; 
   left: 10px; 
   z-index: 100; 
   background:
@@ -341,7 +341,21 @@ canvas {
 
 #speedRotateControls {
   position: fixed; 
-  top: 340px; 
+  top: 430px; 
+  left: 10px; 
+  z-index: 100; 
+  background:
+  rgba(0,0,0,0.6); 
+  color: #fff; 
+  padding: 10px; 
+  border-radius: 8px; 
+  font-size: 13px;
+  display: none;
+}
+
+#devElements {
+  position: fixed; 
+  top: 220px; 
   left: 10px; 
   z-index: 100; 
   background:
@@ -366,6 +380,17 @@ canvas {
   height: 40px;
   max-width: 40vw;
   flex-shrink: 0;
+}
+
+.test-btn {
+  position: relative;
+  background-color: #1caf5f;
+  min-width: 110px;
+  border-radius: 35px;
+}
+
+.test-btn:hover {
+  background-color: #8e44ad;
 }
 
 #progressBar {
