@@ -3,6 +3,13 @@ import { updateSettingTitle } from './help.js';
 import { showWheel } from '../rkUpravlenie.js';
 
 let blurMenu, pauseMenu;
+const mainMenu = document.getElementById('mainMenu');
+const gameModeSelect = document.getElementById('gameModeSelectModal');
+
+export function hideMenuContainers() {
+    if (mainMenu) mainMenu.style.display = 'none';
+    if (gameModeSelect) gameModeSelect.style.display = 'none';
+}
 
 export function ensureModalContainers() {
     if (blurMenu) return;
@@ -35,7 +42,7 @@ export function showModal(modal){
 }
 
 export function hideModals() {
-    document.querySelectorAll(['.modal','.modal_set','.wheel-container']).forEach(m => m.style.display = 'none');
+    document.querySelectorAll(['.modal','.modal_set','.wheel-container', '.modal_con']).forEach(m => m.style.display = 'none');
 }
 
 export function hideModalWF(){
@@ -67,16 +74,17 @@ export function initModalClose() {
 export function initMainMenuButtons() {
     const helpModal = document.getElementById('helpModal');
     const settingsModal = document.getElementById('settingsModal');
-    const creatorModal = document.getElementById('creatorModal')
-    const supportModal = document.getElementById('supportModal')
+    const creatorModal = document.getElementById('creatorModal');
+    const supportModal = document.getElementById('supportModal');
 
     document.getElementById('viewWheelFortune')?.addEventListener('click', showWheel);
+    document.getElementById('playGameModeBtn')?.addEventListener('click', () => showModal(gameModeSelect));
     document.getElementById('helpBtn')?.addEventListener('click', () => showModal(helpModal));
     document.getElementById('creatorBtn')?.addEventListener('click', () => showModal(creatorModal));
     document.getElementById('supportBtn')?.addEventListener('click', () => showModal(supportModal));
     document.getElementById('settingsBtn')?.addEventListener('click', () => {
         showModal(settingsModal);
-        updateSettingTitle()
+        updateSettingTitle();
     })
 }
 

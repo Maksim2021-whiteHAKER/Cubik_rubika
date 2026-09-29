@@ -8,9 +8,22 @@ export const translations = {
         "fr": "Le cube de Rubik 3D",
         "de": "Der Zauberwürfel 3D",
         "ja": "ルービックキューブ 3D",
-        "pt-BR": "O cubo mágico 3D",
+        "pt-BR": "Cubo de Rubik 3D",
         "ar": "مكعب روبيك 3D",
-        "tr": "Rubik küpü"
+        "tr": "Rubik küpü 3D"
+    },
+    "playGameModeBtn": {
+        "ru": "Играть",
+        "sr": "Играј",
+        "en": "Play",
+        "es": "Jugar",
+        "zh-CN":"游戏",
+        "fr": "Jouer",
+        "de": "Spielen",
+        "ja":"プレイ",
+        "pt-BR": "Play",
+        "ar": "لعب",
+        "tr": "Oynamak",
     },
     "normalMode": {
         "ru": "Обычный режим",

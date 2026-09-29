@@ -1,7 +1,7 @@
 // Scripts/menu/settings.js
 import { spinWheelThemes } from '../rkUpravlenie.js';
 import { textureManager, applyTextures } from '../texturing.js';
-import { resetAllSettings, showClearNotification } from './data.js';
+import { notif, resetAllSettings } from './data.js';
 import { showConfirmationDialog, showModal } from './modals.js';
 import { updateFormStyle } from './form.js';
 import { applyColorTheme } from '../cube.js';
@@ -20,7 +20,7 @@ export function initSettings() {
         if (showConfirmationDialog('Сбросить все настройки к значениям по умолчанию?')) {
             resetAllSettings();
             updateSettingsStats();
-            showClearNotification('Настройки сброшены', 'success');
+            notif.success('Настройки сброшены', 'top', 3000);
         }
     });
 
@@ -70,7 +70,7 @@ function initThemeSelectors() {
         acceptStyleBtn.addEventListener('click', async () => {
             try {
                 await applyTextures(themeSelect.value);
-                showClearNotification(`Тема "${themeSelect.value}" применена!`);
+                notif.success(`Тема "${themeSelect.value}" применена!`, 'top-right', 3500);
             } catch (e) { console.error(e); }
         });
     }

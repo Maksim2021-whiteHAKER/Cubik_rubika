@@ -1,5 +1,5 @@
 // Scripts/translations.js
-import { showClearNotification } from "./menu/data.js";
+import { notif } from "./menu/data.js";
 import { cLog, cWarn } from "./utils/logger.js";
 import { translations } from "./translationsLanguages.js";
 
@@ -121,10 +121,10 @@ function logicSlider() {
         const currentLang = window.currentLanguage || 'ru';
         
         if (!window.currentLanguage) {
-            showClearNotification(
+            notif.info(
                 'Language not found in my library, default language is Russian, but you can choose from the suggested languages for now.',
                 'Language help'
-            );
+            , 'center');
         }
         
         const typeVersion = document.getElementById('typeVersion');

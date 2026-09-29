@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="styles/cursors.css" type="text/css">
         <link rel="stylesheet" href="styles/mainMenu.css" type="text/css">
         <link rel="stylesheet" href="styles/WheelOfFortune.css" type="text/css">
+        <link rel="stylesheet" href="styles/notification.css" type="text/css">
         <script type="module" src="Scripts/checkProtocol.js"></script>
         <script type="module" src="Scripts/metrika.js"></script>
     </head>
@@ -55,17 +56,26 @@
                 </div>
             </div>
 
-
-            <div class="menu_buttons">
-                <!-- <button id="trainingMode" class="menu-btn">Обучение</button> -->
-                <button id="normalMode" class="menu-btn">Обычный режим</button>
-                <button id="freeMode" class="menu-btn">Свободный режим</button>
+            <div class="menu_buttons">                
+                <button id="playGameModeBtn" class="menu-btn">Играть</button>
                 <button id="helpBtn" class="menu-btn">Помощь</button>
                 <button id="settingsBtn" class="menu-btn">Настройки</button>
                 <button id="creatorBtn" class="menu-btn">Создатель</button>
                 <button id="supportBtn" class="menu-btn">Поддержать автора</button>
             </div>
+
+
+
         </div>
+        <div id="gameModeSelectModal" class="modal_con">
+            <div class="modal-content">
+                <span class="close-btn">&otimes;</span>
+                <button id="trainingMode" class="menu-btn">Обучение</button>
+                <button id="normalMode" class="menu-btn">Обычный режим</button>
+                <button id="freeMode" class="menu-btn">Свободный режим</button>
+            </div>
+        </div>
+
         <!-- Модальные окна -->
         <div id="congratsModal" class="modal_con">
             <div class="modal-content">

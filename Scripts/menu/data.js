@@ -6,6 +6,8 @@ import { cLog } from '../utils/logger.js';
 import { getMusic } from './sound.js';
 import { showConfirmationDialog } from './modals.js';
 
+const DEFAULT_DURATION = 5000;
+
 // Функция очистки разблокированных тем
 export function clearCustomThemes() {
     showConfirmationDialog(
@@ -82,12 +84,12 @@ export function clearCustomThemes() {
                 }
                 
                 // Показываем уведомление
-                showClearNotification('Все разблокированные темы удалены!', 'success');
+                notif.success('Все разблокированные темы удалены!', 'center', 4000);
                 
                 cLog('Разблокированные темы очищены');
             } catch (error) {
                 console.error('Ошибка при очистке тем:', error);
-                showClearNotification('Ошибка при очистке тем', 'error');
+                notif.error('Ошибка при очистке тем', 'center', 4000);
             }
         }
     );
@@ -108,73 +110,43 @@ export async function clearAllData() {
                 resetAllSettings();
                 
                 // Показываем уведомление
-                showClearNotification('Все данные сброшены! Перезагрузите страницу.', 'success');
+                notif.success('Все данные сброшены! Перезагрузите страницу.', 'center');
                 
                 cLog('Все данные очищены');
             } catch (error) {
                 console.error('Ошибка при сбросе данных:', error);
-                showClearNotification('Ошибка при сбросе данных', 'error');
+                notif.error('Ошибка при сбросе данных', 'error', 'top-right', 4000);
             }
         }
     );
 }
 
 // Функция для показа уведомлений
-export function showClearNotification(message, type = 'info') {
+export function showClearNotification(message, type = 'info', position = 'left', duration = DEFAULT_DURATION) {
     const notification = document.createElement('div');
-    notification.className = `clear-notification clear-notification-${type}`;
+    notification.className = `clear-notification clear-notification--${type} clear-notification--${position}`;
     notification.innerHTML = `
-        <span>${message}</span>
-        <button class="close-notification">✕</button>
+    <span>${message}</span>
+    <button class="close-notification" aria-label="Закрыть">✕</button>
     `;
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 23%;
-        background: ${type === 'success' ? '#2ecc71' : '#e74c3c'};
-        color: white;
-        padding: 15px 25px;
-        border-radius: 8px;
-        z-index: 10000;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        animation: slideInRight 0.3s ease;
-    `;
-    
+       
     const closeBtn = notification.querySelector('.close-notification');
-    closeBtn.style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-    `;
-    
-    closeBtn.addEventListener('click', () => {
-        notification.remove();
-    });
-    
+    let hideTimer;
+    let removeTimer;
+
+    const close = () => {
+        clearTimeout(hideTimer);
+        clearTimeout(removeTimer);
+        notification.classList.add('clear-notification--hiding');
+        removeTimer = setTimeout(() => notification.remove(), 500)
+    }
+
+    closeBtn.addEventListener('click', close)
     document.body.appendChild(notification);
-    
-    // Автоматическое скрытие через 5 секунд
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.style.opacity = '0';
-            notification.style.transition = 'opacity 5.5s';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 500);
-        }
-    }, 5000);
+
+    hideTimer = setTimeout(close, duration);
+
+    return { close }
 }
 
 // Функция сброса настроек по умолчанию
@@ -221,3 +193,10 @@ export function initDataButtons() {
     if (clearCustomThemesBtn) clearCustomThemesBtn.addEventListener('click', clearCustomThemes);
     if (clearAllDataBtn) clearAllDataBtn.addEventListener('click', clearAllData);
 }
+
+export const notif = {
+    info:    (msg, position, duration) => showClearNotification(msg, 'info', position, duration),
+    success: (msg, position, duration) => showClearNotification(msg, 'success', position,  duration),
+    error:   (msg, position, duration) => showClearNotification(msg, 'error', position, duration),
+    warn:    (msg, position, duration) => showClearNotification(msg, 'warn', position, duration),
+};

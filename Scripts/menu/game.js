@@ -5,10 +5,9 @@ import { updateProgressBar } from '../ui.js';
 import { game, ui } from '../state.js';
 import { lockToLandscape } from '../utils/orientation.js';
 import { cLog } from '../utils/logger.js';
-import { getPauseMenu, getBlurMenu, showConfirmationDialog } from './modals.js'
+import { getPauseMenu, getBlurMenu, showConfirmationDialog, hideMenuContainers } from './modals.js'
 import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
-
-const mainMenu = document.getElementById('mainMenu');
+import { notif,  } from './data.js';
 
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
@@ -18,7 +17,7 @@ export function initGameButtons(){
         game.mode = 'normal';
         updateExtraMobileControlsVisibility();
         game.solved = false
-        if (mainMenu) mainMenu.style.display = 'none';
+        hideMenuContainers()
         cLog(`_objectsNM: ${getObjects().length}`);
         if (getObjects().length === 27){
             scrambleCube(20);
@@ -41,14 +40,14 @@ export function initGameButtons(){
         game.mode = 'free';
         createExtraMobileControls();
         updateExtraMobileControlsVisibility();
-        mainMenu.style.display = 'none';
+        hideMenuContainers();
         startGameTimer();
         lockToLandscape()
     });
 
-    // document.getElementById('trainingMode').addEventListener('click', ()=> {
-    //     showClearNotification('🛠Пока в разработке🛠')
-    // })
+    document.getElementById('trainingMode').addEventListener('click', ()=> {
+        notif.info('🛠Пока в разработке🛠', 'top-right', 4500)
+    })
    
     reset?.addEventListener('click', async () => {
         if (await showConfirmationDialog("Вы действительно хотите начать игру заново?")) {
