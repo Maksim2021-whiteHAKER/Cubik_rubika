@@ -7,7 +7,9 @@ import { lockToLandscape } from '../utils/orientation.js';
 import { cLog } from '../utils/logger.js';
 import { getPauseMenu, getBlurMenu, showConfirmationDialog, hideMenuContainers } from './modals.js'
 import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
-import { notif,  } from './data.js';
+import { notif } from './data.js';
+
+const mainMenu = document.getElementById('mainMenu');
 
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
