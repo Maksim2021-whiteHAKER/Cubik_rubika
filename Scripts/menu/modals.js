@@ -5,8 +5,13 @@ import { showWheel } from '../rkUpravlenie.js';
 let blurMenu, pauseMenu;
 
 export function hideMenuContainers() {
-    document.getElementById('mainMenu')?.style.display = 'none';
-    document.getElementById('gameModeSelectModal')?.style.display = 'none';
+    const mainM = document.getElementById('mainMenu');
+    const gameModeSelectModal = document.getElementById('gameModeSelectModal');
+    if (mainM && gameModeSelectModal) {
+        mainM.style.display = 'none';
+        gameModeSelectModal.style.display = 'none';
+    }
+
 }
 
 export function ensureModalContainers() {
