@@ -24,11 +24,14 @@ vi.mock('../ui.js', () => ({
 }));
 
 // logger: тесты не должны спамить
-vi.mock('../utils/logger.js', () => ({
-    cLog: vi.fn(),
-    cWarn: vi.fn(),
-    cError: vi.fn(),
-}));
+vi.mock('../utils/logger.js', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        cLog: vi.fn(),
+        cWarn: vi.fn(),
+        cError: vi.fn(),
+}});
 
 vi.mock('../rkUpravlenie.js', () => ({
     spinWheelThemes: [],

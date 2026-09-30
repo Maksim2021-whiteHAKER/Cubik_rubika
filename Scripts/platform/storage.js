@@ -1,6 +1,6 @@
 // Scripts/platform/storage.js
 import { isYandex } from './detect.js';
-import { cLog, cWarn } from "./utils/logger.js";
+import { cLog, cWarn } from '../utils/logger.js';
 
 let ysdkPlayer = null;
 const pendingSync = new Map();
