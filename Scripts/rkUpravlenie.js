@@ -2,6 +2,8 @@
 import { textureManager } from "./texturing.js";
 import { updateFormStyle } from "./menu/form.js"
 import { cLog, cWarn } from "./utils/logger.js";
+import { showRewarded } from "./platform/ads.js";
+import { getItem, getJSON, removeItem, setJSON } from "./platform/storage.js";
 export {spinWheelThemes}
 
 // 22.01.2025 Определяем все возможные темы для "спина"
@@ -111,7 +113,7 @@ function removeThemeFromWheel(themeId) {
     const index = spinWheelThemes.findIndex(theme => theme.id === themeId);
     if (index !== -1) {
         const removedTheme = spinWheelThemes.splice(index, 1)[0];
-        localStorage.setItem('spinWheelThemes', JSON.stringify(spinWheelThemes));
+        setJSON('spinWheelThemes', spinWheelThemes);
         cLog(`Тема "${removedTheme.name}" удалена из колеса фортуны`);
         updateWheelSegments();
         return true;
@@ -122,21 +124,15 @@ function removeThemeFromWheel(themeId) {
 // Загрузка спина из localStorage
 export function loadSpinWheelFromStorage() {
     try {
-        const saved = localStorage.getItem('spinWheelThemes');
-        if (saved) {
-            const loadedThemes = JSON.parse(saved);
-            if (Array.isArray(loadedThemes) && loadedThemes.length > 0) {
-                // Очищаем и добавляем загруженные темы
-                spinWheelThemes.length = 0;
-                spinWheelThemes.push(...loadedThemes);
-                cLog(`Загружено ${loadedThemes.length} тем из localStorage`);
-                // cLog(loadedThemes)
-            }
+        const loadedThemes = getJSON('spinWheelThemes');
+        if (Array.isArray(loadedThemes) && loadedThemes.length > 0) {
+            spinWheelThemes.length = 0;
+            spinWheelThemes.push(...loadedThemes);
+            cLog(`Загружено ${loadedThemes.length} тем из storage`);
         }
     } catch (error) {
         console.error('Ошибка при загрузке барабана спина:', error);
-        // В случае ошибки используем дефолтные темы
-        localStorage.removeItem('spinWheelThemes');
+        removeItem('spinWheelThemes');
     }
 }
 
@@ -206,31 +202,11 @@ function createWheelSegments() {
 async function grantTheme(chosenTheme) {
     if (!chosenTheme) return false;
 
-    let rewardGranted = false;
-        
-    if (typeof admob !== 'undefined' && admob.rewarded) {
-        try {
-            await admob.rewarded.show();           
-            // Ожидаем награду
-            rewardGranted = await new Promise((resolve) => {
-                admob.rewarded.onRewarded = () => resolve(true);                
-                admob.rewarded.onAdClosed = () => resolve(false);                               
-                admob.rewarded.onAdFailedToLoad = (error) => resolve(false);                
-                // Таймаут на случай, если событие не сработает
-                setTimeout(() => resolve(false), 30000);
-            });            
-        } catch (error) {
-            console.error('Ошибка при показе рекламы:', error);
-            rewardGranted = false;
-        }
-    } else {
-        showNotification('--- Колесо Фортуны не доступно ---\nразработчик решает проблему (рекламы пока нет)\n\n --- Wheel of Fortune not denied --- \n develover WIP (there are not ads yet)');
-    }
+    const rewardGranted = await showRewarded();
 
     if (!rewardGranted) { showNotification('Реклама не была просмотрена полностью', 'error'); return false; }
 
-    // Выбираем и разблокируем тему
-    
+    // Выбираем и разблокируем тему   
     // Добавляем тему через textureManager
     const success = textureManager.addCustomTheme(chosenTheme.id, chosenTheme.config, chosenTheme.name);
     if (!success) { showNotification('Не удалось добавить тему', 'error'); return false; }   

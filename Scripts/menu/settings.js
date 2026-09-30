@@ -6,6 +6,7 @@ import { showConfirmationDialog, showModal } from './modals.js';
 import { updateFormStyle } from './form.js';
 import { applyColorTheme } from '../cube.js';
 import { cLog } from '../utils/logger.js';
+import { getSettings, saveSettings } from '../platform/settingsStorage.js';
 
 export function initSettings() {
     initSettingsTabs();
@@ -17,11 +18,13 @@ export function initSettings() {
 
     // Кнопка сброса настроек
     document.getElementById('reset-settings')?.addEventListener('click', async () => {
-        if (showConfirmationDialog('Сбросить все настройки к значениям по умолчанию?')) {
-            resetAllSettings();
-            updateSettingsStats();
-            notif.success('Настройки сброшены', 'top', 3000);
-        }
+        const ok = await showConfirmationDialog('Сбросить все настройки к значениям по умолчанию?');
+        if (!ok) return;
+
+        resetAllSettings();
+        updateSettingsStats();
+        notif.success('Настройки сброшены', 'top-right', 3000);
+
     });
 
     // Кнопка быстрой помощи
@@ -35,34 +38,52 @@ function initThemeSelectors() {
     const themeSelect = document.getElementById('theme-select');
     const colorSelect = document.getElementById('color-theme-select');
     const acceptStyleBtn = document.getElementById('accept_style');
+    const s = getSettings();
+
+    // Восстанавливаем выбор
+    if (s.textureTheme && themeSelect?.querySelector(`option[value="${s.textureTheme}"]`)) {
+        themeSelect.value = s.textureTheme;
+    }
+
+    if (s.colorTheme && colorSelect?.querySelector(`option[value="${s.colorTheme}"]`)) {
+        colorSelect.value = s.colorTheme;
+    }
 
     if (themeSelect && colorSelect) {
         themeSelect.addEventListener('change', async () => {
-            cLog('[settings] change fired, value =', themeSelect.value);
             const selectedValue = themeSelect.value;
             const selectedColor = colorSelect.value;
+            saveSettings({ textureTheme: selectedValue });   // ← сохраняем сразу
             try {
-                cLog('[settings] calling applyTextures with', selectedValue);
-                await applyTextures(themeSelect.value, themeSelect, colorSelect);
-                cLog('[settings] applyTextures done, calling updateFormStyle');
+                await applyTextures(selectedValue, themeSelect, colorSelect);
                 updateFormStyle(selectedValue, selectedColor);
-                cLog('[settings] updateFormStyle done');
-            } catch (e) {
-                console.error('[settings] ERROR:', e);
-            }
+            } catch (e) { console.error(e); }
         });
     }
 
-    // цветовая схема — этот обработчик был потерян
     if (colorSelect && themeSelect) {
         colorSelect.addEventListener('change', () => {
             const selectedValue = themeSelect.value;
             const selectedColor = colorSelect.value;
+            saveSettings({ colorTheme: selectedColor });     // ← сохраняем
             try {
-                applyColorTheme(colorSelect.value);
+                applyColorTheme(selectedColor);
                 updateFormStyle(selectedValue, selectedColor);
             } catch (e) { console.error(e); }
         });
+    }
+
+    // Применяем сохранённое состояние после загрузки куба
+    if (themeSelect && colorSelect) {
+        (async () => {
+            try {
+                await applyTextures(themeSelect.value, themeSelect, colorSelect);
+                if (colorSelect.value) applyColorTheme(colorSelect.value);
+                updateFormStyle(themeSelect.value, colorSelect.value);
+            } catch (e) {
+                console.error('[settings] initial apply failed', e);
+            }
+        })();
     }
 
     // кнопка "Применить" (в HTML скрыта, но пусть будет)
@@ -70,6 +91,7 @@ function initThemeSelectors() {
         acceptStyleBtn.addEventListener('click', async () => {
             try {
                 await applyTextures(themeSelect.value);
+                saveSettings({ textureTheme: themeSelect.value });
                 notif.success(`Тема "${themeSelect.value}" применена!`, 'top-right', 3500);
             } catch (e) { console.error(e); }
         });

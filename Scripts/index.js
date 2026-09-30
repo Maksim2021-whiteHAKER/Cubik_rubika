@@ -1,16 +1,19 @@
 // Scripts/index.js
 import * as THREE from 'three';
-import { initCube, getObjects, scrambleCube, solveCube, rotateWholeCube } from './cube.js';
-import { initPlayer } from './player.js';
+import { getObjects, initCube, rotateWholeCube, scrambleCube, solveCube } from './cube.js';
 import { createTriggerZones } from './cubeInteraction.js';
-import { initMenu } from "./menu/index.js";
-import { three, app, ui, game, cube } from './state.js';
-import { initThree, onWindowResize, isDev, stats } from './main/scene.js';
 import { setupTriggerInteraction } from './main/controls.js';
 import { orbitMobileControl } from './main/mobileControls.js';
-import { cLog, cWarn } from './utils/logger.js';
-import { isTouch } from './utils/device.js';
+import { initThree, isDev, onWindowResize, stats } from './main/scene.js';
 import { notif } from './menu/data.js';
+import { initMenu } from "./menu/index.js";
+import { isYandex } from './platform/detect.js';
+import { initStorage } from './platform/storage.js';
+import { initPlayer } from './player.js';
+import { app, cube, game, three, ui } from './state.js';
+import { isTouch } from './utils/device.js';
+import { cLog, cWarn } from './utils/logger.js';
+import { getSettings } from './platform/settingsStorage.js';
 
 let textureLoader = new THREE.TextureLoader();
 let textureGrass = textureLoader.load('textures/grasslightmin.jpg');
@@ -27,32 +30,46 @@ app.isMouseDown = false;
 
 app.isTouchDevice = isTouch();
 
-function updateControlModeSelector(){
+async function loadYandexScript() {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://yandex.ru/games/sdk/v2';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error("SDK load failed"));
+        document.head.appendChild(s);
+    });
+}
+
+function updateControlModeSelector() {
     const selecter = document.getElementById('control-selecter');
-    if (!selecter) {cWarn('элемент controlModeSelect не найден'); return;}
+    if (!selecter) { cWarn('элемент не найден'); return; }
 
+    const s = getSettings();
     const controls = {
-        touch_arrows : "control_touch_trigger", mouse_arrows: "control_arrows",
-        touch_move: "control_touch_move", mouse_move: "control_mouse_move"
-    }
+        touch_arrows: 'control_touch_trigger', mouse_arrows: 'control_arrows',
+        touch_move:   'control_touch_move',    mouse_move:   'control_mouse_move'
+    };
 
-    const prev = selecter.value;
-    let semantic = null;
-    if (prev === controls.touch_arrows || prev === controls.mouse_arrows) semantic = "trigger"
-    else if (prev === controls.touch_move || prev === controls.mouse_move) semantic = "move"
+    selecter.innerText = '';
 
-    selecter.innerText = "";
-        
-    if (app.isTouchDevice){
-        // селектор изменен на сенсор
-        selecter.appendChild(new Option("Зажатие + Стрелки на кубе", controls.touch_arrows))
-        selecter.appendChild(new Option("Зажатие + Движение пальцем", controls.touch_move))
-        selecter.value = (semantic === "move") ? controls.touch_move : controls.touch_arrows 
+    if (app.isTouchDevice) {
+        selecter.appendChild(new Option("Зажатие + Стрелки на кубе", controls.touch_arrows));
+        selecter.appendChild(new Option("Зажатие + Движение пальцем", controls.touch_move));
     } else {
-        selecter.appendChild(new Option("Зажатие + Стрелки на кубе", controls.mouse_arrows))
-        selecter.appendChild(new Option("Зажатие + Движение мышью", controls.mouse_move))
-        selecter.value = (semantic === "move") ? controls.mouse_move : controls.mouse_arrows               
+        selecter.appendChild(new Option("Зажатие + Стрелки на кубе", controls.mouse_arrows));
+        selecter.appendChild(new Option("Зажатие + Движение мышью", controls.mouse_move));
     }
+
+    // Восстанавливаем сохранённое, если валидно для текущего устройства
+    const saved = s.controlMode;
+    const valid = saved && selecter.querySelector(`option[value="${saved}"]`);
+    if (valid) {
+        selecter.value = saved;
+    } else {
+        // дефолт по устройству
+        selecter.value = app.isTouchDevice ? controls.touch_arrows : controls.mouse_arrows;
+    }
+
     selecter.dispatchEvent(new Event('change'));
 }
 
@@ -161,16 +178,31 @@ function initializeControlMode() {
 game.selector_theme = document.getElementById('theme-select');
 ui.congratsModal = document.getElementById('congratsModal');
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
+    // 1. Yandex SDK (если применимо)
+    let ysdk = null;
+    if (isYandex()) {
+        try {
+            await loadYandexScript();
+            ysdk = await window.YaGames.init();
+            ysdk.features.LoadingAPI?.ready();
+        } catch (e) {
+            console.error('[bootstrap] YaGames init failed', e);
+        }
+    }
+
+    // 2. Синхронизация облака → localStorage (до texturing!)
+    await initStorage(ysdk);
+
     initThree(textureGrass);
     initCube(three.scene, cube.world, () => {
+        initMenu();
         cLog('Cube loaded, Objects length=', getObjects().length);
         const triggerZones = createTriggerZones(6.12);
         triggerZones.forEach(zone => three.scene.add(zone));
         setupTriggerInteraction(triggerZones);
         initPlayer(three.scene, three.renderer, three.controls, three.controlsPointer);
-        initializeControlMode();
-        initMenu();
         startworld();
+        initializeControlMode();
     });   
 });

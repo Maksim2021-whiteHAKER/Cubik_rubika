@@ -8,6 +8,7 @@ import { initSound } from "./sound.js";
 import { isMobile, isTablet } from '../utils/device.js';
 import { initRotateOverlay } from "../utils/orientation.js";
 import { cLog } from '../utils/logger.js';
+import { saveSettings } from "../platform/settingsStorage.js";
 
 // Элементы интерфейса
 window.updateHelpContent = updateHelpContent;
@@ -32,6 +33,7 @@ export function initMenu() {
     // Управление курсором
     if (controlSelecter) {
         controlSelecter.addEventListener('change', () => {
+            saveSettings({ controlMode: controlSelecter.value})
             updateCursorMode();
             updateHelpContent();
         });

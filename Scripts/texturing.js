@@ -1,6 +1,7 @@
 // texturing.js
-import * as THREE  from 'three';
-import { getObjects, applyColorTheme } from './cube.js'
+import * as THREE from 'three';
+import { applyColorTheme, getObjects } from './cube.js';
+import { getJSON, setJSON } from './platform/storage.js';
 import { cube } from './state.js';
 import { cLog, cWarn } from './utils/logger.js';
 
@@ -39,28 +40,21 @@ class CubeTextureManager {
     }
 
     // --- Новое 20.01.2026-23: загрузка разблокированых тем из localStorage 
-    loadUnlockThemes(){
-        const savedThemes = localStorage.getItem('unlockedCustomThemes');
-        if (savedThemes) {
-            try {
-                const themes = JSON.parse(savedThemes);
-                if (Array.isArray(themes)){
-                    themes.forEach(themeData => {
-                        if (themeData && themeData.id && themeData.config){
-                            const customThemeId = `custom_${themeData.id}`;
-                            this.configTheme[customThemeId] = {
-                                ...themeData.config,
-                                _originalId: themeData.id,
-                                _displayName: themeData.name || themeData.id.replace(/_/g, ' ')
-                            };
-                            cLog('Загружена кастомная тема: ', customThemeId);
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error('Ошибка при загрузке разблокированых тем ', e)
+    loadUnlockThemes() {
+        const themes = getJSON('unlockedCustomThemes');
+        if (!Array.isArray(themes)) return;
+    
+        themes.forEach(themeData => {
+            if (themeData && themeData.id && themeData.config) {
+                const customThemeId = `custom_${themeData.id}`;
+                this.configTheme[customThemeId] = {
+                    ...themeData.config,
+                    _originalId: themeData.id,
+                    _displayName: themeData.name || themeData.id.replace(/_/g, ' ')
+                };
+                cLog('Загружена кастомная тема: ', customThemeId);
             }
-        }
+        });
     }
 
     saveUnlockedThemes() {
@@ -78,7 +72,7 @@ class CubeTextureManager {
             }
         }
         // const themesArray = Object.entries(unlockedThemes).map(([id, config]) => ({ id, config }));
-        localStorage.setItem('unlockedCustomThemes', JSON.stringify(unlockedThemes));
+        setJSON('unlockedCustomThemes', unlockedThemes);
         cLog('Разблокированные кастомные темы сохранены в localStorage.');
     }
     
@@ -233,7 +227,7 @@ class CubeTextureManager {
 }
 
 const textureManager = new CubeTextureManager();
-export {textureManager}
+export { textureManager };
 
 export async function applyTextures(theme, texture_select, selector){
     await textureManager.applyTextures(theme);    
