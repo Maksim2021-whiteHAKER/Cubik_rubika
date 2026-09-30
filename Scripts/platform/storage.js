@@ -4,6 +4,19 @@ import { isYandex } from './detect.js';
 let ysdkPlayer = null;
 const pendingSync = new Map();
 
+function localSnapshot() {
+    const snapshot = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        // не тащим ключи Метрики в облако
+        if (key.startsWith('_ym')) continue;
+
+        const value = localStorage.getItem(key);
+        snapshot[key] = trySerialize(value);
+    }
+    return snapshot;
+}
+
 /**
  * Инициализация. На Yandex — загружаем облачные данные
  * и МЕРЖИМ их с localStorage. На web/capacitor — no-op.

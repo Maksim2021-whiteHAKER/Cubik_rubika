@@ -3,7 +3,7 @@ import { textureManager } from "./texturing.js";
 import { updateFormStyle } from "./menu/form.js"
 import { cLog, cWarn } from "./utils/logger.js";
 import { showRewarded } from "./platform/ads.js";
-import { getItem, getJSON, removeItem, setJSON } from "./platform/storage.js";
+import { getJSON, removeItem, setJSON } from "./platform/storage.js";
 export {spinWheelThemes}
 
 // 22.01.2025 Определяем все возможные темы для "спина"

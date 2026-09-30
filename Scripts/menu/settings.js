@@ -24,7 +24,6 @@ export function initSettings() {
         resetAllSettings();
         updateSettingsStats();
         notif.success('Настройки сброшены', 'top-right', 3000);
-
     });
 
     // Кнопка быстрой помощи
@@ -32,6 +31,7 @@ export function initSettings() {
         const helpModal = document.getElementById('helpModal');
         if (helpModal) showModal(helpModal);
     });
+    cLog("Настройка инициализированны")
 }
 
 function initThemeSelectors() {
