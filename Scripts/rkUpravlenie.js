@@ -1,9 +1,10 @@
 // rkUpravlenie.js т.е rk === рк т.е реклама (управление заработком)
 import { textureManager } from "./texturing.js";
 import { updateFormStyle } from "./menu/form.js"
-import { cLog, cWarn } from "./utils/logger.js";
+import { cLog, cWarn, isDev } from "./utils/logger.js";
 import { showRewarded } from "./platform/ads.js";
 import { getJSON, removeItem, setJSON } from "./platform/storage.js";
+import { analytics } from "./platform/analytics.js";
 export {spinWheelThemes}
 
 // 22.01.2025 Определяем все возможные темы для "спина"
@@ -209,7 +210,9 @@ async function grantTheme(chosenTheme) {
     // Выбираем и разблокируем тему   
     // Добавляем тему через textureManager
     const success = textureManager.addCustomTheme(chosenTheme.id, chosenTheme.config, chosenTheme.name);
+
     if (!success) { showNotification('Не удалось добавить тему', 'error'); return false; }   
+    if (!isDev) analytics.themeUnlocked(chosenTheme.id);
 
     // Обновляем UI
     updateTextureSelectorOptions();
@@ -327,6 +330,7 @@ async function spinWheel() {
         showNotification('Нет доступных тем для разблокировки', 'info');
         return;
     }
+    if (!isDev) analytics.wheelSpinned();
     updateWheelSegments()
 
     isSpinning = true;

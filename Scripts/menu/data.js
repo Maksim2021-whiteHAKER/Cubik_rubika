@@ -104,7 +104,6 @@ export async function clearAllData() {
         resetAllSettings();
         // Показываем уведомление
         notif.success('Все данные сброшены! Перезагрузите страницу.', 'center');
-
         cLog('Все данные очищены');
     } catch (error) {
         console.error('Ошибка при сбросе данных:', error);

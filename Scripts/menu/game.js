@@ -4,15 +4,17 @@ import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from '../timer.js'
 import { updateProgressBar } from '../ui.js';
 import { game, ui } from '../state.js';
 import { lockToLandscape } from '../utils/orientation.js';
-import { cLog } from '../utils/logger.js';
+import { cLog, isDev } from '../utils/logger.js';
 import { getPauseMenu, getBlurMenu, showConfirmationDialog, hideMenuContainers } from './modals.js'
 import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
 import { notif } from './data.js';
+import { analytics } from '../platform/analytics.js';
 
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
     // Обработчики кнопок главного меню
     document.getElementById('normalMode').addEventListener('click', () => {
+        if (!isDev) analytics.gameStarted('normal');
         game.active = true
         game.mode = 'normal';
         updateExtraMobileControlsVisibility();
@@ -36,6 +38,7 @@ export function initGameButtons(){
     });
 
     document.getElementById('freeMode').addEventListener('click', () => {
+        if (!isDev) analytics.gameStarted('free');
         game.active = true
         game.mode = 'free';
         createExtraMobileControls();

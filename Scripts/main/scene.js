@@ -7,9 +7,8 @@ import { three, app } from '../state.js';
 import { createMobileControls } from './mobileControls.js';
 import { togglePauseMenu } from '../menu/game.js'; 
 import { updateHelpContent } from '../menu/help.js';
-import { cLog } from "../utils/logger.js";
+import { cLog, isDev } from "../utils/logger.js";
 
-export let isDev = import.meta.env.DEV
 const lightControls = document.getElementById('lightControls');
 
 export let stats;

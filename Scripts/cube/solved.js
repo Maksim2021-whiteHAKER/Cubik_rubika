@@ -1,9 +1,10 @@
 // Scripts/cube/solved.js
 import * as THREE from 'three';
 import { cube, app, game } from '../state.js';
-import { cLog, cWarn } from "../utils/logger.js";
+import { cLog, cWarn, isDev } from "../utils/logger.js";
 import { updateProgressBar } from '../ui.js';
-import { notif } from '../menu/data.js';
+import { analytics } from '../platform/analytics.js';
+import { getElapsed } from '../timer.js';
 
 export function isCubeSolved(debugMode = false) {
     if (cube.objects.length !== cube.staticObjects.length) {
@@ -101,6 +102,7 @@ export function isCubeSolved(debugMode = false) {
 
     if (isSolved) {
         cLog('✅ Кубик собран по позициям и кватернионам!');
+        if (!isDev) analytics.gameSolved(Math.round(getElapsed() / 1000)) // в сек
     } else {
         // cWarn('❌ Кубик не собран.');
     }
@@ -127,10 +129,8 @@ export function debugCheckCube() {
     cLog('test: ', result.isSolved)
     if (result.isSolved) {
         cLog('✅ Куб собран!');
-        notif.success('✅ Куб собран!', "top-right");
     } else {
         cWarn('❌ Куб НЕ собран:');
         cWarn(result.unsolvedObjects);
-        notif.warn(`❌ Куб НЕ собран:\n${result.unsolvedObjects.join('\n')}`, "top-right");
     }
 }

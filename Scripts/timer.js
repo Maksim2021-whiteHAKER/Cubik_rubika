@@ -5,6 +5,11 @@ let timerInterval;
 let pausedDuration = 0; // общая длительность пауз
 let pauseStart = 0; // время начала текущей паузы
 
+export function getElapsed() {
+    if (!game.startTime) return 0;
+    return Date.now() - game.startTime - pausedDuration;
+}
+
 // Таймер игры
 export function startGameTimer(resume = false) {
     if (timerInterval) clearInterval(timerInterval); // Удаляем старый интервал
@@ -13,7 +18,7 @@ export function startGameTimer(resume = false) {
         pausedDuration = 0; // Сбрасываем накопленную паузу
     }
     timerInterval = setInterval(() => {
-        const elapsed = Date.now() - game.startTime - pausedDuration;
+        const elapsed = getElapsed();
         const solveTimeText = document.getElementById('solveTime')
         if (solveTimeText) solveTimeText.textContent = formatTime(elapsed)
     }, 100);

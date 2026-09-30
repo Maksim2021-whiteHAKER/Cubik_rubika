@@ -1,5 +1,6 @@
 // Scripts/platform/ads.js
 import { getPlatform } from './detect.js';
+import { cLog, cWarn } from '../utils/logger.js';
 
 /** Показать rewarded-видео. Возвращает true, если награда получена. */
 export async function showRewarded() {
@@ -14,7 +15,7 @@ export async function showRewarded() {
     }
 
     // Fallback — рекламы нет
-    console.warn('[ads] no ad provider available');
+    cWarn('[ads] no ad provider available');
     return false;
 }
 
@@ -40,7 +41,7 @@ function showYandexRewarded() {
         try {
             window.ysdk.adv.showRewardedVideo({
                 callbacks: {
-                    onOpen: () => console.log('[ads] ysdk rewarded open'),
+                    onOpen: () => cLog('[ads] ysdk rewarded open'),
                     onRewarded: () => { rewarded = true; },
                     onClose: () => resolve(rewarded),
                     onError: (e) => { console.error('[ads] ysdk error', e); resolve(false); },

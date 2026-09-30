@@ -1,5 +1,6 @@
 // Scripts/platform/storage.js
 import { isYandex } from './detect.js';
+import { cLog, cWarn } from "./utils/logger.js";
 
 let ysdkPlayer = null;
 const pendingSync = new Map();
@@ -43,9 +44,9 @@ export async function initStorage(ysdkInstance = null) {
             await ysdkPlayer.setData(localSnapshot());
         }
 
-        console.log('[storage] Yandex cloud synced');
+        cLog('[storage] Yandex cloud synced');
     } catch (e) {
-        console.warn('[storage] ysdk init failed, working with localStorage only', e);
+        cWarn('[storage] ysdk init failed, working with localStorage only', e);
         ysdkPlayer = null;
     }
 }
@@ -74,7 +75,28 @@ export function removeItem(key) {
 }
 
 export function clearStorage() {
+    // 1. Собираем ключи, которые пойдут в облако (кроме Метрики)
+    const keysToClear = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key.startsWith('_ym')) keysToClear.push(key);
+    }
+
+    // 2. Чистим локально
     localStorage.clear();
+
+    // 3. Чистим облако — каждому ключу ставим null
+    if (ysdkPlayer && keysToClear.length > 0) {
+        const payload = {};
+        for (const key of keysToClear) payload[key] = null;
+
+        // через очередь, как обычный removeItem
+        // (или напрямую, но лучше через pendingSync для консистентности)
+        for (const key of keysToClear) {
+            pendingSync.set(key, null);
+        }
+        flushPending();
+    }
 }
 
 function trySerialize(value) {
@@ -99,7 +121,7 @@ function flushPending() {
         pendingSync.clear();
 
         try { await ysdkPlayer.setData(payload); }
-        catch (e) { console.warn('[storage] flush failed', e); }
+        catch (e) { cWarn('[storage] flush failed', e); }
     }, 500);
 }
 
