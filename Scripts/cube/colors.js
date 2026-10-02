@@ -13,16 +13,16 @@ const colorThemes = {
         'black': 0x111111
     },
 
-    'neon':{
-        'red': 0xFF0F3A,       //# Ярче оригинального (смещен в пурпурный спектр)
-        'green': 0x3AFF0F,     //# Более кислотный оттенок (смещен в желтый)
-        'blue': 0x0F7BFF,      //# Электрический синий (чистый тон)
-        'white': 0xFFFFFF,     //# Максимальная яркость
-        'yellow': 0xFFFF0F,    //# Чистый желтый без примесей
-        'orange': 0xFF4F0F,    //# Насыщенный "огненный" оранж
-        'black': 0x0A0A0A      //# Глубокий черный для контраста
+    'neon': {
+        'red':    0xFF0080,  // розово-малиновый (magenta-red), не «кирпич»
+        'green':  0x39FF14,  // классический neon green («кислотный лайм»)
+        'blue':   0x00BFFF,  // deep sky blue — голубой, не «тёмно-синий»
+        'white':  0xF0FFFF,  // «айсберг» — белый с лёгким голубым
+        'yellow': 0xEEFF00,  // жёлто-лаймовый (chartreuse), не «школьный жёлтый»
+        'orange': 0xFF5F1F,  // «огненный» — между красным и оранжевым
+        'black':  0x0A0A1A   // почти чёрный с синим подтоном
     },
-
+    
     'monochrome':{
         'black': 0x080808,
         'red': 0x2E2E2E,
@@ -35,13 +35,13 @@ const colorThemes = {
 }
 
 const NO_COLOR_OVERLAY_THEME = {
-    'black': 0xf0f0f0,  // Очень светлый серый
-    'red': 0xf0f0f0,
-    'orange': 0xf0f0f0,
-    'green': 0xf0f0f0,
-    'blue': 0xf0f0f0,
-    'yellow': 0xf0f0f0,
-    'white': 0xf0f0f0
+    'black': 0x002127,  // темно синий
+    'red': 0xffffff,
+    'orange': 0xffffff,
+    'green': 0xffffff,
+    'blue': 0xffffff,
+    'yellow': 0xffffff,
+    'white': 0xffffff
 }
 
 export function applyColorTheme(themeName) {
