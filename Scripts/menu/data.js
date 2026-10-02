@@ -58,15 +58,15 @@ export async function clearCustomThemes() {
                 color: '#2ecc71'
             },
             {
-                id: 'mems',
-                name: 'Memes',
+                id: 'cats',
+                name: 'Cats',
                 config: {
-                    'front': 'textures/customCube/mems_FrogPepe_greenSide512.jpg',
-                    'back': 'textures/customCube/mems_SadCat_blueSide512.jpg',
-                    'right': 'textures/customCube/mems_blyaa_redSide512.jpg',
-                    'left': 'textures/customCube/mems_Doge_orangeSide512.jpg',
-                    'top': 'textures/customCube/mems_Trololo_whiteSide512.jpg',
-                    'bottom': 'textures/customCube/mems_SurpriseCat_yellowSide512.jpg',
+                    'front': 'textures/customCube/cats_forestCat_greenSide512c.jpg',
+                    'back': 'textures/customCube/cats_waterCat_blueSide512c.jpg',
+                    'right': 'textures/customCube/cats_fireCat_redSide512c.jpg',
+                    'left': 'textures/customCube/cats_joyCat_orangeSide512c.jpg',
+                    'top': 'textures/customCube/cats_snowCat_whiteSide512c.jpg',
+                    'bottom': 'textures/customCube/cats_sunflowerCat_yellowSide512c.jpg',
                 },
                 rarity: 'common',
                 color: '#3498db'
