@@ -25,15 +25,11 @@
         <!-- WF -->
         <div id="wheelContainer" class="wheel-container">
             <button class="close-btnWF" aria-label="Закрыть колесо фортуны">&times;</button>
-
             <div class="wheel-content">
                 <div class="wheel-wrapper">
-                    <div class="wheel-pointer"></div>
-                    <div id="wheel" class="wheel">
-                        <!-- Сегменты будут добавлены динамически через JavaScript -->
-                    </div>
+                    <div class="wheel-pointer">▼</div>
+                    <canvas id="wheelCanvas" width="500" height="500" class="wheel-canvas"></canvas>
                 </div>
-
                 <button id="spinButton" class="spin-button" aria-label="Крутить колесо">
                     <span class="spin-icon">💫</span>
                 </button>
@@ -43,7 +39,7 @@
         <!-- Главное меню -->
         <div id="mainMenu" class="main-menu">
             <div class="title">
-                <h1 id="title">Кубик-рубика 3D</h1>
+                <h1 id="title">Магический куб</h1>
                 <span id="ver"></span>
             </div>
 
@@ -185,6 +181,16 @@
                             </select>
                         </div>
 
+                        <div id="containerCustom" class="compact-option">
+                            <label class="compact-label">
+                                <span id="customThemeTextLabel">Пользовательская тема:</span>
+                                <span class="customTheme" id="textCustomLocked">ЗАБЛОКИРОВАНО</span>
+                                <span class="customTheme" id="textCustomUnlocked">РАЗБЛОКИРОВАНО</span>
+                            </label>
+                            <input type="file" id="customFileInput" accept="image/png, image/jpeg" style="display: none;">
+                            <button id="unlockCustomTheme" class="btnUnlockCustomTheme">Разблокировать за 1500 м</button>
+                        </div>
+
                         <div class="compact-preview">
                             <img id="form_style" src="textures/form_style/default.webp" alt="превью" width="130" />
                             <div class="preview-buttons">
@@ -268,6 +274,58 @@
             </div>
         </div>
 
+      
+        <!-- Модальное окно загрузки пользовательских текстур -->
+        <div id="customTextureModal" class="modal_con">
+            <div class="modal-content" style="max-width: 500px;">
+                <span class="close-btn" id="closeCustomModal">&otimes;</span>
+                <h2 id="settingUserTextureText">🎨 Настройка пользовательской текстуры</h2>
+                <p id="hintCustomTheme" style="font-size: 14px; color: #aaa; margin-bottom: 15px;">
+                    Нажмите на грань, чтобы загрузить изображение. Можно загрузить от 1 до 6 картинок.
+                </p>
+
+                <!-- Сетка из 6 граней -->
+                <div class="cube-faces-grid">
+                    <div class="face-slot" data-side="top" style="border-color: #ffffff;">
+                        <span class="face-label">Верхняя / Top</span>
+                        <div class="face-preview" id="preview-top">+</div>
+                    </div>
+                    <div class="face-slot" data-side="front" style="border-color: #009E60;">
+                        <span class="face-label">Передняя / front</span>
+                        <div class="face-preview" id="preview-front">+</div>
+                    </div>
+                    <div class="face-slot" data-side="right" style="border-color: #C41E3A;">
+                        <span class="face-label">Правая / Right</span>
+                        <div class="face-preview" id="preview-right">+</div>
+                    </div>
+                    <div class="face-slot" data-side="back" style="border-color: #0051BA;">
+                        <span class="face-label">Задняя / Back</span>
+                        <div class="face-preview" id="preview-back">+</div>
+                    </div>
+                    <div class="face-slot" data-side="left" style="border-color: #FF5800;">
+                        <span class="face-label">Левая / Left</span>
+                        <div class="face-preview" id="preview-left">+</div>
+                    </div>
+                    <div class="face-slot" data-side="bottom" style="border-color: #FFD500;">
+                        <span class="face-label">Нижняя / Bottom</span>
+                        <div class="face-preview" id="preview-bottom">+</div>
+                    </div>
+                </div>
+
+                <!-- Скрытый инпут для выбора файла -->
+                <input type="file" id="customFileInputModal" accept="image/png, image/jpeg" style="display: none;">
+
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                    <button id="applyCustomTexturesBtn" class="compact-btn" style="background: #2ecc71; color: white; font-weight: bold;">
+                        ✅ Применить и списать 50 м
+                    </button>
+                    <button id="cancelCustomTexturesBtn" class="compact-btn" style="background: #e74c3c; color: white;">
+                        Отмена
+                </button>
+                </div>
+            </div>
+        </div>
+
         <div id="supportModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&otimes;</span>
@@ -326,7 +384,14 @@
                     <label>Длительность вращения стороны</label><br>
                     <input type="number" id="speedNumber" min="100" max="800" value="300">                
                 </div>
-            </div>   
+            </div>
+            <div id="testContainerCurrency">
+                <label>Проверка баланса</label>
+                <div>
+                    <button id="k8h6p" class="test-btn" value="10">+10 руб.</button>
+                    <button id="k7h6p" class="test-btn" value="10">-10 руб.</button>
+                </div>               
+            </div>
         </div>
 
         <div id="rotate-device-overlay">
@@ -356,7 +421,7 @@
             </div>
             <div id="uiRight">
                 <button class="currency_balance" id="balance_rub" aria-label="Money">
-                    <span id="currency_rub_count">0</span>
+                    <span class="jumpper" id="currency_rub_count">0</span>
                     <span class="currency-icon-wrapper"><img id="icon_money" src="textures/money.svg" alt="Куб-рублик" height="72px" width="72px"></span>
                 </button>
             </div>

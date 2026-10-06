@@ -1,9 +1,10 @@
 // texturing.js
 import * as THREE from 'three';
-import { applyColorTheme, getObjects } from './cube.js';
 import { getJSON, setJSON } from './platform/storage.js';
-import { cube } from './state.js';
 import { cLog, cWarn } from './utils/logger.js';
+import { cube } from './state.js';
+import { applyColorTheme, getObjects } from './cube.js';
+import { isCustomTextureUnlocked, getCustomTextureData } from './platform/customTexture.js';
 
 class CubeTextureManager {
     constructor() {
@@ -37,12 +38,31 @@ class CubeTextureManager {
             }
         };
         this.loadUnlockThemes();
+        this.loadUserCustomTexture();
+    }
+
+    loadUserCustomTexture() {
+        if (isCustomTextureUnlocked()) {
+            const textureData = getCustomTextureData();
+            if (textureData && textureData.front) {
+                this.configTheme['custom_user'] = {
+                    'front': textureData.front,
+                    'back': textureData.back,
+                    'right': textureData.right,
+                    'left': textureData.left,
+                    'top': textureData.top,
+                    'bottom': textureData.bottom,
+                    _displayName: '😎 Моя текстура / My texture'
+                };
+                cLog(`✅ Пользовательская Base64 текстура загружена в конфиг`);
+            }
+        }
     }
 
     // --- Новое 20.01.2026-23: загрузка разблокированых тем из localStorage 
     loadUnlockThemes() {
         const themes = getJSON('unlockedCustomThemes');
-        if (!Array.isArray(themes)) return;
+        if (!Array.isArray(themes) ) return;
     
         themes.forEach(themeData => {
             if (themeData && themeData.id && themeData.config) {
@@ -52,7 +72,7 @@ class CubeTextureManager {
                     _originalId: themeData.id,
                     _displayName: themeData.name || themeData.id.replace(/_/g, ' ')
                 };
-                cLog('Загружена кастомная тема: ', customThemeId);
+                cLog(`Загружена кастомная тема: ${customThemeId}`);
             }
         });
     }
@@ -130,9 +150,11 @@ class CubeTextureManager {
         // нужно для определения решения проблемы
         // применяем текстуры для каждой стороны
         for (const [side, TexturePath] of Object.entries(config)) {
-            if (side.startsWith('_')) continue;   // ← добавить ЭТУ строку
+            if (side.startsWith('_')) continue;  
 
-            if (await this.checkTextureExists(TexturePath)) {
+            const isBase64 = typeof TexturePath === 'string' && TexturePath.startsWith('data:image');
+
+            if (isBase64 || await this.checkTextureExists(TexturePath)) {
                 await this.applyTexturesToSide(side, TexturePath);
             } else {
                 cWarn(`Путь к текстуре для стороны ${side} недоступен или неправильный ${TexturePath}`);
@@ -244,6 +266,7 @@ export async function applyTextures(theme, texture_select, selector){
 
         const textureValue = textureSelect.value;
         const isDefaultSelected = textureValue === 'default';
+
         let nonCassatOptionIndex = -1; // = selector.querySelector('option[value="non_cassat"]');
         for (let i = 0; i < selector.options.length; i++){
             if (selector.options[i].value === 'non_cassat'){

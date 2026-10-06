@@ -5,6 +5,68 @@ import { cLog, cWarn, isDev } from "../utils/logger.js";
 import { updateProgressBar } from '../ui.js';
 import { analytics } from '../platform/analytics.js';
 import { getElapsed } from '../timer.js';
+import { notif } from '../menu/data.js';
+import { addPlayerCoins } from '../platform/storage.js';
+
+function gettingTimeReward() {
+    cLog('✅ Кубик собран по позициям и кватернионам!');
+
+    if (game.mode === 'free') {
+        notif.warn("⚠ Свободный режим: награда не начисляется", 'center', 6500);
+        return;
+    }
+
+    const solveTimeSeconds = Math.round(getElapsed() / 1000);
+
+    const MIN_SCRAMBLE_MOVES = 20;
+    if (cube.scrambleMoves < MIN_SCRAMBLE_MOVES) {
+        cWarn('⚠️ Кубик недостаточно перемешан. Награда не начислена.');
+        return;
+    }
+
+    // ✅ 1. ПРОВЕРЯЕМ ТЕМУ ПРЯМО ЗДЕСЬ (а не в начале файла)
+    const currentTheme = game.selector_theme?.value;
+    const isHardMode = currentTheme !== 'default';
+
+    // ✅ 2. НАСТРАИВАЕМ ПАРАМЕТРЫ В ЗАВИСИМОСТИ ОТ РЕЖИМА
+    const maxReward = isHardMode ? 500 : 100;   // 500 за хард, 100 за обычный
+    const minReward = isHardMode ? 4 : 10;      // сложнее Кубик меньше минималка логично же, за то за скорость бонус выше 😈😇
+    
+    const maxTime = isHardMode ? 180 : 60;      // 3 минуты на максимум vs 1 минута
+    const minTime = isHardMode ? 900 : 600;     // 15 минут на минимум vs 10 минут
+
+    let rewardCoins;
+
+    // ✅ 3. МАТЕМАТИЧЕСКИ ВЕРНЫЙ РАСЧЕТ
+    if (solveTimeSeconds <= maxTime) {
+        rewardCoins = maxReward; // Берем максимальную награду (100 или 500)
+    } else if (solveTimeSeconds >= minTime) {
+        rewardCoins = minReward; // Падаем до минимума (10)
+    } else {
+        // Плавное падение от maxReward до minReward
+        const timeInPenalty = solveTimeSeconds - maxTime;
+        const totalPenaltyTime = minTime - maxTime;
+        const totalDrop = maxReward - minReward; // 490 для харда, 90 для обычного
+        
+        const penalty = (timeInPenalty / totalPenaltyTime) * totalDrop;
+        rewardCoins = Math.round(maxReward - penalty);
+    }
+
+    // Гарантируем, что награда не меньше 10 и не больше максимума (защита от багов округления)
+    rewardCoins = Math.max(minReward, Math.min(maxReward, rewardCoins));
+
+    // 4. Начисление валюты
+    const newBalance = addPlayerCoins(rewardCoins);
+
+    // 5. Аналитика
+    if (!isDev) {
+        analytics.gameSolved(solveTimeSeconds, rewardCoins, currentTheme);
+    }
+
+    // 6. Красивое уведомление с акцентом на хардкор
+    const modeText = isHardMode ? '🔥 ХАРДКОР / HARDCORE' : '🏆 Собрано! / Solved';
+    notif.success(`${modeText}<br>+${rewardCoins} монет/coin <br>💰 Баланс/Balance: ${newBalance}`, 'center', 6000);
+}
 
 export function isCubeSolved(debugMode = false) {
     if (cube.objects.length !== cube.staticObjects.length) {
@@ -101,8 +163,7 @@ export function isCubeSolved(debugMode = false) {
     cLog(`Прогресс: ${correctCubes}/${totalCubes} кубиков правильно (${progressPercentage.toFixed(2)}%)`);
 
     if (isSolved) {
-        cLog('✅ Кубик собран по позициям и кватернионам!');
-        if (!isDev) analytics.gameSolved(Math.round(getElapsed() / 1000)) // в сек
+        gettingTimeReward();
     } else {
         // cWarn('❌ Кубик не собран.');
     }

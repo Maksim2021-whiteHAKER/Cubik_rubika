@@ -9,6 +9,8 @@ import { isMobile, isTablet } from '../utils/device.js';
 import { initRotateOverlay } from "../utils/orientation.js";
 import { cLog } from '../utils/logger.js';
 import { saveSettings } from "../platform/settingsStorage.js";
+import { getPlayerCoins } from "../platform/storage.js";
+import { updateCurrencyDisplay } from "../ui.js";
 
 // Элементы интерфейса
 window.updateHelpContent = updateHelpContent;
@@ -65,5 +67,9 @@ document.head.appendChild(clearStyles);
 document.addEventListener('DOMContentLoaded', () => {
     const rotateOverlay = document.getElementById('rotate-device-overlay');   
     if (rotateOverlay) initRotateOverlay(rotateOverlay);
-
+    updateCurrencyDisplay(getPlayerCoins());
 });
+
+window.addEventListener('playerCoinsUpdated', (event) => {
+    updateCurrencyDisplay(event.detail);
+})

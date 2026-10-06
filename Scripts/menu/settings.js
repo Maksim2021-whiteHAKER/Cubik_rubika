@@ -1,16 +1,24 @@
 // Scripts/menu/settings.js
-import { spinWheelThemes } from '../rkUpravlenie.js';
-import { textureManager, applyTextures } from '../texturing.js';
-import { notif, resetAllSettings } from './data.js';
-import { showConfirmationDialog, showModal } from './modals.js';
-import { updateFormStyle } from './form.js';
 import { applyColorTheme } from '../cube.js';
-import { cLog } from '../utils/logger.js';
+import { unlockCustomTexture } from '../platform/customTexture.js';
 import { getSettings, saveSettings } from '../platform/settingsStorage.js';
+import { getPlayerCoins } from '../platform/storage.js';
+import { initWheelOfFortune, spinWheelThemes } from '../rkUpravlenie.js';
+import { applyTextures, textureManager } from '../texturing.js';
+import { showBtnUpload, updateCustomThemeUI } from '../ui.js';
+import { cLog } from '../utils/logger.js';
+import { notif, resetAllSettings } from './data.js';
+import { updateFormStyle } from './form.js';
+import { showConfirmationDialog, showModal } from './modals.js';
 
 export function initSettings() {
+    const unlockBtn = document.getElementById('unlockCustomTheme');
+
+    updateCustomThemeUI();    
+    showBtnUpload(); // отображение разблокированой кнопки т.е их должно быть две, т.к после нажатия кнопка скрывается
     initSettingsTabs();
     initThemeSelectors();
+    initWheelOfFortune();
 
     document.getElementById('settingsBtn')?.addEventListener('click', () => {
         setTimeout(updateSettingsStats, 100); // Ждем открытия модалки
@@ -31,6 +39,18 @@ export function initSettings() {
         const helpModal = document.getElementById('helpModal');
         if (helpModal) showModal(helpModal);
     });
+
+    unlockBtn?.addEventListener('click', async () => {
+        const result = unlockCustomTexture();
+        if (result.success) {
+            notif.success(`Успешно оплачено`, 'center', 6000);
+            updateCustomThemeUI();
+            showBtnUpload(); // первая разблокировка
+        } else {
+            notif.error(`Денег мало: ${getPlayerCoins()}`, 'top-right', 5000);
+        }
+    });
+
     cLog("Настройка инициализированны")
 }
 

@@ -18,9 +18,23 @@ beforeEach(() => {
     HTMLMediaElement.prototype.play = vi.fn().mockResolvedValue();
 });
 
+vi.mock('three/examples/jsm/libs/stats.module.js', () => {
+    return {
+        default: class MockStats {
+            constructor() {
+                this.dom = document.createElement('div');
+                this.begin = vi.fn();
+                this.end = vi.fn();
+                this.update = vi.fn();
+            }
+        }
+    };
+});
+
 // ui.js: не трогаем реальный прогресс-бар
 vi.mock('../ui.js', () => ({
     updateProgressBar: vi.fn(),
+    updateTextureSelectorOptions: vi.fn()
 }));
 
 // logger: тесты не должны спамить
@@ -37,7 +51,6 @@ vi.mock('../rkUpravlenie.js', () => ({
     spinWheelThemes: [],
     loadSpinWheelFromStorage: vi.fn(),
     updateWheelSegments: vi.fn(),
-    updateTextureSelectorOptions: vi.fn(),
     showWheel: vi.fn(),
     hideWheel: vi.fn(),
     initWheelOfFortune: vi.fn(),

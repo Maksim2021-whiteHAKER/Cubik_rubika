@@ -1,5 +1,5 @@
 import { version } from '../package.json' 
-import { conversionVer } from '../Scripts/utils/version.js'
+import { conversionVer } from './utils/version.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.protocol === 'file:') {

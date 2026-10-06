@@ -1,17 +1,15 @@
 // Scripts/main/scene.js
 import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../lib/OrbitControls.js';
 import { PointerLockControls } from '../lib/PointerLockControls.js';
 import { three, app } from '../state.js';
 import { createMobileControls } from './mobileControls.js';
 import { togglePauseMenu } from '../menu/game.js'; 
 import { updateHelpContent } from '../menu/help.js';
-import { cLog, isDev } from "../utils/logger.js";
+import { cLog, defActions009antHack, isDev } from "../utils/logger.js";
 
 const lightControls = document.getElementById('lightControls');
 
-export let stats;
 let ambientLight;
 let directionalLight;
 
@@ -81,47 +79,7 @@ export function initThree(textureGrass) {
     three.scene.add(directionalLight);
 
     if (isDev) {
-        stats = new Stats();
-        document.body.appendChild(stats.dom);
-    
-        // --- Ползунки ---
-        const ambientRange = document.getElementById('ambientRange');
-        const directionalRange = document.getElementById('directionalRange');
-        const ambientValueLabel = document.getElementById('ambientValue');
-        const directionalValueLabel = document.getElementById('directionalValue');
-        const speedNumber = document.getElementById('speedNumber')
-        const speedRotateControls = document.getElementById("speedRotateControls")
-        const devElements = document.getElementById("devElements");
-        const testBtnWindowCongrats = document.getElementById("testBtnWindowCongrats")
-        devElements.style.display = 'block';
-    
-        if (ambientRange) {
-            ambientRange.addEventListener('input', (e) => {
-                const value = Number(e.target.value);
-                ambientLight.intensity = value;
-                if (ambientValueLabel) ambientValueLabel.textContent = value.toFixed(2);
-            });
-        }
-    
-        if (directionalRange) {
-            directionalRange.addEventListener('input', (e) => {
-                const value = Number(e.target.value);
-                directionalLight.intensity = value;
-                if (directionalValueLabel) directionalValueLabel.textContent = value.toFixed(2);
-            });
-        }
-
-        if (speedNumber) {
-            speedRotateControls.style.display = "block";
-            speedNumber.addEventListener('input', (e) => {
-                const value = Number(e.target.value);
-                app.speedSet = value;
-            })
-        }
-
-        if (devElements && testBtnWindowCongrats) {
-            testBtnWindowCongrats.addEventListener('click', () => document.getElementById("congratsModal").style.display = 'block')
-        }
+        defActions009antHack(ambientLight, directionalLight);
     }
 
     const floorGeometry = new THREE.PlaneGeometry(100, 100, 25, 25);

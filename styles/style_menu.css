@@ -322,7 +322,7 @@ canvas {
 
 #lightControls {
   position: fixed; 
-  top: 300px; 
+  top: 340px; 
   left: 10px; 
   z-index: 100; 
   background:
@@ -341,7 +341,7 @@ canvas {
 
 #speedRotateControls {
   position: fixed; 
-  top: 430px; 
+  top: 450px; 
   left: 10px; 
   z-index: 100; 
   background:
@@ -351,6 +351,11 @@ canvas {
   border-radius: 8px; 
   font-size: 13px;
   display: none;
+}
+
+#testContainerCurrency {
+  padding: 10px;
+  gap: 50px;
 }
 
 #devElements {
@@ -445,6 +450,87 @@ canvas {
 
 #mainMenu_g { background-image: url("../public/textures/home-page-100.svg"); }
 
+.customTheme {
+  color: red;
+}
+
+.customTheme.unlock {
+  color: #0f0;
+}
+
+.btnUnlockCustomTheme {
+  background-color: #9b59b6;
+  border-radius: 15px;
+  margin: 2px;
+  padding: 2px;
+}
+
+.btnUnlockCustomTheme:hover {
+  background-color: #c0392b;
+}
+
+.uploadBtn {
+  background-color: #9b59b6;
+  border-radius: 15px;
+  padding: 2px;
+}
+
+.uploadBtn:hover {
+  background-color: #c0392b;
+}
+
+#textCustomLocked, #textCustomUnlocked {
+  display: none;
+}
+
+.cube-faces-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.face-slot {
+  border: 3px solid #555;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: #222;
+}
+
+.face-slot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.face-label {
+  display: block;
+  font-size: 11px;
+  color: #ccc;
+  margin-bottom: 5px;
+}
+
+.face-preview {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #333;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #777;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.face-preview.has-image {
+  font-size: 0; /* Скрываем плюс */
+}
+
 .currency_balance {
   position: relative;
   border: 0.5px solid lightblue;
@@ -466,6 +552,11 @@ canvas {
   z-index: 100;
   white-space: nowrap;
   overflow: visible;
+}
+
+.jumpper.jump {
+  transform: scale(1.3);
+  transition: transform 0.2s ease-out;
 }
 
 .currency-icon-wrapper {
@@ -645,10 +736,7 @@ canvas {
 }
 
 #theme-select, #control-selecter {
-  /* position: relative; */
-  /* top: -15px; */
   color: #99ff4e;
-  /* font-size: 16px; */
 }
 
 #settings-info {
@@ -666,17 +754,17 @@ canvas {
 }
 
 #name_sound {
-  /* position: relative;
-  text-align: center;
-  font-size: 25px; */
   color: #0f0;
-  /* top: 15px; */
 }
 
 #importantText {
   display: none;
   color: yellow;
   font-size: 15px;
+}
+
+#settingUserTextureText {
+  font-size: 18px;
 }
 
 /* Мобильная адаптация */
@@ -749,6 +837,10 @@ canvas {
    
   #settings-info {
     font-size: 24px;
+  }
+
+  #settingUserTextureText {
+    font-size: 16px;
   }
   
   #name_textures, #name_sound {

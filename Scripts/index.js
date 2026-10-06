@@ -4,7 +4,7 @@ import { getObjects, initCube, rotateWholeCube, scrambleCube, solveCube } from '
 import { createTriggerZones } from './cubeInteraction.js';
 import { setupTriggerInteraction } from './main/controls.js';
 import { orbitMobileControl } from './main/mobileControls.js';
-import { initThree, onWindowResize, stats } from './main/scene.js';
+import { initThree, onWindowResize } from './main/scene.js';
 import { notif } from './menu/data.js';
 import { initMenu } from "./menu/index.js";
 import { isYandex } from './platform/detect.js';
@@ -12,7 +12,7 @@ import { initStorage } from './platform/storage.js';
 import { initPlayer } from './player.js';
 import { app, cube, game, three, ui } from './state.js';
 import { isTouch } from './utils/device.js';
-import { cLog, cWarn, isDev } from './utils/logger.js';
+import { cLog, cWarn, isDev, stats } from './utils/logger.js';
 import { getSettings } from './platform/settingsStorage.js';
 
 let textureLoader = new THREE.TextureLoader();

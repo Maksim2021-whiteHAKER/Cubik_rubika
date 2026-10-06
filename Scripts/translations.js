@@ -250,4 +250,4 @@ function initializeTranslationsOnDOMLoad() {
 
 initializeTranslationsOnDOMLoad();
 
-export { logicSlider, sliderLanguages, emoji, changeLanguage };
+export { logicSlider, sliderLanguages, emoji, changeLanguage, t };

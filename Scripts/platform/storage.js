@@ -141,3 +141,49 @@ export function getJSON(key) {
     if (!raw) return null;
     try { return JSON.parse(raw); } catch { return null; }
 }
+
+/**
+ * Получить текущий баланс монет игрока
+ * @returns {number} Количество монет (по умолчанию 0)
+ */
+export function getPlayerCoins() {
+    return getJSON('playerCoins') || 0;
+}
+
+/**
+ * Начислить монеты игроку
+ * @param {number} amount - Количество монет для начисления
+ * @returns {number} Новый баланс
+ */
+export function addPlayerCoins(amount) {
+    if (amount <= 0) return getPlayerCoins();
+    
+    const currentBalance = getPlayerCoins();
+    const newBalance = currentBalance + amount;
+    
+    setJSON('playerCoins', newBalance);
+    
+    // Оповещаем UI об изменении баланса (чтобы обновить счётчик на экране)
+    window.dispatchEvent(new CustomEvent('playerCoinsUpdated', { detail: newBalance }));
+    
+    cLog(`💰 Начислено ${amount} монет. Новый баланс: ${newBalance}`);
+    return newBalance;
+}
+
+/**
+ * Списать монеты (для будущих покупок)
+ * @param {number} amount - Количество монет для списания
+ * @returns {boolean} Успешно ли списание
+ */
+export function spendPlayerCoins(amount) {
+    const currentBalance = getPlayerCoins();
+    if (currentBalance >= amount) {
+        const newBalance = currentBalance - amount;
+        setJSON('playerCoins', newBalance);
+        window.dispatchEvent(new CustomEvent('playerCoinsUpdated', { detail: newBalance }));
+        cLog(`💸 Списано ${amount} монет. Новый баланс: ${newBalance}`);
+        return true;
+    }
+    cWarn(`❌ Недостаточно монет. Требуется: ${amount}, Есть: ${currentBalance}`);
+    return false;
+}

@@ -11,7 +11,6 @@ export function hideMenuContainers() {
         mainM.style.display = 'none';
         gameModeSelectModal.style.display = 'none';
     }
-
 }
 
 export function ensureModalContainers() {

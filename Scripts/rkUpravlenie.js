@@ -1,128 +1,204 @@
 // rkUpravlenie.js т.е rk === рк т.е реклама (управление заработком)
 import { textureManager } from "./texturing.js";
-import { updateFormStyle } from "./menu/form.js"
 import { cLog, cWarn, isDev } from "./utils/logger.js";
 import { showRewarded } from "./platform/ads.js";
-import { getJSON, removeItem, setJSON } from "./platform/storage.js";
+import { getJSON, removeItem, setJSON, getPlayerCoins, spendPlayerCoins } from "./platform/storage.js";
 import { analytics } from "./platform/analytics.js";
-export {spinWheelThemes}
+import { updateTextureSelectorOptions } from "./ui.js";
+import { notif } from "./menu/data.js";
+import { t } from "./translations.js";
 
-// 22.01.2025 Определяем все возможные темы для "спина"
-const spinWheelThemes = [
-    {
-        id: 'beautiful',
-        name: 'Beautiful Fractal',
-        config: {
-            'front': 'textures/customCube/beautiful_Fractal_greenSide512.jpg',
-            'back': 'textures/customCube/beautiful_OpticIllusion_blueSide512.jpg',
-            'right': 'textures/customCube/beautiful_GeometryWaltz_redSide512.jpg',
-            'left': 'textures/customCube/beautiful_Waves_orangeSide512.jpg',
-            'top': 'textures/customCube/beautiful_zigzagi_whiteSide512.jpg',
-            'bottom': 'textures/customCube/beautiful_cell_yellowSide512.jpg',
-        },
-        rarity: 'rare',
-        color: '#e74c3c'
-    },
-    {
-        id: 'greatTree',
-        name: 'Great Tree',
-        config: {
-            'front': 'textures/customCube/greatTree_Iggdrasil_greenSide512.jpg',
-            'back': 'textures/customCube/greatTree_GrowingTree_blueSide512.jpg',
-            'right': 'textures/customCube/greatTree_Bloodforest_redSide512.jpg',
-            'left': 'textures/customCube/greatTree_SpaceTree_orangeSide512.jpg',
-            'top': 'textures/customCube/greatTree_WinterTree_whiteSide512.jpg',
-            'bottom': 'textures/customCube/greatTree_AutumnTree_yellowSide512.jpg',
-        },
-        rarity: 'rare',
-        color: '#2ecc71'
-    },
-    {
-        id: 'cats',
-        name: 'Cats',
-        config: {
-            'front': 'textures/customCube/cats_forestCat_greenSide512c.jpg',
-            'back': 'textures/customCube/cats_waterCat_blueSide512c.jpg',
-            'right': 'textures/customCube/cats_fireCat_redSide512c.jpg',
-            'left': 'textures/customCube/cats_joyCat_orangeSide512c.jpg',
-            'top': 'textures/customCube/cats_snowCat_whiteSide512c.jpg',
-            'bottom': 'textures/customCube/cats_sunflowerCat_yellowSide512c.jpg',
-        },
-        rarity: 'common',
-        color: '#3498db'
-    }, 
-    {
-        id: 'space',
-        name: 'Space',
-        config: {
-            'front': 'textures/customCube/space_nebuelaGreen_greenSide512.jpg',
-            'back': 'textures/customCube/space_planetEarth_blueSide512.jpg',
-            'right': 'textures/customCube/space_giantRed_redSide512.jpg',
-            'left': 'textures/customCube/space_planetJupiter_orangeSide512.jpg',
-            'top': 'textures/customCube/space_milkyway_whiteSide512.jpg',
-            'bottom': 'textures/customCube/space_nebuela_yellowSide512.jpg',
-        },
-        rarity: 'rare',
-        color: '#31ffaa'
-    }
+export { spinWheelThemes }
+
+const SPIN_COST = 70;
+
+let spinWheelThemes = [
+    { id: 'beautiful', name: 'Beautiful Fractal', config: { 'front': 'textures/customCube/beautiful_Fractal_greenSide512.jpg', 'back': 'textures/customCube/beautiful_OpticIllusion_blueSide512.jpg', 'right': 'textures/customCube/beautiful_GeometryWaltz_redSide512.jpg', 'left': 'textures/customCube/beautiful_Waves_orangeSide512.jpg', 'top': 'textures/customCube/beautiful_zigzagi_whiteSide512.jpg', 'bottom': 'textures/customCube/beautiful_cell_yellowSide512.jpg' }, rarity: 'rare', color: '#e74c3c' },
+    { id: 'greatTree', name: 'Great Tree', config: { 'front': 'textures/customCube/greatTree_Iggdrasil_greenSide512.jpg', 'back': 'textures/customCube/greatTree_GrowingTree_blueSide512.jpg', 'right': 'textures/customCube/greatTree_Bloodforest_redSide512.jpg', 'left': 'textures/customCube/greatTree_SpaceTree_orangeSide512.jpg', 'top': 'textures/customCube/greatTree_WinterTree_whiteSide512.jpg', 'bottom': 'textures/customCube/greatTree_AutumnTree_yellowSide512.jpg' }, rarity: 'rare', color: '#2ecc71' },
+    { id: 'cats', name: 'Cats', config: { 'front': 'textures/customCube/cats_forestCat_greenSide512c.jpg', 'back': 'textures/customCube/cats_waterCat_blueSide512c.jpg', 'right': 'textures/customCube/cats_fireCat_redSide512c.jpg', 'left': 'textures/customCube/cats_joyCat_orangeSide512c.jpg', 'top': 'textures/customCube/cats_snowCat_whiteSide512c.jpg', 'bottom': 'textures/customCube/cats_sunflowerCat_yellowSide512c.jpg' }, rarity: 'common', color: '#3498db' }, 
+    { id: 'space', name: 'Space', config: { 'front': 'textures/customCube/space_nebuelaGreen_greenSide512.jpg', 'back': 'textures/customCube/space_planetEarth_blueSide512.jpg', 'right': 'textures/customCube/space_giantRed_redSide512.jpg', 'left': 'textures/customCube/space_planetJupiter_orangeSide512.jpg', 'top': 'textures/customCube/space_milkyway_whiteSide512.jpg', 'bottom': 'textures/customCube/space_nebuela_yellowSide512.jpg' }, rarity: 'rare', color: '#31ffaa' }
 ];
 
-const rarityWeights = {
-    common: 50,
-    rare: 10,
-    epic: 1
-};
+const rarityWeights = { common: 50, rare: 10, epic: 1 };
 
-// DOM элементы
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
 const wheelContainer = document.getElementById('wheelContainer');
-const wheel = document.getElementById('wheel');
-const spinButton = document.getElementById('spinButton');
 const closeBtnWF = document.querySelector('.close-btnWF');
+const spinButton = document.getElementById('spinButton');
 
-// Инициализация
 let isSpinning = false;
 let segments = [];
 
-// Загрузка тем из localStorage при старте
-loadSpinWheelFromStorage();
-updateTextureSelectorOptions();
-updateWheelSegments();
+function drawWheel() {
+    if (!canvas || !ctx) return;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = canvas.width / 2;
+    const step = (2 * Math.PI) / segments.length;
 
-// Выбор темы из барабана с учётом редкости
-function pickRandomThemeFromWheel() {
-    if (spinWheelThemes.length === 0) {
-        cWarn('Нет доступных тем в колесе фортуны');
-        return null;
-    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Создаем взвешенный список
-    const weightedThemes = [];
+    segments.forEach((segment, i) => {
+        const angle = i * step - Math.PI / 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + step);
+        ctx.fillStyle = segment.color;
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.4)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle + step / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 20px Arial";
+        ctx.shadowColor = "rgba(0,0,0,0.8)";
+        ctx.shadowBlur = 4;
+        ctx.fillText(segment.label, radius - 25, 7);
+        ctx.restore();
+    });
+}
+
+export function updateWheelSegments() {
+    segments = [];
     spinWheelThemes.forEach(theme => {
-        const weight = rarityWeights[theme.rarity] || 1;
-        for (let i = 0; i < weight; i++) {
-            weightedThemes.push(theme);
-        }
+        segments.push({ label: theme.name, color: theme.color, themeId: theme.id });
     });
 
-    // Случайный выбор
-    const randomIndex = Math.floor(Math.random() * weightedThemes.length);
-    return weightedThemes[randomIndex];
-}
-
-// Удаление темы из барабана
-function removeThemeFromWheel(themeId) {
-    const index = spinWheelThemes.findIndex(theme => theme.id === themeId);
-    if (index !== -1) {
-        const removedTheme = spinWheelThemes.splice(index, 1)[0];
-        setJSON('spinWheelThemes', spinWheelThemes);
-        cLog(`Тема "${removedTheme.name}" удалена из колеса фортуны`);
-        updateWheelSegments();
-        return true;
+    if (segments.length < 3) {
+        for (let i = 0; i < 3 - segments.length; i++) {
+            segments.push({ label: t('wheelEmptySegment'), color: '#2c3e50', themeId: null });
+        }
     }
-    return false;
+    drawWheel();
 }
 
-// Загрузка спина из localStorage
+function showWheelChoiceModal(currentBalance) {
+    return new Promise((resolve) => {
+        const modal = document.createElement('div');
+        modal.className = 'wheel-choice-modal';
+        modal.innerHTML = `
+            <div class="wheel-choice-content">
+                <span class="wheel-choice-close">&times;</span>
+                <h2 style="margin-top:0">${t('wheelSpinTitle')}</h2>
+                <p>${t('wheelYourBalance')} <b style="color:#f1c40f">${currentBalance} м</b></p>
+                <p>${t('wheelSpinCost')} <b>${SPIN_COST} м</b></p>
+                <button class="wheel-choice-btn btn-coins" id="payCoinsBtn">${t('wheelPayCoins', { cost: SPIN_COST })}</button>
+                <button class="wheel-choice-btn btn-ads" id="payAdsBtn">${t('wheelWatchAd')}</button>
+                <button class="wheel-choice-btn btn-cancel" id="cancelSpinBtn">${t('wheelCancel')}</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const close = (result) => { modal.remove(); resolve(result); };
+
+        modal.querySelector('.wheel-choice-close').addEventListener('click', () => close(null));
+        modal.querySelector('#cancelSpinBtn').addEventListener('click', () => close(null));
+        modal.querySelector('#payCoinsBtn').addEventListener('click', () => close('coins'));
+        modal.querySelector('#payAdsBtn').addEventListener('click', () => close('ads'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) close(null); });
+    });
+}
+
+async function spinWheel() {
+    cLog('🖱️ Клик по кнопке колеса! isSpinning:', isSpinning); // Диагностика
+    
+    if (isSpinning || segments.length === 0) return;
+
+    const totalWeight = segments.reduce((sum, seg) => {
+        const theme = spinWheelThemes.find(t => t.id === seg.themeId);
+        return sum + (theme ? (rarityWeights[theme.rarity] || 1) : 1);
+    }, 0);
+    
+    let random = Math.random() * totalWeight;
+    let chosenSegment = segments[segments.length - 1];
+    
+    for (const seg of segments) {
+        const theme = spinWheelThemes.find(t => t.id === seg.themeId);
+        const weight = theme ? (rarityWeights[theme.rarity] || 1) : 1;
+        if (random < weight) { chosenSegment = seg; break; }
+        random -= weight;
+    }
+
+    const segIndex = segments.indexOf(chosenSegment);
+    const step = 360 / segments.length;
+    const targetAngle = 360 * 5 - (segIndex * step + step / 2); 
+
+    const balance = getPlayerCoins();
+    const choice = await showWheelChoiceModal(balance);
+
+    if (!choice) {
+        cLog('Вращение отменено пользователем');
+        return; 
+    }
+
+    if (choice === 'coins') {
+        if (!spendPlayerCoins(SPIN_COST)) {
+            notif.error(t('wheelNotEnoughCoins'), 'center', 3000);
+            return;
+        }
+    } else {
+        const adWatched = await showRewarded();
+        if (!adWatched) return; 
+    }
+
+    isSpinning = true;
+    if (spinButton) spinButton.disabled = true;
+    if (!isDev) analytics.wheelSpinned();
+
+    canvas.style.transform = `rotate(${targetAngle}deg)`;
+
+    setTimeout(() => {
+        isSpinning = false;
+        grantTheme(chosenSegment);
+    }, 4000);
+}
+
+function grantTheme(segment) {
+    if (!segment.themeId) {
+        cLog('Выпало "Пусто"');
+        resetWheel();
+        return;
+    }
+
+    const theme = spinWheelThemes.find(t => t.id === segment.themeId);
+    const success = textureManager.addCustomTheme(theme.id, theme.config, theme.name);
+
+    if (success) {
+        if (!isDev) analytics.themeUnlocked(theme.id);
+        updateTextureSelectorOptions();
+
+        notif.success(`${t('wheelGotTheme')} "${theme.name}"`, 'center', 4000);
+         
+        setTimeout(() => {
+            const idx = spinWheelThemes.findIndex(t => t.id === theme.id);
+            if (idx !== -1) {
+                spinWheelThemes.splice(idx, 1);
+                setJSON('spinWheelThemes', spinWheelThemes);
+                updateWheelSegments();
+            }
+            resetWheel();
+        }, 2000);
+    } else {
+        resetWheel();
+    }
+}
+
+function resetWheel() {
+    if (!canvas) return;
+    canvas.style.transition = 'none';
+    canvas.style.transform = 'rotate(0deg)';
+    if (spinButton) spinButton.disabled = false;
+    void canvas.offsetWidth; 
+    setTimeout(() => {
+        canvas.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.21, 0.99)';
+    }, 50);
+}
+
 export function loadSpinWheelFromStorage() {
     try {
         const loadedThemes = getJSON('spinWheelThemes');
@@ -137,355 +213,55 @@ export function loadSpinWheelFromStorage() {
     }
 }
 
-// Обновление сегментов колеса
-export function updateWheelSegments() {
-    segments = [];
-    
-    // Создаем сегменты на основе доступных тем
-    spinWheelThemes.forEach(theme => {
-        segments.push({
-            label: theme.name,
-            color: theme.color,
-            themeId: theme.id
-        });
-    });
-
-    // Добавляем пустые сегменты для баланса, если мало тем
-    if (segments.length < 3) {
-        const emptySegments = 3 - segments.length;
-        for (let i = 0; i < emptySegments; i++) {
-            segments.push({
-                label: 'Пусто',
-                color: '#000001',
-                themeId: null
-            });
-        }
-    }
-
-    // Создаем визуальное колесо
-    createWheelSegments();
-}
-
-// Создание визуальных сегментов колеса
-function createWheelSegments() {
-    if (!wheel) {
-        console.error('Элемент колеса не найден');
-        return;
-    }
-
-    wheel.innerHTML = '';
-    const segmentAngle = 360 / segments.length;
-
-    segments.forEach((segment, index) => {
-        const segDiv = document.createElement('div');
-        segDiv.className = 'wheel-segment';
-        segDiv.style.transform = `rotate(${index * segmentAngle}deg)`;
-        segDiv.style.backgroundColor = segment.color;
-        segDiv.dataset.themeId = segment.themeId || '';
-
-        const content = document.createElement('div');
-        content.className = 'wheel-segment-content';
-        content.style.transform = `rotate(${segmentAngle / 2}deg)`;
-        
-        // Добавляем иконку для пустого сегмента
-        if (!segment.themeId) {
-            content.innerHTML = '🎁<br>Скоро';
-        } else {
-            content.innerHTML = `🎁<br>${segment.label}`;
-        }
-
-        segDiv.appendChild(content);
-        wheel.appendChild(segDiv);
-    });
-}
-
-// Основная функция разблокировки темы
-async function grantTheme(chosenTheme) {
-    if (!chosenTheme) return false;
-
-    const rewardGranted = await showRewarded();
-
-    if (!rewardGranted) { showNotification('Реклама не была просмотрена полностью', 'error'); return false; }
-
-    // Выбираем и разблокируем тему   
-    // Добавляем тему через textureManager
-    const success = textureManager.addCustomTheme(chosenTheme.id, chosenTheme.config, chosenTheme.name);
-
-    if (!success) { showNotification('Не удалось добавить тему', 'error'); return false; }   
-    if (!isDev) analytics.themeUnlocked(chosenTheme.id);
-
-    // Обновляем UI
-    updateTextureSelectorOptions();
-    // Показываем уведомление об успехе
-    showNotification(`🎉 Поздравляем! Вы получили тему: "${chosenTheme.name}"`, 'success');
-    return true;
-}
-
-// Функция для показа уведомлений
-function showNotification(message, type = 'info') {
-    // Удаляем старое уведомление, если есть
-    const oldNotification = document.querySelector('.wheel-notification');
-    if (oldNotification) {
-        oldNotification.remove();
-    }
-
-    const notification = document.createElement('div');
-    notification.className = `wheel-notification wheel-notification-${type}`;
-    notification.textContent = message;
-    
-    // Стили для уведомления
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
-        color: white;
-        padding: 15px 25px;
-        border-radius: 8px;
-        z-index: 10000;
-        font-size: 16px;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        animation: slideIn 0.3s ease;
-    `;
-
-    document.body.appendChild(notification);
-
-    // Автоматическое скрытие
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.style.opacity = '0';
-            notification.style.transition = 'opacity 0.3s';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
-        }
-    }, 3000);
-}
-
-// Обновление селектора текстур
-export function updateTextureSelectorOptions() {
-    const selector = document.getElementById('theme-select');
-    
-    if (!selector) {
-        cWarn('Элемент селектора текстур не найден для обновления.');
-        return;
-    }
-
-    // Сохраняем текущее выбранное значение
-    const currentValue = selector.value;
-
-    // Очищаем список
-    selector.innerHTML = '';
-
-    // Добавляем бесплатные темы
-    const freeThemes = [
-        { value: 'default', text: 'По умолчанию / Default' },
-        { value: 'cars', text: '🚗 Машины / Cars' },
-        { value: 'gems', text: '💎 Драгоценности / Gems' },
-        { value: 'girls', text: '🔥 Аниме / Anime' }
-    ];
-
-    freeThemes.forEach(theme => {
-        const option = document.createElement('option');
-        option.value = theme.value;
-        option.textContent = theme.text;
-        selector.appendChild(option);
-    });
-
-    // Добавляем разблокированные кастомные темы
-    for (const themeId of Object.keys(textureManager.configTheme)) {
-        if (themeId.startsWith('custom_')) {
-            const themeData = textureManager.configTheme[themeId];
-            const displayName = themeData._displayName || themeId.replace('custom_', '').replace(/_/g, ' ');
-            const option = document.createElement('option');
-            option.value = themeId;
-            option.textContent = `⭐ ${displayName}`;
-            option.dataset.custom = 'true';
-            selector.appendChild(option);
-        }
-    }
-
-    // Восстанавливаем выбранное значение
-    if (selector.querySelector(`option[value="${currentValue}"]`)) {
-        selector.value = currentValue;
-    } else {
-        selector.value = 'default';
-    }
-
-    const formStyle = document.getElementById('form_style');
-    if (formStyle){
-        const colorTheme = document.getElementById('color-theme-select').value;
-        updateFormStyle(currentValue, colorTheme);
-    }
-}
-
-// Показать колесо фортуны
-async function spinWheel() {
-    if (isSpinning) return;
-    if (spinWheelThemes.length === 0) {
-        showNotification('Нет доступных тем для разблокировки', 'info');
-        return;
-    }
-    if (!isDev) analytics.wheelSpinned();
-    updateWheelSegments()
-
-    isSpinning = true;
-    spinButton.disabled = true;
-
-    // 1. ВЫБОР темы — до анимации
-    const chosenTheme = pickRandomThemeFromWheel();
-    if (!chosenTheme) { isSpinning = false; spinButton.disabled = false; return; }
-
-    const segIndex = segments.findIndex(s => s.themeId === chosenTheme.id);
-    if (segIndex === -1) {
-        cWarn('spinWheel: сегмент выбранной темы не найден', chosenTheme.id);
-        isSpinning = false; spinButton.disabled = false; return;
-    }
-
-    // 2. РАСЧЁТ УГЛА
-    // Сегмент segIndex отрисован с rotate(segIndex * segAngle)
-    // Его центр — на segIndex * segAngle + segAngle/2
-    // Стрелка сверху = 0° → нужно повернуть на -(угол_центра) + N полных оборотов
-    const segAngle = 360 / segments.length;
-    const jitter = (Math.random() - 0.5) * segAngle * 0.6; // небольшой разброс внутри сегмента
-    const spins = 5;                                        // полных оборотов
-    const targetAngle = spins * 360 - (segIndex * segAngle + segAngle / 2) + jitter;
-
-    // 3. АНИМАЦИЯ — inline transform с конкретным углом
-    wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.21, 0.99)';
-    // форсим reflow, чтобы transition точно поймался
-    void wheel.offsetWidth;
-    wheel.style.transform = `rotate(${targetAngle}deg)`;
-
-    // 4. ЖДЁМ окончания анимации — по transitionend, с fallback-таймером
-    await new Promise(resolve => {
-        let done = false;
-        const finish = () => { if (done) return; done = true; wheel.removeEventListener('transitionend', finish); resolve(); };
-        wheel.addEventListener('transitionend', finish, { once: true });
-        setTimeout(finish, 4200);
-    });
-
-    // 5. РЕКЛАМА + ВЫДАЧА награды
-    const granted = await grantTheme(chosenTheme);
-
-    // 6. УДАЛЯЕМ тему из колеса и сбрасываем угол
-    if (granted) {
-        wheel.classList.add('success');
-        setTimeout(() => wheel.classList.remove('success'), 1000);
-        // удаление отложим — чтобы юзер не видел «прыжок» сегментов сразу
-        setTimeout(() => {
-            removeThemeFromWheel(chosenTheme.id);
-            // сброс transform без анимации, чтобы не крутилось назад
-            wheel.style.transition = 'none';
-            wheel.style.transform = 'rotate(0deg)';
-            isSpinning = false;
-            spinButton.disabled = false;
-        }, 3500);
-    } else {
-        // если реклама не досмотрена — вернуть колесо
-        wheel.style.transition = 'transform 0.8s ease';
-        wheel.style.transform = 'rotate(0deg)';
-        isSpinning = false;
-        spinButton.disabled = false;
-    }
-}
-
-// Показать колесо фортуны
 export function showWheel() {
-    if (!wheelContainer) {
-        console.error('Контейнер колеса не найден');
-        return;
-    }
-
-    // Обновляем сегменты перед показом
+    if (!wheelContainer) return;
     updateWheelSegments();
-    
     wheelContainer.style.display = 'flex';
-    setTimeout(() => {
-        wheelContainer.classList.add('visible');
-    }, 10);
+    setTimeout(() => wheelContainer.classList.add('visible'), 10);
 }
 
-// Скрыть колесо фортуны
 export function hideWheel() {
     if (!wheelContainer) return;
-    
     wheelContainer.classList.remove('visible');
-    setTimeout(() => {
-        wheelContainer.style.display = 'none';
-    }, 300); // Время на анимацию
+    setTimeout(() => { wheelContainer.style.display = 'none'; }, 300);
 }
 
-// Инициализация событий
+// --- СБРОС КОЛЕСА К НАЧАЛЬНОМУ СОСТОЯНИЮ ---
+export function resetWheelToDefault() {
+    // 1. Очищаем текущий массив тем
+    spinWheelThemes.length = 0;
+    
+    // 2. Восстанавливаем 4 стандартные темы
+    spinWheelThemes.push(
+        { id: 'beautiful', name: 'Beautiful Fractal', config: { 'front': 'textures/customCube/beautiful_Fractal_greenSide512.jpg', 'back': 'textures/customCube/beautiful_OpticIllusion_blueSide512.jpg', 'right': 'textures/customCube/beautiful_GeometryWaltz_redSide512.jpg', 'left': 'textures/customCube/beautiful_Waves_orangeSide512.jpg', 'top': 'textures/customCube/beautiful_zigzagi_whiteSide512.jpg', 'bottom': 'textures/customCube/beautiful_cell_yellowSide512.jpg' }, rarity: 'rare', color: '#e74c3c' },
+        { id: 'greatTree', name: 'Great Tree', config: { 'front': 'textures/customCube/greatTree_Iggdrasil_greenSide512.jpg', 'back': 'textures/customCube/greatTree_GrowingTree_blueSide512.jpg', 'right': 'textures/customCube/greatTree_Bloodforest_redSide512.jpg', 'left': 'textures/customCube/greatTree_SpaceTree_orangeSide512.jpg', 'top': 'textures/customCube/greatTree_WinterTree_whiteSide512.jpg', 'bottom': 'textures/customCube/greatTree_AutumnTree_yellowSide512.jpg' }, rarity: 'rare', color: '#2ecc71' },
+        { id: 'cats', name: 'Cats', config: { 'front': 'textures/customCube/cats_forestCat_greenSide512c.jpg', 'back': 'textures/customCube/cats_waterCat_blueSide512c.jpg', 'right': 'textures/customCube/cats_fireCat_redSide512c.jpg', 'left': 'textures/customCube/cats_joyCat_orangeSide512c.jpg', 'top': 'textures/customCube/cats_snowCat_whiteSide512c.jpg', 'bottom': 'textures/customCube/cats_sunflowerCat_yellowSide512c.jpg' }, rarity: 'common', color: '#3498db' },
+        { id: 'space', name: 'Space', config: { 'front': 'textures/customCube/space_nebuelaGreen_greenSide512.jpg', 'back': 'textures/customCube/space_planetEarth_blueSide512.jpg', 'right': 'textures/customCube/space_giantRed_redSide512.jpg', 'left': 'textures/customCube/space_planetJupiter_orangeSide512.jpg', 'top': 'textures/customCube/space_milkyway_whiteSide512.jpg', 'bottom': 'textures/customCube/space_nebuela_yellowSide512.jpg' }, rarity: 'rare', color: '#31ffaa' }
+    );
+    
+    // 3. Удаляем из localStorage, чтобы при перезагрузке было чисто
+    removeItem('spinWheelThemes');
+    
+    // 4. Перерисовываем Canvas и обновляем UI
+    updateWheelSegments();
+    cLog('🔄 Колесо фортуны сброшено к 4 стандартным темам');
+}
+
 export function initWheelOfFortune() {
-    if (!spinButton) {
-        console.error('Кнопка вращения не найдена');
-        return;
-    }
+    if (!spinButton) { cWarn('Кнопка вращения не найдена'); return; }
+    
+    // Защита от двойного навешивания событий
+    const newBtn = spinButton.cloneNode(true);
+    spinButton.parentNode.replaceChild(newBtn, spinButton);
+    
+    newBtn.addEventListener('click', spinWheel);
+    if (closeBtnWF) closeBtnWF.addEventListener('click', hideWheel);
+    
+    wheelContainer.addEventListener('click', (e) => { if (e.target === wheelContainer) hideWheel(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && wheelContainer.style.display === 'flex') hideWheel(); });
 
-    // Обработчик кнопки вращения
-    spinButton.addEventListener('click', spinWheel);
-    
-    // Обработчик закрытия колеса
-    if (closeBtnWF) {
-        closeBtnWF.addEventListener('click', hideWheel);
-    }
-    
-    // Закрытие по клику вне колеса
-    wheelContainer.addEventListener('click', (e) => {
-        if (e.target === wheelContainer) {
-            hideWheel();
-        }
-    });
-    
-    // Закрытие по Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && wheelContainer.style.display === 'flex') {
-            hideWheel();
-        }
-    });
-    
-    cLog('Колесо Фортуны инициализировано');
+    loadSpinWheelFromStorage();
+    updateTextureSelectorOptions();
+    updateWheelSegments();
+    cLog('✅ Колесо Фортуны инициализировано (Canvas)');
 }
-
-// Добавляем стили для уведомлений
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-    }
-    
-    .wheel-segment-content {
-        transform-origin: center;
-        text-align: center;
-        font-weight: bold;
-        color: white;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        font-size: 12px;
-        padding-top: 20px;
-    }
-   
-    .wheel.success {
-        animation: pulse 1s;
-    }
-       
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
-`;
-document.head.appendChild(style);
-
-// Автоматическая инициализация при загрузке
-document.addEventListener('DOMContentLoaded', initWheelOfFortune);
