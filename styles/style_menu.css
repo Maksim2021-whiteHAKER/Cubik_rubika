@@ -320,6 +320,30 @@ canvas {
   pointer-events: none;
 }
 
+/* Таймер в правом верхнем углу */
+.ui-timer {
+  position: absolute;
+  margin-top: 35px; /* Отступ от валюты */
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'Courier New', Courier, monospace; /* Моноширинный шрифт для стабильности цифр */
+  color: #ffffff;
+  text-align: right;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 16px;
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: opacity 0.3s ease;
+}
+
+/* Анимация исчезновения при победе */
+.ui-timer.hiding {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
 #lightControls {
   position: fixed; 
   top: 340px; 
@@ -767,6 +791,12 @@ canvas {
   font-size: 18px;
 }
 
+@media (max-width: 1200px) {
+  .ui-timer {
+    font-size: 16px;
+  }
+}
+
 /* Мобильная адаптация */
 @media (max-width: 768px) {
   #menu_info {
@@ -859,6 +889,10 @@ canvas {
   .currency-icon-wrapper { right: -14px;}
 
   #icon_money { height: 48px; width: 48px; }
+
+  .ui-timer {
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 480px) {

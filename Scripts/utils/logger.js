@@ -1,6 +1,6 @@
-// Scripts/utils/logger.js (исправь опечатку в папке на utils, если хочешь)
+// Scripts/utils/logger.js
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-import { app } from '../state.js';
+import { app, game } from '../state.js';
 
 export const cLog = import.meta.env.DEV ? console.log : () => {};
 export const cWarn = import.meta.env.DEV ? console.warn : () => {};
@@ -26,39 +26,42 @@ export function defActions009antHack(ambientLight, directionalLight ) {
         let RPT_val = parseInt(RPT.value, 10);
         let RMT_val = parseInt(RMT.value, 10);
         
-        if (devElements) devElements.style.display = 'block';
+        if (game.mode === 'free') {
+            
+            if (devElements) devElements.style.display = 'block';
 
-        if (ambientRange) {
-            ambientRange.addEventListener('input', (e) => {
-                ambientLight.intensity = Number(e.target.value);
-                if (ambientValueLabel) ambientValueLabel.textContent = Number(e.target.value).toFixed(2);
-            });
-        }
+            if (ambientRange) {
+                ambientRange.addEventListener('input', (e) => {
+                    ambientLight.intensity = Number(e.target.value);
+                    if (ambientValueLabel) ambientValueLabel.textContent = Number(e.target.value).toFixed(2);
+                });
+            }
 
-        if (directionalRange) {
-            directionalRange.addEventListener('input', (e) => {
-                directionalLight.intensity = Number(e.target.value);
-                if (directionalValueLabel) directionalValueLabel.textContent = Number(e.target.value).toFixed(2);
-            });
-        }
+            if (directionalRange) {
+                directionalRange.addEventListener('input', (e) => {
+                    directionalLight.intensity = Number(e.target.value);
+                    if (directionalValueLabel) directionalValueLabel.textContent = Number(e.target.value).toFixed(2);
+                });
+            }
 
-        if (speedNumber) {
-            if (speedRotateControls) speedRotateControls.style.display = "block";
-            speedNumber.addEventListener('input', (e) => {
-                app.speedSet = Number(e.target.value);
-            });
-        }
+            if (speedNumber) {
+                if (speedRotateControls) speedRotateControls.style.display = "block";
+                speedNumber.addEventListener('input', (e) => {
+                    app.speedSet = Number(e.target.value);
+                });
+            }
 
-        if (devElements && testBtnWindowCongrats) {
-            testBtnWindowCongrats.addEventListener('click', () => {
-                document.getElementById("congratsModal").style.display = 'block';
-            });
-        }
+            if (devElements && testBtnWindowCongrats) {
+                testBtnWindowCongrats.addEventListener('click', () => {
+                    document.getElementById("congratsModal").style.display = 'block';
+                });
+            }
 
-        console.log(`RPT: ${RPT_val}, RMT: ${RMT_val} true= ${RPT && RMT}`);
-        if (RMT && RPT) {
-            RPT.addEventListener('click', () => addPlayerCoins(RPT_val));
-            RMT.addEventListener('click', () => spendPlayerCoins(RMT_val));
+            cLog(`RPT: ${RPT_val}, RMT: ${RMT_val} true= ${RPT && RMT}`);
+            if (RMT && RPT) {
+                RPT.addEventListener('click', () => addPlayerCoins(RPT_val));
+                RMT.addEventListener('click', () => spendPlayerCoins(RMT_val));
+            }
         }
     });
 }

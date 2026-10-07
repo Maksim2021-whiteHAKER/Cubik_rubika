@@ -20,7 +20,11 @@ export function startGameTimer(resume = false) {
     timerInterval = setInterval(() => {
         const elapsed = getElapsed();
         const solveTimeText = document.getElementById('solveTime')
-        if (solveTimeText) solveTimeText.textContent = formatTime(elapsed)
+        const uiTimerElement = document.getElementById('uiTimer');
+    if (uiTimerElement && game.active) {
+        uiTimerElement.textContent = formatTime(getElapsed()); // подставь свою функцию форматирования
+    }
+    if (solveTimeText) solveTimeText.textContent = formatTime(elapsed)
     }, 100);
 }
 

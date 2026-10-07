@@ -153,3 +153,11 @@ export function updateCustomThemeUI() {
         statusTextLocked.textContent = window.t('textCustomLocked');
     }
 }
+
+export function showTimerInGame() {
+    const uiTimer = document.getElementById('uiTimer');
+    if (uiTimer) {
+        uiTimer.style.display = 'block';
+        uiTimer.textContent = '00:00:00'; // Сброс визуала
+    }
+}

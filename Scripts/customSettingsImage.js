@@ -44,11 +44,11 @@ fileInputModal.addEventListener('change', async (e) => {
 
     // Валидация
     if (!file.type.startsWith('image/')) {
-        alert('Пожалуйста, выберите изображение (JPG, PNG)');
+        notif.warn('Пожалуйста, выберите изображение (JPG, PNG)', 'center', 5000);
         return;
     }
     if (file.size > 5 * 1024 * 1024) {
-        alert('Файл слишком большой! Максимум 5 МБ.');
+        notif.warn('Файл слишком большой! Максимум 5 МБ.', 'center', 5000);
         return;
     }
 

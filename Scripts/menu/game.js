@@ -1,7 +1,7 @@
 // Scripts/menu/game.js
 import { getObjects, scrambleCube, solveCube } from '../cube.js';
 import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from '../timer.js';
-import { updateProgressBar } from '../ui.js';
+import { showTimerInGame, updateProgressBar } from '../ui.js';
 import { game, ui } from '../state.js';
 import { lockToLandscape } from '../utils/orientation.js';
 import { cLog, isDev } from '../utils/logger.js';
@@ -13,7 +13,7 @@ import { analytics } from '../platform/analytics.js';
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
     // Обработчики кнопок главного меню
-    document.getElementById('normalMode').addEventListener('click', () => {
+    document.getElementById('normalMode').addEventListener('click',  async () => {
         if (!isDev) analytics.gameStarted('normal');
         game.active = true
         game.mode = 'normal';
@@ -22,11 +22,11 @@ export function initGameButtons(){
         hideMenuContainers()
         cLog(`_objectsNM: ${getObjects().length}`);
         if (getObjects().length === 27){
-            scrambleCube(20);
+            await scrambleCube(20);
         } else {
-            const checkAndScrumble = () => {
+            const checkAndScrumble = async () => {
                 if (getObjects().length === 27){
-                    scrambleCube(20)
+                    await scrambleCube(20)
                 } else {
                     setTimeout(checkAndScrumble, 100)
                 }
@@ -35,6 +35,7 @@ export function initGameButtons(){
         }
         lockToLandscape();
         startGameTimer();
+        showTimerInGame();
     });
 
     document.getElementById('freeMode').addEventListener('click', () => {

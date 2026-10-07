@@ -26,6 +26,7 @@ export const game = {
     exitMenu: false,
     selector_theme: null,
     state_sounds: 3,
+    rewardAlreadyGiven: false,
 };
 
 export const ui = {
@@ -51,5 +52,6 @@ export const cube = {
     cubesToRotate: [],
     arrowHelper: null,
     progressArrows: [],
-    rotationAxis: new THREE.Vector3()
+    rotationAxis: new THREE.Vector3(),
+    scrambleMoves: 20,
 }

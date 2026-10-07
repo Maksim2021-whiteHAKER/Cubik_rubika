@@ -9,6 +9,17 @@ import { notif } from '../menu/data.js';
 import { addPlayerCoins } from '../platform/storage.js';
 
 function gettingTimeReward() {
+
+    if (game.exitMenu === true) {
+        cLog('С читерить не удастся, я это учёл 😀')
+        return;
+    }
+    
+    if (game.rewardAlreadyGiven) {
+        cLog('Награда уже была начислена за эту сборку');
+        return;
+    }
+
     cLog('✅ Кубик собран по позициям и кватернионам!');
 
     if (game.mode === 'free') {
@@ -19,8 +30,9 @@ function gettingTimeReward() {
     const solveTimeSeconds = Math.round(getElapsed() / 1000);
 
     const MIN_SCRAMBLE_MOVES = 20;
-    if (cube.scrambleMoves < MIN_SCRAMBLE_MOVES) {
-        cWarn('⚠️ Кубик недостаточно перемешан. Награда не начислена.');
+    cLog(`test cube.scrambleMoves: ${cube.scrambleMoves}`)
+    if (!cube.scrambleMoves || cube.scrambleMoves < MIN_SCRAMBLE_MOVES) {
+        cWarn(`⚠️ Кубик недостаточно перемешан. (ходов: ${cube.scrambleMoves || 0}). Награда не начислена.`);
         return;
     }
 
@@ -57,6 +69,17 @@ function gettingTimeReward() {
 
     // 4. Начисление валюты
     const newBalance = addPlayerCoins(rewardCoins);
+
+    game.rewardAlreadyGiven = true;
+
+    const uiTimer = document.getElementById('uiTimer');
+    if (uiTimer) {
+        uiTimer.classList.add('hiding'); // Плавное исчезновение
+        setTimeout(() => {
+            uiTimer.style.display = 'none';
+            uiTimer.classList.remove('hiding');
+        }, 300);
+    }
 
     // 5. Аналитика
     if (!isDev) {
