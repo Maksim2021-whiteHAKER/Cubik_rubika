@@ -1,6 +1,7 @@
 // Scripts/menu/modals.js
 import { updateSettingTitle } from './help.js';
 import { showWheel } from '../rkUpravlenie.js';
+import { isYandex } from '../platform/detect.js';
 
 let blurMenu, pauseMenu;
 
@@ -29,6 +30,32 @@ export function ensureModalContainers() {
 
     document.body.appendChild(blurMenu);
     document.body.appendChild(pauseMenu);
+}
+
+export function supportModalChanging() {
+    const putStar = document.getElementById('putStar');
+    const putStarYandex = document.getElementById('putStarYa');
+    const financialHelpWallet = document.getElementById('financialHelpWallet');
+    const financialHelpBoosty = document.getElementById('financialHelpBoosty');
+    const financialHelpDonationAlerts = document.getElementById('financialHelpDonationAlerts');
+    if (isYandex()) {
+        putStarYandex.style.display = 'block';
+        putStarYandex.innerHTML = window.t('putStarYa');
+        putStar.style.display = 'none'
+        financialHelpWallet.style.display = 'none'
+        financialHelpBoosty.style.display = 'none';
+        financialHelpDonationAlerts.style.display = 'none'
+    } else {
+        putStarYandex.style.display = 'none';
+        putStar.style.display = 'block';
+        putStar.innerHTML = `Поставить звезду на <a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank" style="color: #00aaff;">GitHub</a> ⭐ `;
+        financialHelpWallet.style.display = 'block'
+        financialHelpBoosty.style.display = 'block'
+        financialHelpDonationAlerts.style.display = 'block'
+        financialHelpWallet.innerHTML = `Финансовая поддержка через кошелёк(wallet)<a href="https://yoomoney.ru/to/410015336126322" target="_blank" rel="noopener noreferrer" style="color: #00aaff;">YooMoney</a> 💰`;
+        financialHelpBoosty.innerHTML = `Финансовая поддержка: <a href="https://boosty.to/ghostwarriorxz/donate" target="_blank" style="color: #00aaff;">Boosty</a> 💰`;
+        financialHelpDonationAlerts.innerHTML = `Финансовая поддержка(иностранные пользователи) <a href="https://www.donationalerts.com/r/ghostwarriorxz" target="_blank" style="color: #FF0FA0;">donationalerts</a> 💰`;
+    }
 }
 
 export function getPauseMenu() { return pauseMenu}

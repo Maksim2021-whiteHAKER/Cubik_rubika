@@ -27,6 +27,7 @@ export const game = {
     selector_theme: null,
     state_sounds: 3,
     rewardAlreadyGiven: false,
+    freeModeWarnShown: false,
 };
 
 export const ui = {

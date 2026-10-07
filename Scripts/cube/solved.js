@@ -23,14 +23,17 @@ function gettingTimeReward() {
     cLog('✅ Кубик собран по позициям и кватернионам!');
 
     if (game.mode === 'free') {
-        notif.warn("⚠ Свободный режим: награда не начисляется", 'center', 6500);
+        // Показываем предупреждение только если оно еще не было показано за эту сессию
+        if (!game.freeModeWarnShown) {
+            notif.warn("⚠ Свободный режим: награда не начисляется", 'center', 6500);
+            game.freeModeWarnShown = true; // Добавь это свойство в game в state.js
+        }
         return;
     }
 
     const solveTimeSeconds = Math.round(getElapsed() / 1000);
 
     const MIN_SCRAMBLE_MOVES = 20;
-    cLog(`test cube.scrambleMoves: ${cube.scrambleMoves}`)
     if (!cube.scrambleMoves || cube.scrambleMoves < MIN_SCRAMBLE_MOVES) {
         cWarn(`⚠️ Кубик недостаточно перемешан. (ходов: ${cube.scrambleMoves || 0}). Награда не начислена.`);
         return;

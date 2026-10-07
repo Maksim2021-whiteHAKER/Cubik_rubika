@@ -746,6 +746,19 @@ export const translations = {
         [ar] : "ضع نجمة على <a href='https://github.com/Maksim2021-whiteHAKER/Cubik_rubika' target='_blank' style='color: #00aaff;'>GitHub</a> ⭐",
         [tr] : "<a href='https://github.com/Maksim2021-whiteHAKER/Cubik_rubika' target='_blank' style='color: #00aaff;'>GitHub</a>'da yıldız ver ⭐"
     },
+    "putStarYa": {
+        [ru]: "Поставьте <b>5 звезд</b> и напишите отзыв в Яндекс Играх! <br> Это лучшая поддержка ⭐",
+        [sr]: "Оцените са <b>5 звездица</b> и напишите рецензију у Яндекс Играма! <br> То је најбоља подршка ⭐",
+        [en]: "Rate us with <b>5 stars</b> and leave a review in Yandex Games! <br> This is the best support ⭐",
+        [es]: "¡Califícanos con <b>5 estrellas</b> y deja una reseña en Yandex Games! <br>  Este es el mejor apoyo ⭐",
+        [zh_CN]: "请在 Yandex Games 给我们 <b>5星</b> 好评并留下评论！<br> 这是最好的支持 ⭐",
+        [fr]: "Notez-nous avec <b>5 étoiles</b> et laissez un avis sur Yandex Games ! <br> C'est le meilleur soutien ⭐",
+        [de]: "Bewerten Sie uns mit <b>5 Sternen</b> und schreiben Sie eine Bewertung in Yandex Games! <br> Das ist die beste Unterstützung ⭐",
+        [ja]: "Yandex Games で <b>5つ星</b> の評価とレビューをお願いします！ <br>これが最高のサポートです ⭐",
+        [pt_BR]: "Avalie com <b>5 estrelas</b> e deixe um comentário no Yandex Games! <br> Este é o melhor apoio ⭐",
+        [ar]: "قيّمنا بـ <b>5 نجوم</b> واكتب مراجعة في Yandex Games! <br> هذا هو أفضل دعم ⭐ ",
+        [tr]: "Bizi Yandex Games'te <b>5 yıldız</b> ile değerlendirin ve yorum yazın! <br> Bu en iyi destektir ⭐"
+    },
     "financialHelpWallet": {
         [ru] : "Финансовая поддержка через кошелёк (wallet) <a href='https://yoomoney.ru/to/410015336126322' target='_blank' rel='noopener noreferrer' style='color: #00aaff;'>YooMoney</a> 💰",
         [sr] : "Финансијска подршка преко новчаника (wallet) <a href='https://yoomoney.ru/to/410015336126322' target='_blank' rel='noopener noreferrer' style='color: #00aaff;'>YooMoney</a> 💰",

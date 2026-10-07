@@ -29,7 +29,7 @@ export function hit(url, title) {
 
 export const analytics = {
     gameStarted: (mode) => track('game_started', { mode }),
-    gameSolved: (timeSec) => track('game_solved', { time_sec: timeSec }),
+    gameSolved: (timeSec, reward, theme) => track('game_solved', { time_sec: timeSec, reward, theme }),
     themeUnlocked: (themeId) => track('theme_unlocked', { theme_id: themeId }),
     adShown: (ok) => track('ad_shown', { success: ok }),
     wheelSpinned: () => track('wheel_spinned'),

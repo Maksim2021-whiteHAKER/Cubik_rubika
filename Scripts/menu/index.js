@@ -2,7 +2,7 @@
 import { initDataButtons } from "./data.js";
 import { initGameButtons } from "./game.js";
 import { updateHelpContent, updateCursorMode } from "./help.js";
-import { ensureModalContainers, initMainMenuButtons, initModalClose } from "./modals.js";
+import { ensureModalContainers, initMainMenuButtons, initModalClose, supportModalChanging } from "./modals.js";
 import { initSettings } from "./settings.js";
 import { initSound } from "./sound.js";
 import { isMobile, isTablet } from '../utils/device.js';
@@ -25,6 +25,7 @@ export function initMenu() {
     initDataButtons();
     initGameButtons();
     updateHelpContent();
+    supportModalChanging();
 
     const importantText = document.getElementById('importantText');
 
