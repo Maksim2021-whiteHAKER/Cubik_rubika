@@ -99,7 +99,7 @@
 }
 
 /* Modal Styles */
-.modal, .modal_con {
+.modal, .modal_con, .modal-std {
     display: none;
     position: fixed;
     top: 0;
@@ -125,7 +125,7 @@
     animation: fadeIn 0.3s ease;
 }
 
-.modal-content {
+.modal-content, .modal-content-std {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
@@ -136,7 +136,7 @@
     background: #1a1a1a;
     border-radius: 15px;
     color: #fff;
-    text-align: center;
+    text-align: 0;
 }
 
 .ui-element {
@@ -229,12 +229,13 @@
 }
 
 #congrats, #pause {
-    /* border: 1px solid red; */
+    text-align: center;
     font-size: 35px;
 }
 
 #timesolve {
-    font-size: 40px;
+  text-align: center;
+  font-size: 40px;
 }
 
 #maincontrol, #cube-control-title {
@@ -254,41 +255,35 @@ p {
     font-size: 20px;
 }
 
-#resetBtn{
-    margin-top: 3%;
-    width: 35%; /* Кнопки занимают всю ширину контейнера */
-    box-sizing: border-box; /* Учитывает padding в ширине */
-    background: rgba(26,26,26,0.9);
-    background-image: url("../public/textures/refresh.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    color: #fff;
-    border: 2px solid #00ffff;
-    padding: 1.2rem 2rem;
-    font-size: 1.0rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    text-align: center;
-    text-decoration: none;
-    backdrop-filter: blur(2px);
+.btns-reset-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;       /* по горизонтали */
+  justify-content: center;   /* по вертикали — сработает, если есть высота или контент вокруг */
+  padding: 6px;
+  gap: 1.5rem;               /* расстояние между кнопками */
+  width: 100%;               /* на всю ширину родителя */
 }
 
-#BackToMenuBtn {
-    margin-top: 3%;
-    width: 35%; /* Кнопки занимают всю ширину контейнера */
-    box-sizing: border-box; /* Учитывает padding в ширине */
-    background: rgba(26,26,26,0.9);
-    color: #fff;
-    border: 2px solid #00ffff;
-    padding: 1.2rem 2rem;
-    font-size: 1.0rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    text-align: center;
-    text-decoration: none;
-    backdrop-filter: blur(2px);
+#resetBtn, #BackToMenuBtn, #backToMainMenuFromStudy  {
+  width: 35%;                /* относительно ширины .btns-reset-menu */
+  box-sizing: border-box;
+  background: rgba(26, 26, 26, 0.9);
+  color: #fff;
+  border: 2px solid #00ffff;
+  padding: 1.2rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  text-align: center;
+  backdrop-filter: blur(2px);
+}
+
+#resetBtn {
+  background-image: url("../public/textures/refresh.svg");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 #helpbyCont {
@@ -460,8 +455,7 @@ p {
     }
     
     .modal {
-        width: 90%;
-        max-width: 90%;
+        max-width: 100%;
     }
     
     .control-btn {

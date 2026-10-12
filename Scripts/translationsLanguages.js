@@ -39,6 +39,20 @@ export const translations = {
         [ar] : "لعب",
         [tr] : "Oynamak",
     },
+    "trainingMode": {
+        [ru] : "Обучение",
+        [sr] : "Режим обуке",
+        [en] : "Training mode",
+        [es] : "Modo de entrenamiento",
+        [zh_CN]: "训练模式",
+        [fr]: "Mode d'entraînement",
+        [de] : "Trainingsmodus",
+        [ja]: "トレーニングモード",
+        [pt_BR]: "Modo de treino",
+        [ar] : "وضع التدريب",
+        [tr] : "Eğitim modu",
+    }, 
+
     "normalMode": {
         [ru] : "Обычный режим",
         [sr] : "Нормалан режим",
@@ -1164,6 +1178,19 @@ export const translations = {
         [ar]: "رصيدك:",
         [tr]: "Bakiyeniz:"
     },
+    "uploadThemeBtn": {
+        [ru]: "📥 Меню загрузки моей текстуры",
+        [sr]: "📥 Мени за учитавање моје текстуре",
+        [en]: "📥 My Texture loading menu",
+        [es]: "📥 Menú de carga de mi textura",
+        [zh_CN]: "📥 我的纹理加载菜单",
+        [fr]: "📥Menu de chargement de ma texture",
+        [de]: "📥 Mein Texturlademenü",
+        [ja]: "📥 私のテクスチャローディングメニュー",
+        [pt_BR]: "📥 Meu Menu de carregamento de textura",
+        [ar]: "📥 قائمة تحميل الملمس الخاصة بي",
+        [tr]: "📥 Dokumun önyükleme menüsü",
+    },
     "wheelSpinCost": {
         [ru]: "Стоимость вращения:",
         [sr]: "Цена окретања:",
@@ -1241,5 +1268,669 @@ export const translations = {
         [pt_BR]: "🎉 Você ganhou o tema:",
         [ar]: "🎉 لقد حصلت على السمة:",
         [tr]: "🎉 Temayı kazandınız:"
-    }
+    },
+
+// study
+    "welcomeToTrainingMode": {
+        [ru]: "🎓 Режим Обучения",
+        [en]: "🎓 Training Mode",
+        [sr]: "🎓 Режим тренинга",
+        [es]: "🎓 Modo de entrenamiento",
+        [zh_CN]: "🎓 训练模式",
+        [fr]: "🎓 Mode d’entraînement",
+        [de]: "🎓 Trainingsmodus",
+        [ja]: "🎓 トレーニングモード",
+        [pt_BR]: "🎓 Modo de Treinamento",
+        [ar]: "🎓 وضع التدريب",
+        [tr]: "🎓 Eğitim Modu",
+    },
+
+    "aboutThisMode": {
+        [ru]: "Добро пожаловать! Этот режим поможет вам понять логику сборки Кубика.",
+        [en]: "Welcome! This mode will help you understand the logic of solving the Cube.",
+        [sr]: "Добродошли! Овај режим ће вам помоћи да разумете логику решавања коцке.",
+        [es]: "¡Bienvenido! Este modo te ayudará a comprender la lógica para resolver el Cubo.",
+        [zh_CN]: "欢迎！此模式将帮助你理解魔方的还原逻辑。",
+        [fr]: "Bienvenue ! Ce mode vous aidera à comprendre la logique de résolution du Cube.",
+        [de]: "Willkommen! Dieser Modus hilft dir, die Logik des Lösens des Würfels zu verstehen.",
+        [ja]: "ようこそ！このモードでは、キューブを解く論理を理解できます。",
+        [pt_BR]: "Bem-vindo! Este modo ajudará você a entender a lógica de resolver o Cubo.",
+        [ar]: "مرحبًا! سيساعدك هذا الوضع على فهم منطق حل المكعب.",
+        [tr]: "Hoş geldin! Bu mod, Küpü çözme mantığını anlamana yardımcı olacak.",
+    },
+
+    "ul-training": {
+        [ru]: `<li><strong>Самостоятельность:</strong> Мы не даём готовых решений. Вам предстоит проявить смекалку и выполнить задания курса своими силами.</li>
+                <br>
+                <li><strong>Умные подсказки:</strong> Если вы застряли, доступны видео-подсказки. Они покажут <em>направление</em> решения, но не весь алгоритм целиком, чтобы сохранить азарт головоломки.</li>`,
+        [en]: `<li><strong>Independence:</strong> We don't give ready-made solutions. You will need to use your ingenuity and complete the course tasks on your own.</li>
+                <br>
+                <li><strong>Smart hints:</strong> If you get stuck, video hints are available. They show the <em>direction</em> of the solution, but not the whole algorithm, to keep the puzzle excitement.</li>`,
+        [sr]: `<li><strong>Самосталност:</strong> Не дајемо готова решења. Треба да покажете сналажљивост и сами обавите задатке курса.</li>
+                <br>
+                <li><strong>Паметни савети:</strong> Ако се заглавите, доступни су видео-савети. Они ће показати <em>правац</em> решења, али не цео алгоритам, како би сачували узбуђење слагалице.</li>`,
+        [es]: `<li><strong>Autonomía:</strong> No damos soluciones hechas. Tendrás que usar tu ingenio y completar las tareas del curso por tu cuenta.</li>
+                <br>
+                <li><strong>Pistas inteligentes:</strong> Si te quedas atascado, hay pistas en vídeo disponibles. Te mostrarán la <em>dirección</em> de la solución, pero no el algoritmo completo, para mantener la emoción del rompecabezas.</li>`,
+        [zh_CN]: `<li><strong>独立性：</strong> 我们不会提供现成答案。你需要发挥聪明才智，依靠自己完成课程任务。</li>
+                <br>
+                <li><strong>智能提示：</strong> 如果卡住了，可以观看视频提示。它们只会展示解题的<em>方向</em>，而不是完整算法，以保留解谜的乐趣。</li>`,
+        [fr]: `<li><strong>Autonomie :</strong> Nous ne donnons pas de solutions toutes faites. À vous de faire preuve d’ingéniosité et d’accomplir les tâches du cours par vous-même.</li>
+                <br>
+                <li><strong>Indices intelligents :</strong> Si vous êtes bloqué, des indices vidéo sont disponibles. Ils montreront la <em>direction</em> de la solution, mais pas tout l’algorithme, pour préserver le plaisir du puzzle.</li>`,
+        [de]: `<li><strong>Selbstständigkeit:</strong> Wir geben keine fertigen Lösungen. Du musst Cleverness zeigen und die Aufgaben des Kurses selbst lösen.</li>
+                <br>
+                <li><strong>Intelligente Hinweise:</strong> Wenn du feststeckst, stehen Video-Hinweise zur Verfügung. Sie zeigen die <em>Richtung</em> der Lösung, aber nicht den gesamten Algorithmus, um den Rätselspaß zu erhalten.</li>`,
+        [ja]: `<li><strong>自主性：</strong> 完成済みの解答は提供しません。工夫して、コースの課題を自分の力で解いてください。</li>
+                <br>
+                <li><strong>スマートヒント：</strong> 行き詰まったときは、動画ヒントを利用できます。解法の<em>方向性</em>を示しますが、パズルの楽しみを保つため、完全なアルゴリズムは表示しません。</li>`,
+        [pt_BR]: `<li><strong>Autonomia:</strong> Não damos soluções prontas. Você precisará usar a criatividade e concluir as tarefas do curso sozinho.</li>
+                <br>
+                <li><strong>Dicas inteligentes:</strong> Se você ficar preso, há dicas em vídeo disponíveis. Elas mostrarão a <em>direção</em> da solução, mas não o algoritmo completo, para manter a emoção do quebra-cabeça.</li>`,
+        [ar]: `<li><strong>الاعتماد على النفس:</strong> نحن لا نقدم حلولًا جاهزة. عليك استخدام ذكائك وإكمال مهام الدورة بنفسك.</li>
+                <br>
+                <li><strong>تلميحات ذكية:</strong> إذا واجهت صعوبة، تتوفر تلميحات فيديو. ستُظهر <em>اتجاه</em> الحل، وليس الخوارزمية كاملة، للحفاظ على متعة اللغز.</li>`,
+        [tr]: `<li><strong>Bağımsızlık:</strong> Hazır çözümler vermiyoruz. Zekânı kullanıp kurs görevlerini kendi başına tamamlaman gerekiyor.</li>
+                <br>
+                <li><strong>Akıllı ipuçları:</strong> Takılırsan video ipuçları mevcuttur. Çözümün <em>yönünü</em> gösterirler, ancak bulmacanın heyecanını korumak için algoritmanın tamamını göstermezler.</li>`,
+    },
+
+    "textGift": {
+        [ru]: "🎁 Награда за первое прохождение:",
+        [en]: "🎁 Reward for first completion:",
+        [sr]: "🎁 Награда за прво завршавање:",
+        [es]: "🎁 Recompensa por la primera finalización:",
+        [zh_CN]: "🎁 首次完成奖励：",
+        [fr]: "🎁 Récompense pour la première réussite :",
+        [de]: "🎁 Belohnung für den ersten Abschluss:",
+        [ja]: "🎁 初回クリア報酬：",
+        [pt_BR]: "🎁 Recompensa pela primeira conclusão:",
+        [ar]: "🎁 مكافأة أول إكمال:",
+        [tr]: "🎁 İlk tamamlama ödülü:",
+    },
+
+    "congratsEndStudy": {
+        [ru]: `🎉 Поздравляю с окончанием обучения! 🎉`,
+        [en]: `🎉 Congratulations on completing the training! 🎉`,
+        [sr]: `🎉 Честитам на завршетку обуке! 🎉`,
+        [es]: `🎉 ¡Felicidades por completar el entrenamiento! 🎉`,
+        [zh_CN]: `🎉 恭喜完成训练！🎉`,
+        [fr]: `🎉 Félicitations pour avoir terminé l’entraînement ! 🎉`,
+        [de]: `🎉 Herzlichen Glückwunsch zum Abschluss des Trainings! 🎉`,
+        [ja]: `🎉 トレーニング完了おめでとう！🎉`,
+        [pt_BR]: `🎉 Parabéns por concluir o treinamento! 🎉`,
+        [ar]: `🎉 تهانينا على إكمال التدريب! 🎉`,
+        [tr]: `🎉 Eğitimi tamamladığın için tebrikler! 🎉`,
+    },
+
+    "textCongratsEndStudyNotGain": {
+        [ru]: `Вот обещанная награда: <strong style="color: #f1c40f; font-size: 1.2rem;">150 монет</strong> магического куба!`,
+        [en]: `Here is the promised reward: <strong style="color: #f1c40f; font-size: 1.2rem;">150 coins</strong> of the magic cube!`,
+        [sr]: `Ево обећане награде: <strong style="color: #f1c40f; font-size: 1.2rem;">150 новчића</strong> магичне коцке!`,
+        [es]: `Aquí está la recompensa prometida: <strong style="color: #f1c40f; font-size: 1.2rem;">150 monedas</strong> del cubo mágico!`,
+        [zh_CN]: `这是承诺的奖励：<strong style="color: #f1c40f; font-size: 1.2rem;">150 枚</strong>魔法魔方硬币！`,
+        [fr]: `Voici la récompense promise : <strong style="color: #f1c40f; font-size: 1.2rem;">150 pièces</strong> du cube magique !`,
+        [de]: `Hier ist die versprochene Belohnung: <strong style="color: #f1c40f; font-size: 1.2rem;">150 Münzen</strong> des magischen Würfels!`,
+        [ja]: `約束の報酬です：<strong style="color: #f1c40f; font-size: 1.2rem;">150コイン</strong>（マジックキューブ）！`,
+        [pt_BR]: `Aqui está a recompensa prometida: <strong style="color: #f1c40f; font-size: 1.2rem;">150 moedas</strong> do cubo mágico!`,
+        [ar]: `إليك المكافأة الموعودة: <strong style="color: #f1c40f; font-size: 1.2rem;">150 عملة</strong> لمكعب السحر!`,
+        [tr]: `İşte vaat edilen ödül: <strong style="color: #f1c40f; font-size: 1.2rem;">150 sihirli küp jetonu</strong>!`,
+    },
+
+    "textCongratsEndStudyAlredyGain": {
+        [ru]: `Вы уже получили награду, повторное получение невозможно 😎😁 но рад что вы еще раз прошли обучение`,
+        [en]: `You have already received the reward, it cannot be received again 😎😁 but I'm glad you completed the training again`,
+        [sr]: `Већ сте добили награду, поновно добијање није могуће 😎😁 али ми је драго да сте поново прошли обуку`,
+        [es]: `Ya has recibido la recompensa, no es posible obtenerla de nuevo 😎😁 pero me alegra que hayas completado el entrenamiento otra vez`,
+        [zh_CN]: `你已经获得过奖励，无法重复获得 😎😁 但我很高兴你又完成了一次训练`,
+        [fr]: `Vous avez déjà reçu la récompense, il est impossible de l’obtenir à nouveau 😎😁 mais je suis content que vous ayez refait l’entraînement`,
+        [de]: `Du hast die Belohnung bereits erhalten, eine erneute Vergabe ist nicht möglich 😎😁 aber ich freue mich, dass du das Training noch einmal abgeschlossen hast`,
+        [ja]: `報酬はすでに受け取っています。再受取はできません 😎😁 でも、もう一度トレーニングを完了してくれて嬉しいです`,
+        [pt_BR]: `Você já recebeu a recompensa, não é possível recebê-la novamente 😎😁 mas fico feliz que você tenha concluído o treinamento de novo`,
+        [ar]: `لقد حصلت بالفعل على المكافأة، ولا يمكن الحصول عليها مرة أخرى 😎😁 لكنني سعيد لأنك أكملت التدريب مرة أخرى`,
+        [tr]: `Ödülü zaten aldın, tekrar alman mümkün değil 😎😁 ama eğitimi bir kez daha tamamladığın için mutluyum`,
+    },
+
+    "startTrainingBtn": {
+        [ru]: "Начать обучение",
+        [en]: "Start Training",
+        [sr]: "Започни тренинг",
+        [es]: "Comenzar entrenamiento",
+        [zh_CN]: "开始训练",
+        [fr]: "Commencer l’entraînement",
+        [de]: "Training starten",
+        [ja]: "トレーニングを開始",
+        [pt_BR]: "Iniciar Treinamento",
+        [ar]: "ابدأ التدريب",
+        [tr]: "Eğitime Başla",
+    },
+
+    "backToMainMenuFromStudy": {
+        [ru]: "Вернуться в меню",
+        [en]: "Back to Menu",
+        [sr]: "Назад у мени",
+        [es]: "Volver al menú",
+        [zh_CN]: "返回菜单",
+        [fr]: "Retour au menu",
+        [de]: "Zurück zum Menü",
+        [ja]: "メニューに戻る",
+        [pt_BR]: "Voltar ao Menu",
+        [ar]: "العودة إلى القائمة",
+        [tr]: "Menüye Dön",
+    },
+
+    "backMenuTrainingBtn": {
+        [ru]: "Обратно в меню",
+        [en]: "Back to Menu",
+        [sr]: "Назад у мени",
+        [es]: "Volver al menú",
+        [zh_CN]: "返回菜单",
+        [fr]: "Retour au menu",
+        [de]: "Zurück zum Menü",
+        [ja]: "メニューに戻る",
+        [pt_BR]: "Voltar ao Menu",
+        [ar]: "العودة إلى القائمة",
+        [tr]: "Menüye Dön",
+    },
+
+    "backBtnStudy": {
+        [ru]: "◀ Назад",
+        [en]: "◀ Back",
+        [sr]: "◀ Назад",
+        [es]: "◀ Atrás",
+        [zh_CN]: "◀ 返回",
+        [fr]: "◀ Retour",
+        [de]: "◀ Zurück",
+        [ja]: "◀ 戻る",
+        [pt_BR]: "◀ Voltar",
+        [ar]: "◀ رجوع",
+        [tr]: "◀ Geri",
+    },
+
+    "nextBtnStudy": {
+        [ru]: "Далее ▶",
+        [en]: "Next ▶",
+        [sr]: "Даље ▶",
+        [es]: "Siguiente ▶",
+        [zh_CN]: "下一步 ▶",
+        [fr]: "Suivant ▶",
+        [de]: "Weiter ▶",
+        [ja]: "次へ ▶",
+        [pt_BR]: "Próximo ▶",
+        [ar]: "التالي ▶",
+        [tr]: "İleri ▶",
+    },
+
+    "videoHintStudy_locked": {
+        [ru]: "🎬 Смотреть рекламу за подсказку",
+        [en]: "🎬 Watch ad for hint",
+        [sr]: "🎬 Погледајте рекламу за савет",
+        [es]: "🎬 Ver anuncio para pista",
+        [zh_CN]: "🎬 观看广告获取提示",
+        [fr]: "🎬 Regarder une pub pour un indice",
+        [de]: "🎬 Werbung ansehen für Hinweis",
+        [ja]: "🎬 広告を見てヒントを入手",
+        [pt_BR]: "🎬 Assistir anúncio para dica",
+        [ar]: "🎬 شاهد إعلانًا للحصول على تلميح",
+        [tr]: "🎬 İpucu için reklam izle",
+    },
+
+    "videoHintStudy_unlocked": {
+        [ru]: "💡 Посмотреть подсказку",
+        [en]: "💡 Watch hint",
+        [sr]: "💡 Погледајте савет",
+        [es]: "💡 Ver pista",
+        [zh_CN]: "💡 查看提示",
+        [fr]: "💡 Voir l’indice",
+        [de]: "💡 Hinweis ansehen",
+        [ja]: "💡 ヒントを見る",
+        [pt_BR]: "💡 Ver dica",
+        [ar]: "💡 مشاهدة التلميح",
+        [tr]: "💡 İpucunu gör",
+    },
+
+    "zeroMessage": {
+        [ru]: `Добро пожаловать в обучение! 🎓<br> Сейчас я перемешаю кубик, а вы будете собирать его шаг за шагом.<br><br>
+            💡 <em>Если застрянете, кнопка "Подсказка" (после просмотра рекламы) покажет видео-помощь для текущего этапа.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Важное правило игры:</strong><br> Ориентиры фиксированы: <strong>белый всегда сверху, зелёный слева, красный справа.</strong>`,
+        [en]: `Welcome to training! 🎓<br> Now I will scramble the cube, and you will solve it step by step.<br><br>
+            💡 <em>If you get stuck, the "Hint" button (after watching an ad) will show video help for the current stage.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Important game rule:</strong><br> The reference orientations are fixed: <strong>white always on top, green on the left, red on the right.</strong>`,
+        [sr]: `Добро дошли у обуку! 🎓<br> Сада ћу измешати коцку, а ви ћете је решавати корак по корак.<br><br>
+            💡 <em>Ако се заглавите, дугме "Савет" (након гледања рекламе) приказаће видео-помоћ за тренутни корак.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Важно правило игре:</strong><br> Референтне оријентације су фиксне: <strong>бело увек горе, зелено лево, црвено десно.</strong>`,
+        [es]: `¡Bienvenido al entrenamiento! 🎓<br> Ahora voy a mezclar el cubo y tú lo irás resolviendo paso a paso.<br><br>
+            💡 <em>Si te quedas atascado, el botón "Pista" (después de ver un anuncio) mostrará una ayuda en vídeo para la etapa actual.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Regla importante del juego:</strong><br> Los puntos de referencia son fijos: <strong>el blanco siempre arriba, el verde a la izquierda, el rojo a la derecha.</strong>`,
+        [zh_CN]: `欢迎来到训练模式！🎓<br> 现在我会打乱魔方，你将一步一步地还原它。<br><br>
+            💡 <em>如果卡住了，在观看广告后点击“提示”按钮，会显示当前阶段的视频帮助。</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ 重要游戏规则：</strong><br> 参照方向固定：<strong>白色始终在上，绿色在左，红色在右。</strong>`,
+        [fr]: `Bienvenue dans l’entraînement ! 🎓<br> Je vais maintenant mélanger le cube, et vous allez le résoudre étape par étape.<br><br>
+            💡 <em>Si vous êtes bloqué, le bouton « Indice » (après avoir regardé une pub) affichera une aide vidéo pour l’étape en cours.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Règle importante du jeu :</strong><br> Les repères sont fixes : <strong>le blanc toujours en haut, le vert à gauche, le rouge à droite.</strong>`,
+        [de]: `Willkommen im Training! 🎓<br> Jetzt werde ich den Würfel mischen, und du wirst ihn Schritt für Schritt lösen.<br><br>
+            💡 <em>Wenn du feststeckst, zeigt die Schaltfläche „Hinweis“ (nach dem Ansehen einer Werbung) eine Video-Hilfe für den aktuellen Schritt.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Wichtige Spielregel:</strong><br> Die Orientierung ist fest: <strong>Weiß immer oben, Grün links, Rot rechts.</strong>`,
+        [ja]: `トレーニングへようこそ！🎓<br> これからキューブをシャッフルします。あなたはそれを一歩ずつ揃えていきます。<br><br>
+            💡 <em>行き詰まったら、「ヒント」ボタン（広告視聴後）で現在のステップの動画ヘルプを表示できます。</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ 重要なゲームルール：</strong><br> 基準の向きは固定です：<strong>白は常に上、緑は左、赤は右。</strong>`,
+        [pt_BR]: `Bem-vindo ao treinamento! 🎓<br> Agora vou embaralhar o cubo, e você vai resolvê-lo passo a passo.<br><br>
+            💡 <em>Se você ficar preso, o botão "Dica" (após assistir a um anúncio) mostrará uma ajuda em vídeo para a etapa atual.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Regra importante do jogo:</strong><br> As referências são fixas: <strong>o branco sempre em cima, o verde à esquerda, o vermelho à direita.</strong>`,
+        [ar]: `مرحبًا بك في التدريب! 🎓<br> سأخلط المكعب الآن، وستقوم بحلّه خطوة بخطوة.<br><br>
+            💡 <em>إذا واجهت صعوبة، فسيُظهر زر "تلميح" (بعد مشاهدة إعلان) مساعدة فيديو للخطوة الحالية.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ قاعدة مهمة في اللعبة:</strong><br> الاتجاهات ثابتة: <strong>الأبيض دائمًا في الأعلى، والأخضر على اليسار، والأحمر على اليمين.</strong>`,
+        [tr]: `Eğitime hoş geldin! 🎓<br> Şimdi küpü karıştıracağım, sen de onu adım adım çözeceksin.<br><br>
+            💡 <em>Takılırsan, "İpucu" düğmesi (reklam izledikten sonra) geçerli adım için video yardımı gösterecek.</em><br><br>
+               <strong id="zeroMessageImp" style="color: #ff9800;">⚠️ Önemli oyun kuralı:</strong><br> Referanslar sabittir: <strong>beyaz her zaman üstte, yeşil solda, kırmızı sağda.</strong>`,
+    },
+
+    "oneMessage": {
+        [ru]: `<strong>Шаг 1. Белый центр.</strong><br> Найдите кубик с белым центром и поверните весь кубик или центральную грань так, <br>
+              чтобы этот белый центр смотрел строго вверх. Это наша база для сборки.`,
+        [en]: `<strong>Step 1. White center.</strong><br> Find the cube with the white center and rotate the whole cube or the central face so that <br>
+              this white center points strictly upward. This is our base for solving.`,
+        [sr]: `<strong>Корак 1. Бели центар.</strong><br> Пронађите коцку са белим центром и окрените целу коцку или централну страну тако <br>
+              да овај бели центар гледа строго нагоре. То је наша основа за решавање.`,
+        [es]: `<strong>Paso 1. Centro blanco.</strong><br> Encuentra el cubo con el centro blanco y gira todo el cubo o la cara central para que <br>
+              ese centro blanco mire estrictamente hacia arriba. Esta es nuestra base para resolver.`,
+        [zh_CN]: `<strong>第 1 步。白色中心。</strong><br> 找到带有白色中心的方块，转动整个魔方或中心面，<br>
+              让这个白色中心正朝上方。这是我们还原的基础。`,
+        [fr]: `<strong>Étape 1. Centre blanc.</strong><br> Trouvez le cube avec le centre blanc et tournez tout le cube ou la face centrale afin que <br>
+              ce centre blanc regarde strictement vers le haut. C’est notre base pour la résolution.`,
+        [de]: `<strong>Schritt 1. Weißes Zentrum.</strong><br> Finde den Würfel mit dem weißen Zentrum und drehe den ganzen Würfel oder die mittlere Fläche so, <br>
+              dass dieses weiße Zentrum genau nach oben zeigt. Das ist unsere Grundlage für die Lösung.`,
+        [ja]: `<strong>ステップ1。白センター。</strong><br> 白いセンターがあるキューブを見つけ、キューブ全体または中央面を回して、<br>
+              この白いセンターが真上を向くようにします。これが揃えるための土台です。`,
+        [pt_BR]: `<strong>Passo 1. Centro branco.</strong><br> Encontre o cubo com o centro branco e gire todo o cubo ou a face central para que <br>
+              esse centro branco aponte estritamente para cima. Esta é a nossa base para resolver.`,
+        [ar]: `<strong>الخطوة 1. المركز الأبيض.</strong><br> ابحث عن المكعب الذي يحتوي على المركز الأبيض، ثم أدر المكعب كاملًا أو الوجه المركزي بحيث <br>
+              يتجه هذا المركز الأبيض إلى الأعلى تمامًا. هذه هي قاعدتنا للحل.`,
+        [tr]: `<strong>Adım 1. Beyaz merkez.</strong><br> Beyaz merkezi olan küpü bulun ve tüm küpü ya da orta yüzü, <br>
+              bu beyaz merkez tam olarak yukarı bakacak şekilde döndürün. Bu, çözüm için temelimizdir.`,
+    },
+
+    "twoMessage": {
+        [ru]: `<strong>Шаг 2. Белая прямая.</strong><br>
+            Соберите линию из белого центра и двух боковых элементов.<br><br>
+         💡 <em>Хитрость:</em> боковые цвета белой грани — это синий, зелёный, красный и оранжевый. А напротив белого центра <strong>всегда</strong> находится жёлтый.
+         🎯 <em>Главное правило:</em> боковой цвет ребра должен совпадать с центром соседней грани. Например, бело-синий элемент должен стыковаться именно с синим центром.</div>`,
+        [en]: `<strong>Step 2. White line.</strong><br>
+            Make a line from the white center and two side elements.<br><br>
+         💡 <em>Trick:</em> the side colors of the white face are blue, green, red, and orange. And opposite the white center there is <strong>always</strong> yellow.
+         🎯 <em>Main rule:</em> the side color of the edge must match the center of the neighboring face. For example, the white-blue piece must connect specifically with the blue center.</div>`,
+        [sr]: `<strong>Корак 2. Бела линија.</strong><br>
+            Саставите линију од белог центра и два бочна елемента.<br><br>
+         💡 <em>Трик:</em> бочне боје беле стране су плава, зелена, црвена и наранџаста. А наспрам белог центра <strong>увек</strong> је жуто.
+         🎯 <em>Главно правило:</em> бочна боја ивице мора да се поклопи са центром суседне стране. На пример, бело-плави елемент мора да се споји управо са плавим центром.</div>`,
+        [es]: `<strong>Paso 2. Línea blanca.</strong><br>
+            Forma una línea con el centro blanco y dos elementos laterales.<br><br>
+         💡 <em>Truco:</em> los colores laterales de la cara blanca son azul, verde, rojo y naranja. Y frente al centro blanco <strong>siempre</strong> está el amarillo.
+         🎯 <em>Regla principal:</em> el color lateral de la arista debe coincidir con el centro de la cara vecina. Por ejemplo, la pieza blanco-azul debe unirse precisamente con el centro azul.</div>`,
+        [zh_CN]: `<strong>第 2 步。白色直线。</strong><br>
+            用白色中心和两个侧边块组成一条线。<br><br>
+         💡 <em>小技巧：</em> 白色面的侧边颜色是蓝色、绿色、红色和橙色。而白色中心的对面<strong>始终</strong>是黄色。
+         🎯 <em>主要规则：</em> 棱块的侧边颜色必须与相邻面的中心颜色一致。例如，白蓝棱块必须与蓝色中心相接。</div>`,
+        [fr]: `<strong>Étape 2. Ligne blanche.</strong><br>
+            Formez une ligne avec le centre blanc et deux éléments latéraux.<br><br>
+         💡 <em>Astuce :</em> les couleurs latérales de la face blanche sont le bleu, le vert, le rouge et l’orange. Et face au centre blanc se trouve <strong>toujours</strong> le jaune.
+         🎯 <em>Règle principale :</em> la couleur latérale de l’arête doit correspondre au centre de la face voisine. Par exemple, la pièce blanc-bleu doit s’assembler précisément avec le centre bleu.</div>`,
+        [de]: `<strong>Schritt 2. Weiße Linie.</strong><br>
+            Bilde eine Linie aus dem weißen Zentrum und zwei Seitenelementen.<br><br>
+         💡 <em>Trick:</em> Die Seitenfarben der weißen Fläche sind Blau, Grün, Rot und Orange. Und gegenüber dem weißen Zentrum ist <strong>immer</strong> Gelb.
+         🎯 <em>Hauptregel:</em> Die Seitenfarbe der Kante muss mit dem Zentrum der angrenzenden Fläche übereinstimmen. Zum Beispiel muss das weiß-blaue Element genau an das blaue Zentrum anschließen.</div>`,
+        [ja]: `<strong>ステップ2。白の直線。</strong><br>
+            白センターと2つのサイドパーツで線を作ります。<br><br>
+         💡 <em>コツ：</em> 白面の側面カラーは青、緑、赤、オレンジです。そして白センターの反対側は<strong>常に</strong>黄色です。
+         🎯 <em>重要なルール：</em> エッジの側面カラーは隣接する面のセンターと一致させる必要があります。たとえば、白青エッジは青センターとぴったり合うようにします。</div>`,
+        [pt_BR]: `<strong>Passo 2. Linha branca.</strong><br>
+            Monte uma linha com o centro branco e dois elementos laterais.<br><br>
+         💡 <em>Truque:</em> as cores laterais da face branca são azul, verde, vermelho e laranja. E oposto ao centro branco <strong>sempre</strong> está o amarelo.
+         🎯 <em>Regra principal:</em> a cor lateral da aresta deve coincidir com o centro da face vizinha. Por exemplo, a peça branco-azul deve se encaixar exatamente com o centro azul.</div>`,
+        [ar]: `<strong>الخطوة 2. الخط الأبيض.</strong><br>
+            كوّن خطًا من المركز الأبيض وعنصرين جانبيين.<br><br>
+         💡 <em>حيلة:</em> الألوان الجانبية للوجه الأبيض هي الأزرق والأخضر والأحمر والبرتقالي. ومقابل المركز الأبيض <strong>دائمًا</strong> يوجد الأصفر.
+         🎯 <em>القاعدة الأساسية:</em> يجب أن يتطابق اللون الجانبي للحافة مع مركز الوجه المجاور. على سبيل المثال، يجب أن تتصل قطعة الأبيض-الأزرق بالمركز الأزرق تحديدًا.</div>`,
+        [tr]: `<strong>Adım 2. Beyaz çizgi.</strong><br>
+            Beyaz merkez ve iki yan parçayla bir çizgi oluşturun.<br><br>
+         💡 <em>İpucu:</em> beyaz yüzün yan renkleri mavi, yeşil, kırmızı ve turuncudur. Beyaz merkezin karşısında ise <strong>her zaman</strong> sarı bulunur.
+         🎯 <em>Ana kural:</em> kenarın yan rengi, komşu yüzün merkeziyle eşleşmelidir. Örneğin, beyaz-mavi parça tam olarak mavi merkezle birleşmelidir.</div>`,
+    },
+
+    "threeMessage": {
+        [ru]: `<strong>Шаг 3. Белый крест.</strong><br> Добавьте оставшиеся два бело-цветных элемента, чтобы получился полный крест.<br><br>`,
+        [en]: `<strong>Step 3. White cross.</strong><br> Add the remaining two white-colored elements to form a complete cross.<br><br>`,
+        [sr]: `<strong>Корак 3. Бели крст.</strong><br> Додајте преостала два бело-обојена елемента да бисте добили пун крст.<br><br>`,
+        [es]: `<strong>Paso 3. Cruz blanca.</strong><br> Añade los dos elementos blanco-color restantes para formar una cruz completa.<br><br>`,
+        [zh_CN]: `<strong>第 3 步。白色十字。</strong><br> 添加剩下的两个白彩棱块，组成完整的十字。<br><br>`,
+        [fr]: `<strong>Étape 3. Croix blanche.</strong><br> Ajoutez les deux éléments blanc-couleur restants pour former une croix complète.<br><br>`,
+        [de]: `<strong>Schritt 3. Weißes Kreuz.</strong><br> Füge die beiden verbleibenden weiß-farbigen Elemente hinzu, um ein vollständiges Kreuz zu bilden.<br><br>`,
+        [ja]: `<strong>ステップ3。白十字。</strong><br> 残り2つの白・色付きエッジを追加して、完全な十字を作ります。<br><br>`,
+        [pt_BR]: `<strong>Passo 3. Cruz branca.</strong><br> Adicione os dois elementos branco-coloridos restantes para formar uma cruz completa.<br><br>`,
+        [ar]: `<strong>الخطوة 3. الصليب الأبيض.</strong><br> أضف العنصرين المتبقيين بالأبيض والألوان لتكوين صليب كامل.<br><br>`,
+        [tr]: `<strong>Adım 3. Beyaz haç.</strong><br> Kalan iki beyaz-renkli parçayı ekleyerek tam bir haç oluşturun.<br><br>`,
+    },
+
+    "fourMessage": {
+        [ru]: `<strong>Шаг 4. Белые углы.</strong><br> Задача: поставить 4 угловых элемента с белым цветом на свои места.<br><br>
+              🧩 <em>Принцип «Пятнашек»:</em> иногда нужно временно «разобрать» собранный крест, чтобы завести угол на место, а затем вернуть крест обратно. Попробуйте найти эту последовательность сами!`,
+        [en]: `<strong>Step 4. White corners.</strong><br> Goal: place 4 corner pieces with white into their places.<br><br>
+              🧩 <em>The "15-puzzle" principle:</em> sometimes you need to temporarily "disassemble" the completed cross to bring a corner into place, and then restore the cross. Try to find this sequence yourself!`,
+        [sr]: `<strong>Корак 4. Бели углови.</strong><br> Задатак: поставити 4 угла са белом бојом на њихова места.<br><br>
+              🧩 <em>Принцип „петнаест“ слагалице:</em> понекад треба привремено „раставити“ састављени крст да би се угао довео на место, а затим вратити крст. Покушајте сами да пронађете тај низ!`,
+        [es]: `<strong>Paso 4. Esquinas blancas.</strong><br> Objetivo: colocar 4 esquinas con blanco en su sitio.<br><br>
+              🧩 <em>Principio del «puzle de 15»:</em> a veces hay que «desarmar» temporalmente la cruz ya resuelta para colocar una esquina en su lugar y luego devolver la cruz. ¡Intenta encontrar esa secuencia tú mismo!`,
+        [zh_CN]: `<strong>第 4 步。白色角块。</strong><br> 目标：把 4 个带白色的角块放到正确位置。<br><br>
+              🧩 <em>类似“十五数码”的原则：</em> 有时需要暂时“拆开”已完成的十字，把角块送入位置，然后再把十字还原。试着自己找到这个步骤！`,
+        [fr]: `<strong>Étape 4. Coins blancs.</strong><br> Objectif : placer 4 coins avec du blanc à leur place.<br><br>
+              🧩 <em>Principe du « taquin » :</em> il faut parfois « démonter » temporairement la croix déjà formée pour amener un coin à sa place, puis remettre la croix. Essayez de trouver cette séquence vous-même !`,
+        [de]: `<strong>Schritt 4. Weiße Ecken.</strong><br> Aufgabe: Bringe 4 Ecksteine mit Weiß an ihren Platz.<br><br>
+              🧩 <em>Prinzip des „Schiebepuzzles“:</em> Manchmal muss man das fertige Kreuz vorübergehend „auseinandernehmen“, um eine Ecke an ihren Platz zu bringen, und das Kreuz dann zurückbauen. Versuche, diese Sequenz selbst zu finden!`,
+        [ja]: `<strong>ステップ4。白いコーナー。</strong><br> 目標：白を含む4つのコーナーパーツを正しい位置に置きます。<br><br>
+              🧩 <em>「15パズル」の原理：</em> 完成した十字を一時的に「崩して」コーナーを所定位置に導き、その後で十字を戻すことがあります。この手順を自分で見つけてみましょう！`,
+        [pt_BR]: `<strong>Passo 4. Cantos brancos.</strong><br> Objetivo: colocar 4 cantos com branco em seus lugares.<br><br>
+              🧩 <em>Princípio do «quebra-cabeça de 15»:</em> às vezes é preciso «desmontar» temporariamente a cruz montada para levar um canto ao lugar e depois recolocar a cruz. Tente encontrar essa sequência sozinho!`,
+        [ar]: `<strong>الخطوة 4. الزوايا البيضاء.</strong><br> المهمة: وضع 4 قطع زاوية تحتوي على الأبيض في أماكنها الصحيحة.<br><br>
+              🧩 <em>مبدأ «لعبة الخمسة عشر»:</em> أحيانًا نحتاج إلى «تفكيك» الصليب المكتمل مؤقتًا لإدخال زاوية إلى مكانها، ثم إعادة الصليب كما كان. حاول أن تجد هذا التسلسل بنفسك!`,
+        [tr]: `<strong>Adım 4. Beyaz köşeler.</strong><br> Görev: beyaz içeren 4 köşe parçasını doğru yerlerine yerleştirmek.<br><br>
+              🧩 <em>«15'li bulmaca» ilkesi:</em> bazen bir köşeyi yerine getirmek için tamamlanmış haçı geçici olarak «dağıtmak», sonra haçı geri getirmek gerekir. Bu diziyi kendin bulmayı dene!`,
+    },
+
+    "fiveMessage": {
+        [ru]: `<strong>Шаг 5. Второй слой.</strong><br>
+            😀 Моя рекомендация: перевернуть куб, но когда завершишь 2 слой верни положение куба в изначальное состояние, чтобы перейти на следующий шаг <br>
+            Теперь наша цель — средний ярус. Белый слой должен остаться снизу нетронутым.<br><br>
+            🧠 <em>Пища для размышлений:</em><br>
+            1. Найдите на верхнем (жёлтом) слое ребро, на котором <strong>нет жёлтого цвета</strong>.<br>
+            2. Поверните верх, чтобы боковой цвет этого ребра совпал с центром грани, образуя перевернутую букву "Т".<br>
+            3. <em>Вопрос:</em> как опустить это ребро вниз, не разрушив белый слой?<br>
+            💡 <em>Подсказка в видео:</em> обратите внимание, как кубик временно "разбирается", чтобы пропустить элемент, а затем собирается обратно.`,
+        [en]: `<strong>Step 5. Second layer.</strong><br>
+            😀 My recommendation: turn the cube over, but when you finish the 2nd layer, return the cube to its original position to move on to the next step <br>
+            Now our goal is the middle layer. The white layer must remain untouched at the bottom.<br><br>
+            🧠 <em>Food for thought:</em><br>
+            1. Find an edge in the top (yellow) layer that <strong>has no yellow</strong>.<br>
+            2. Turn the top so that the side color of this edge matches the center of the face, forming an upside-down "T".<br>
+            3. <em>Question:</em> how can you lower this edge without destroying the white layer?<br>
+            💡 <em>Video hint:</em> pay attention to how the cube is temporarily "disassembled" to let the piece through, and then assembled back.`,
+        [sr]: `<strong>Корак 5. Други слој.</strong><br>
+            😀 Моја препорука: окрените коцку, али када завршите 2. слој, вратите коцку у почетни положај да бисте прешли на следећи корак <br>
+            Сада је наш циљ средњи слој. Бели слој мора да остане нетакнут на дну.<br><br>
+            🧠 <em>Храна за размишљање:</em><br>
+            1. Пронађите на горњем (жутом) слоју ивицу која <strong>нема жуту боју</strong>.<br>
+            2. Окрените горњи слој тако да се бочна боја ове ивице поклопи са центром стране, формирајући обрнуто слово "Т".<br>
+            3. <em>Питање:</em> како спустити ову ивицу доле, а да не уништите бели слој?<br>
+            💡 <em>Савет у видеу:</em> обратите пажњу како се коцка привремено „раставља“ да пропусти елемент, а затим поново саставља.`,
+        [es]: `<strong>Paso 5. Segunda capa.</strong><br>
+            😀 Mi recomendación: girar el cubo, pero cuando termines la 2.ª capa, devuelve el cubo a su posición inicial para pasar al siguiente paso <br>
+            Ahora nuestro objetivo es la capa intermedia. La capa blanca debe permanecer intacta abajo.<br><br>
+            🧠 <em>Para reflexionar:</em><br>
+            1. Encuentra en la capa superior (amarilla) una arista que <strong>no tenga amarillo</strong>.<br>
+            2. Gira la parte superior para que el color lateral de esa arista coincida con el centro de la cara, formando una "T" invertida.<br>
+            3. <em>Pregunta:</em> ¿cómo bajar esa arista sin destruir la capa blanca?<br>
+            💡 <em>Pista en el vídeo:</em> observa cómo el cubo se "desarma" temporalmente para insertar la pieza y luego se vuelve a armar.`,
+        [zh_CN]: `<strong>第 5 步。第二层。</strong><br>
+            😀 我的建议：把魔方翻转过来，但完成第 2 层后，要把魔方恢复到初始方向，以便进入下一步 <br>
+            现在目标是中间层。白色层应保持在底部不受影响。<br><br>
+            🧠 <em>思考一下：</em><br>
+            1. 在上层（黄色层）找到一块<strong>没有黄色</strong>的棱块。<br>
+            2. 转动顶层，使这块棱块的侧边颜色与所在面的中心颜色一致，形成倒“T”字。<br>
+            3. <em>问题：</em> 如何在不破坏白色层的情况下，把这块棱块放下去？<br>
+            💡 <em>视频提示：</em> 注意魔方如何被暂时“拆开”来让棱块通过，然后再复原。`,
+        [fr]: `<strong>Étape 5. Deuxième couche.</strong><br>
+            😀 Ma recommandation : retourner le cube, mais lorsque vous terminez la 2e couche, remettez le cube dans sa position initiale pour passer à l’étape suivante <br>
+            Maintenant, notre objectif est la couche intermédiaire. La couche blanche doit rester intacte en bas.<br><br>
+            🧠 <em>À méditer :</em><br>
+            1. Trouvez sur la couche supérieure (jaune) une arête qui <strong>n’a pas de jaune</strong>.<br>
+            2. Tournez le haut pour que la couleur latérale de cette arête corresponde au centre de la face, formant un « T » inversé.<br>
+            3. <em>Question :</em> comment descendre cette arête sans détruire la couche blanche ?<br>
+            💡 <em>Indice vidéo :</em> observez comment le cube est temporairement « démonté » pour laisser passer la pièce, puis remonté.`,
+        [de]: `<strong>Schritt 5. Zweite Ebene.</strong><br>
+            😀 Meine Empfehlung: Drehe den Würfel, aber wenn du die 2. Ebene fertigstellst, bringe den Würfel in die ursprüngliche Position zurück, um zum nächsten Schritt überzugehen <br>
+            Jetzt ist unser Ziel die mittlere Ebene. Die weiße Ebene muss unten unberührt bleiben.<br><br>
+            🧠 <em>Denkanstoß:</em><br>
+            1. Finde in der oberen (gelben) Ebene eine Kante, die <strong>kein Gelb enthält</strong>.<br>
+            2. Drehe die Oberseite, sodass die Seitenfarbe dieser Kante mit dem Zentrum der Fläche übereinstimmt und ein umgekehrtes „T“ entsteht.<br>
+            3. <em>Frage:</em> Wie kann man diese Kante nach unten bringen, ohne die weiße Ebene zu zerstören?<br>
+            💡 <em>Hinweis im Video:</em> Achte darauf, wie der Würfel vorübergehend „auseinandergenommen“ wird, um das Element durchzulassen, und dann wieder zusammengesetzt wird.`,
+        [ja]: `<strong>ステップ5。2層目。</strong><br>
+            😀 私のおすすめ：キューブを反転させますが、2層目を完成させたら、次のステップに進むためにキューブを元の向きに戻してください <br>
+            次の中間層が目標です。白の層は下のまま崩さないようにします。<br><br>
+            🧠 <em>考えてみましょう：</em><br>
+            1. 上層（黄色）で、<strong>黄色がない</strong>エッジを見つけます。<br>
+            2. 上層を回して、そのエッジの側面カラーが面のセンターと一致し、逆「T」字を作ります。<br>
+            3. <em>質問：</em> 白い層を壊さずに、このエッジを下ろすにはどうすればよいでしょうか？<br>
+            💡 <em>動画のヒント：</em> キューブが一時的に「崩れて」パーツを通し、その後戻る様子に注目してください。`,
+        [pt_BR]: `<strong>Passo 5. Segunda camada.</strong><br>
+            😀 Minha recomendação: virar o cubo, mas ao terminar a 2ª camada, retorne o cubo à posição inicial para passar ao próximo passo <br>
+            Agora nosso objetivo é a camada intermediária. A camada branca deve permanecer intacta embaixo.<br><br>
+            🧠 <em>Para refletir:</em><br>
+            1. Encontre na camada superior (amarela) uma aresta que <strong>não tenha amarelo</strong>.<br>
+            2. Gire o topo para que a cor lateral dessa aresta coincida com o centro da face, formando um "T" invertido.<br>
+            3. <em>Pergunta:</em> como descer essa aresta sem destruir a camada branca?<br>
+            💡 <em>Dica no vídeo:</em> observe como o cubo é temporariamente "desmontado" para deixar a peça passar e depois é montado de volta.`,
+        [ar]: `<strong>الخطوة 5. الطبقة الثانية.</strong><br>
+            😀 توصيتي: اقلب المكعب، ولكن عندما تُكمل الطبقة الثانية أعد المكعب إلى وضعه الأصلي للانتقال إلى الخطوة التالية <br>
+            الآن هدفنا هو الطبقة الوسطى. يجب أن تبقى الطبقة البيضاء في الأسفل دون أن تتأثر.<br><br>
+            🧠 <em>موضوع للتفكير:</em><br>
+            1. ابحث في الطبقة العليا (الصفراء) عن حافة <strong>لا تحتوي على الأصفر</strong>.<br>
+            2. أدر الطبقة العليا بحيث يتطابق اللون الجانبي لهذه الحافة مع مركز الوجه، لتشكّل حرف "T" مقلوبًا.<br>
+            3. <em>سؤال:</em> كيف ننزل هذه الحافة دون تدمير الطبقة البيضاء؟<br>
+            💡 <em>تلميح في الفيديو:</em> لاحظ كيف "يُفكك" المكعب مؤقتًا لتمرير القطعة ثم يُعاد تركيبه.`,
+        [tr]: `<strong>Adım 5. İkinci katman.</strong><br>
+            😀 Tavsiyem: küpü ters çevir, ancak 2. katmanı bitirdiğinde bir sonraki adıma geçmek için küpü başlangıç konumuna geri getir <br>
+            Şimdi hedefimiz orta katman. Beyaz katman altta bozulmadan kalmalı.<br><br>
+            🧠 <em>Düşünmek için:</em><br>
+            1. Üst (sarı) katmanda <strong>sarı içermeyen</strong> bir kenar bul.<br>
+            2. Üst katmanı, bu kenarın yan rengi yüzün merkeziyle eşleşecek ve ters "T" harfi oluşturacak şekilde döndür.<br>
+            3. <em>Soru:</em> beyaz katmanı bozmadan bu kenarı nasıl aşağı indirebiliriz?<br>
+            💡 <em>Videodaki ipucu:</em> küpün parçayı geçirmek için geçici olarak nasıl "dağıtıldığına" ve sonra yeniden toplandığına dikkat et.`,
+    },
+
+    "sixMessage": {
+        [ru]: `<strong>Шаг 6. Жёлтый крест.</strong><br>
+              Переверните кубик жёлтым центром вверх. Теперь собираем крест на верхней грани.<br><br>
+              🔍 <em>Найдите паттерн:</em> игнорируйте углы, смотрите только на жёлтые рёбра. Вы увидите одну из трёх фигур:<br>
+               • <strong>Точка</strong> (только центр)<br>
+               • <strong>Галочка</strong> (уголок, как стрелка часов на 9:00)<br>
+               • <strong>Линия</strong> (горизонтальная полоса)<br><br>
+              🧠 <em>Задача:</em> существует одна универсальная последовательность из 6 ходов, которая превращает Точку → в Галочку → в Линию → в Крест. Попробуйте найти её, сохраняя нижние два слоя собранными!<br><br>
+              ⚠️ <em>Важно:</em> ориентация рёбер пока не важна — главное, чтобы жёлтые наклейки смотрели вверх.`,
+        [en]: `<strong>Step 6. Yellow cross.</strong><br>
+              Turn the cube with the yellow center up. Now we make a cross on the top face.<br><br>
+              🔍 <em>Find the pattern:</em> ignore the corners, look only at the yellow edges. You will see one of three shapes:<br>
+               • <strong>Dot</strong> (only the center)<br>
+               • <strong>Hook</strong> (a corner, like a clock hand at 9:00)<br>
+               • <strong>Line</strong> (a horizontal bar)<br><br>
+              🧠 <em>Task:</em> there is one universal 6-move sequence that turns Dot → Hook → Line → Cross. Try to find it while keeping the bottom two layers solved!<br><br>
+              ⚠️ <em>Important:</em> the orientation of the edges is not important yet — the main thing is that the yellow stickers face up.`,
+        [sr]: `<strong>Корак 6. Жути крст.</strong><br>
+              Окрените коцку жутим центром нагоре. Сада правимо крст на горњој страни.<br><br>
+              🔍 <em>Пронађите образац:</em> игноришите углове, гледајте само жуте ивице. Видећете један од три облика:<br>
+               • <strong>Тачка</strong> (само центар)<br>
+               • <strong>Кука</strong> (угао, као казаљка на 9:00)<br>
+               • <strong>Линија</strong> (хоризонтална трака)<br><br>
+              🧠 <em>Задатак:</em> постоји један универзални низ од 6 потеза који претвара Тачку → Куку → Линију → Крст. Покушајте да га пронађете док доња два слоја остају састављена!<br><br>
+              ⚠️ <em>Важно:</em> оријентација ивица још није важна — главно је да жуте налепнице гледају нагоре.`,
+        [es]: `<strong>Paso 6. Cruz amarilla.</strong><br>
+              Gira el cubo con el centro amarillo hacia arriba. Ahora formamos la cruz en la cara superior.<br><br>
+              🔍 <em>Encuentra el patrón:</em> ignora las esquinas, mira solo las aristas amarillas. Verás una de estas tres figuras:<br>
+               • <strong>Punto</strong> (solo el centro)<br>
+               • <strong>Gancho</strong> (una esquina, como la manecilla a las 9:00)<br>
+               • <strong>Línea</strong> (una franja horizontal)<br><br>
+              🧠 <em>Tarea:</em> existe una secuencia universal de 6 movimientos que convierte Punto → Gancho → Línea → Cruz. ¡Intenta encontrarla manteniendo las dos capas inferiores resueltas!<br><br>
+              ⚠️ <em>Importante:</em> la orientación de las aristas aún no importa; lo principal es que las pegatinas amarillas miren hacia arriba.`,
+        [zh_CN]: `<strong>第 6 步。黄色十字。</strong><br>
+              把魔方翻到黄色中心朝上。现在在上层做十字。<br><br>
+              🔍 <em>寻找图案：</em> 忽略角块，只看黄色棱块。你会看到三种形状之一：<br>
+               • <strong>点</strong>（只有中心）<br>
+               • <strong>勾</strong>（一个角，像指向 9:00 的时针）<br>
+               • <strong>线</strong>（水平横条）<br><br>
+              🧠 <em>任务：</em> 有一个通用的 6 步序列，可以把点 → 勾 → 线 → 十字。试着在保持下面两层完成的情况下找到它！<br><br>
+              ⚠️ <em>重要：</em> 棱块方向暂时不重要——关键是黄色贴纸朝上。`,
+        [fr]: `<strong>Étape 6. Croix jaune.</strong><br>
+              Retournez le cube avec le centre jaune vers le haut. Nous formons maintenant la croix sur la face supérieure.<br><br>
+              🔍 <em>Trouvez le motif :</em> ignorez les coins, regardez seulement les arêtes jaunes. Vous verrez l’une des trois figures :<br>
+               • <strong>Point</strong> (seulement le centre)<br>
+               • <strong>Crochet</strong> (un coin, comme l’aiguille sur 9:00)<br>
+               • <strong>Ligne</strong> (une bande horizontale)<br><br>
+              🧠 <em>Tâche :</em> il existe une séquence universelle de 6 mouvements qui transforme Point → Crochet → Ligne → Croix. Essayez de la trouver en gardant les deux couches inférieures résolues !<br><br>
+              ⚠️ <em>Important :</em> l’orientation des arêtes n’est pas encore importante — l’essentiel est que les autocollants jaunes regardent vers le haut.`,
+        [de]: `<strong>Schritt 6. Gelbes Kreuz.</strong><br>
+              Drehe den Würfel mit dem gelben Zentrum nach oben. Jetzt bilden wir das Kreuz auf der oberen Fläche.<br><br>
+              🔍 <em>Finde das Muster:</em> Ignoriere die Ecken, schaue nur auf die gelben Kanten. Du siehst eine von drei Figuren:<br>
+               • <strong>Punkt</strong> (nur das Zentrum)<br>
+               • <strong>Haken</strong> (eine Ecke, wie der Uhrzeiger auf 9:00)<br>
+               • <strong>Linie</strong> (ein horizontaler Streifen)<br><br>
+              🧠 <em>Aufgabe:</em> Es gibt eine universelle Sequenz aus 6 Zügen, die Punkt → Haken → Linie → Kreuz verwandelt. Versuche, sie zu finden, während die unteren zwei Ebenen gelöst bleiben!<br><br>
+              ⚠️ <em>Wichtig:</em> Die Orientierung der Kanten ist noch nicht wichtig — Hauptsache, die gelben Aufkleber zeigen nach oben.`,
+        [ja]: `<strong>ステップ6。黄色い十字。</strong><br>
+              黄色センターが上になるようにキューブを反転します。次に上面で十字を作ります。<br><br>
+              🔍 <em>パターンを見つける：</em> コーナーは無視し、黄色いエッジだけを見ます。次の3つの形のどれかになります：<br>
+               • <strong>点</strong>（センターのみ）<br>
+               • <strong>フック</strong>（9時の時計針のような角）<br>
+               • <strong>線</strong>（横棒）<br><br>
+              🧠 <em>課題：</em> 点 → フック → 線 → 十字 に変える、6手の万能シーケンスが1つあります。下2層を揃えたまま、それを見つけてみましょう！<br><br>
+              ⚠️ <em>重要：</em> エッジの向きはまだ重要ではありません——黄色いステッカーが上を向いていれば大丈夫です。`,
+        [pt_BR]: `<strong>Passo 6. Cruz amarela.</strong><br>
+              Vire o cubo com o centro amarelo para cima. Agora montamos a cruz na face superior.<br><br>
+              🔍 <em>Encontre o padrão:</em> ignore os cantos, olhe apenas para as arestas amarelas. Você verá uma destas três figuras:<br>
+               • <strong>Ponto</strong> (apenas o centro)<br>
+               • <strong>Gancho</strong> (um canto, como o ponteiro às 9:00)<br>
+               • <strong>Linha</strong> (uma faixa horizontal)<br><br>
+              🧠 <em>Tarefa:</em> existe uma sequência universal de 6 movimentos que transforma Ponto → Gancho → Linha → Cruz. Tente encontrá-la mantendo as duas camadas de baixo resolvidas!<br><br>
+              ⚠️ <em>Importante:</em> a orientação das arestas ainda não importa — o principal é que os adesivos amarelos apontem para cima.`,
+        [ar]: `<strong>الخطوة 6. الصليب الأصفر.</strong><br>
+              اقلب المكعب بحيث يكون المركز الأصفر في الأعلى. الآن نكوّن الصليب على الوجه العلوي.<br><br>
+              🔍 <em>ابحث عن النمط:</em> تجاهل الزوايا، وانظر فقط إلى الحواف الصفراء. سترى أحد الأشكال الثلاثة:<br>
+               • <strong>نقطة</strong> (المركز فقط)<br>
+               • <strong>خطاف</strong> (زاوية، مثل عقرب الساعة عند 9:00)<br>
+               • <strong>خط</strong> (شريط أفقي)<br><br>
+              🧠 <em>المهمة:</em> يوجد تسلسل عالمي من 6 حركات يحوّل النقطة → الخطاف → الخط → الصليب. حاول العثور عليه مع إبقاء الطبقتين السفليتين مكتملتين!<br><br>
+              ⚠️ <em>مهم:</em> اتجاه الحواف غير مهم الآن — الأهم أن تتجه الملصقات الصفراء إلى الأعلى.`,
+        [tr]: `<strong>Adım 6. Sarı haç.</strong><br>
+              Küpü sarı merkez yukarı bakacak şekilde çevir. Şimdi üst yüzde haç oluşturuyoruz.<br><br>
+              🔍 <em>Deseni bul:</em> köşeleri yok say, sadece sarı kenarlara bak. Şu üç şekilden birini göreceksin:<br>
+               • <strong>Nokta</strong> (sadece merkez)<br>
+               • <strong>Kanca</strong> (saat 9:00 yönündeki ibrik gibi bir köşe)<br>
+               • <strong>Çizgi</strong> (yatay şerit)<br><br>
+              🧠 <em>Görev:</em> Nokta → Kanca → Çizgi → Haç dönüşümünü sağlayan 6 hamlelik evrensel bir dizi vardır. Alt iki katmanı çözülmüş tutarak onu bulmayı dene!<br><br>
+              ⚠️ <em>Önemli:</em> kenarların yönü henüz önemli değil — önemli olan sarı çıkartmaların yukarı bakması.`,
+    },
+
+    "sevenMessage": {
+        [ru]: `<strong>Шаг 7. Расставить углы.</strong><br>
+              Теперь нужно поставить 4 жёлтых угла на <strong>правильные места</strong>.<br><br>
+              🎯 <em>Что значит "правильное место"?</em> Угол должен находиться между тремя центрами тех же цветов. Например, красно-сине-жёлтый угол должен стоять на пересечении красного, синего и жёлтого центров.<br><br>
+              <em>Подсказка:</em> ориентация угла пока не важна — жёлтый может смотреть куда угодно. Главное, чтобы угол стоял между правильными центрами.<br><br>
+              💡 <em>В видео:</em> обратите внимание на алгоритм, который меняет местами 3 угла, не трогая четвёртый.`,
+        [en]: `<strong>Step 7. Place the corners.</strong><br>
+              Now you need to put the 4 yellow corners in the <strong>correct places</strong>.<br><br>
+              🎯 <em>What does "correct place" mean?</em> A corner must be between the three centers of the same colors. For example, the red-blue-yellow corner must be at the intersection of the red, blue, and yellow centers.<br><br>
+              <em>Hint:</em> the orientation of the corner is not important yet — yellow can face anywhere. The main thing is that the corner is between the correct centers.<br><br>
+              💡 <em>In the video:</em> pay attention to the algorithm that swaps 3 corners without touching the fourth.`,
+        [sr]: `<strong>Корак 7. Поставите углове.</strong><br>
+              Сада треба поставити 4 жута угла на <strong>правилна места</strong>.<br><br>
+              🎯 <em>Шта значи "правилно место"?</em> Угао мора бити између три центра истих боја. На пример, црвено-плаво-жути угао мора стајати на пресеку црвеног, плавог и жутог центра.<br><br>
+              <em>Савет:</em> оријентација угла још није важна — жуто може гледати било где. Главно је да угао стоји између правилних центра.<br><br>
+              💡 <em>У видеу:</em> обратите пажњу на алгоритам који мења места 3 угла, не дирајући четврти.`,
+        [es]: `<strong>Paso 7. Colocar las esquinas.</strong><br>
+              Ahora hay que poner las 4 esquinas amarillas en los <strong>lugares correctos</strong>.<br><br>
+              🎯 <em>¿Qué significa "lugar correcto"?</em> La esquina debe estar entre los tres centros de sus mismos colores. Por ejemplo, la esquina rojo-azul-amarilla debe estar en la intersección de los centros rojo, azul y amarillo.<br><br>
+              <em>Pista:</em> la orientación de la esquina aún no importa — el amarillo puede mirar a cualquier lado. Lo principal es que la esquina esté entre los centros correctos.<br><br>
+              💡 <em>En el vídeo:</em> presta atención al algoritmo que intercambia 3 esquinas sin tocar la cuarta.`,
+        [zh_CN]: `<strong>第 7 步。放置角块。</strong><br>
+              现在需要把 4 个黄色角块放到<strong>正确位置</strong>。<br><br>
+              🎯 <em>什么是“正确位置”？</em> 角块必须位于三个相同颜色中心之间。例如，红-蓝-黄角块应位于红色、蓝色和黄色中心的交界处。<br><br>
+              <em>提示：</em> 角块方向暂时不重要——黄色可以朝向任意方向。关键是角块要位于正确的中心之间。<br><br>
+              💡 <em>视频中：</em> 注意那个交换 3 个角块而不动第 4 个的算法。`,
+        [fr]: `<strong>Étape 7. Placer les coins.</strong><br>
+              Il faut maintenant placer les 4 coins jaunes aux <strong>bons emplacements</strong>.<br><br>
+              🎯 <em>Que signifie « bon emplacement » ?</em> Le coin doit se trouver entre les trois centres de mêmes couleurs. Par exemple, le coin rouge-bleu-jaune doit être à l’intersection des centres rouge, bleu et jaune.<br><br>
+              <em>Indice :</em> l’orientation du coin n’est pas encore importante — le jaune peut regarder n’importe où. L’essentiel est que le coin soit entre les bons centres.<br><br>
+              💡 <em>Dans la vidéo :</em> observez l’algorithme qui échange 3 coins sans toucher le quatrième.`,
+        [de]: `<strong>Schritt 7. Ecken platzieren.</strong><br>
+              Jetzt müssen die 4 gelben Ecken an die <strong>richtigen Plätze</strong> gebracht werden.<br><br>
+              🎯 <em>Was bedeutet „richtiger Platz“?</em> Die Ecke muss zwischen den drei Zentren derselben Farben liegen. Zum Beispiel muss die rot-blau-gelbe Ecke am Schnittpunkt der roten, blauen und gelben Zentren stehen.<br><br>
+              <em>Hinweis:</em> Die Orientierung der Ecke ist noch nicht wichtig — Gelb kann überall hinzeigen. Hauptsache, die Ecke liegt zwischen den richtigen Zentren.<br><br>
+              💡 <em>Im Video:</em> Achte auf den Algorithmus, der 3 Ecken vertauscht, ohne die vierte zu berühren.`,
+        [ja]: `<strong>ステップ7。コーナーを配置。</strong><br>
+              次に、4つの黄色いコーナーを<strong>正しい位置</strong>に置きます。<br><br>
+              🎯 <em>「正しい位置」とは？</em> コーナーは、同じ色の3つのセンターの間に来る必要があります。たとえば、赤-青-黄のコーナーは、赤、青、黄のセンターの交点に置きます。<br><br>
+              <em>ヒント：</em> コーナーの向きはまだ重要ではありません——黄色はどこを向いていても構いません。大切なのは、正しいセンターの間にあることです。<br><br>
+              💡 <em>動画内：</em> 4つ目のコーナーに触れずに3つのコーナーを入れ替えるアルゴリズムに注目してください。`,
+        [pt_BR]: `<strong>Passo 7. Posicionar os cantos.</strong><br>
+              Agora é preciso colocar os 4 cantos amarelos nos <strong>lugares corretos</strong>.<br><br>
+              🎯 <em>O que significa "lugar correto"?</em> O canto deve ficar entre os três centros das mesmas cores. Por exemplo, o canto vermelho-azul-amarelo deve ficar na interseção dos centros vermelho, azul e amarelo.<br><br>
+              <em>Dica:</em> a orientação do canto ainda não importa — o amarelo pode apontar para qualquer lado. O principal é que o canto fique entre os centros corretos.<br><br>
+              💡 <em>No vídeo:</em> observe o algoritmo que troca 3 cantos sem mexer no quarto.`,
+        [ar]: `<strong>الخطوة 7. ترتيب الزوايا.</strong><br>
+              الآن يجب وضع الزوايا الصفراء الأربع في <strong>أماكنها الصحيحة</strong>.<br><br>
+              🎯 <em>ما معنى "المكان الصحيح"؟</em> يجب أن تكون الزاوية بين ثلاثة مراكز بنفس ألوانها. على سبيل المثال، يجب أن تكون الزاوية الحمراء-الزرقاء-الصفراء عند تقاطع المراكز الأحمر والأزرق والأصفر.<br><br>
+              <em>تلميح:</em> اتجاه الزاوية غير مهم حاليًا — يمكن أن يتجه الأصفر إلى أي جهة. الأهم أن تكون الزاوية بين المراكز الصحيحة.<br><br>
+              💡 <em>في الفيديو:</em> لاحظ الخوارزمية التي تبدّل 3 زوايا دون المساس بالرابعة.`,
+        [tr]: `<strong>Adım 7. Köşeleri yerleştir.</strong><br>
+              Şimdi 4 sarı köşeyi <strong>doğru yerlere</strong> koymak gerekiyor.<br><br>
+              🎯 <em>"Doğru yer" ne demek?</em> Köşe, aynı renkteki üç merkezin arasında olmalıdır. Örneğin, kırmızı-mavi-sarı köşe, kırmızı, mavi ve sarı merkezlerin kesişiminde olmalıdır.<br><br>
+              <em>İpucu:</em> köşenin yönü henüz önemli değil — sarı herhangi bir yöne bakabilir. Önemli olan köşenin doğru merkezler arasında olmasıdır.<br><br>
+              💡 <em>Videoda:</em> dördüncü köşeye dokunmadan 3 köşeyi yer değiştiren algoritmaya dikkat et.`,
+    },
+
+    "eightMessage": {
+        [ru]: `<strong>Шаг 8. Развернуть углы. Финал!</strong><br>
+               Последний шаг — развернуть углы так, чтобы жёлтый смотрел вверх.<br><br>
+              ⚠️ <em>Внимание:</em> при развороте одного угла нижние слои <strong>временно разрушатся</strong>. Это нормально! Не паникуйте.<br><br>
+              <em>Принцип:</em> используйте одну и ту же короткую последовательность (4 хода) для каждого угла. После разворота всех углов кубик магическим образом соберётся сам.<br><br>
+              🎉 <em>Поздравляем! После этого шага кубик будет полностью собран!</em>`,
+        [en]: `<strong>Step 8. Rotate the corners. Final!</strong><br>
+               The last step is to rotate the corners so that yellow faces up.<br><br>
+              ⚠️ <em>Attention:</em> when rotating one corner, the lower layers will <strong>temporarily break</strong>. This is normal! Don't panic.<br><br>
+              <em>Principle:</em> use the same short sequence (4 moves) for each corner. After rotating all corners, the cube will magically solve itself.<br><br>
+              🎉 <em>Congratulations! After this step, the cube will be completely solved!</em>`,
+        [sr]: `<strong>Корак 8. Окрените углове. Финале!</strong><br>
+               Последњи корак је да окренете углове тако да жуто гледа нагоре.<br><br>
+              ⚠️ <em>Пажња:</em> при окретању једног угла, доњи слојеви ће се <strong>привремено разрушити</strong>. То је нормално! Не паничите.<br><br>
+              <em>Принцип:</em> користите исти кратак низ (4 потеза) за сваки угао. Након окретања свих углова, коцка ће се магично сама саставити.<br><br>
+              🎉 <em>Честитамо! Након овог корака коцка ће бити потпуно састављена!</em>`,
+        [es]: `<strong>Paso 8. Girar las esquinas. ¡Final!</strong><br>
+               El último paso es girar las esquinas para que el amarillo mire hacia arriba.<br><br>
+              ⚠️ <em>Atención:</em> al girar una esquina, las capas inferiores se <strong>romperán temporalmente</strong>. ¡Es normal! No entres en pánico.<br><br>
+              <em>Principio:</em> usa la misma secuencia corta (4 movimientos) para cada esquina. Después de girar todas las esquinas, el cubo se resolverá mágicamente solo.<br><br>
+              🎉 <em>¡Felicidades! Después de este paso, el cubo estará completamente resuelto.</em>`,
+        [zh_CN]: `<strong>第 8 步。翻转角块。最终步！</strong><br>
+               最后一步——翻转角块，让黄色朝上。<br><br>
+              ⚠️ <em>注意：</em> 翻转一个角块时，下面几层会<strong>暂时被打乱</strong>。这是正常的！不要慌。<br><br>
+              <em>原则：</em> 对每个角块使用同一个短序列（4 步）。所有角块翻转完成后，魔方会神奇地自动复原。<br><br>
+              🎉 <em>恭喜！完成这一步后，魔方将完全还原！</em>`,
+        [fr]: `<strong>Étape 8. Orienter les coins. Final !</strong><br>
+               La dernière étape consiste à orienter les coins pour que le jaune regarde vers le haut.<br><br>
+              ⚠️ <em>Attention :</em> lorsque vous tournez un coin, les couches inférieures <strong>se cassent temporairement</strong>. C’est normal ! Ne paniquez pas.<br><br>
+              <em>Principe :</em> utilisez la même courte séquence (4 mouvements) pour chaque coin. Après avoir orienté tous les coins, le cube se résoudra comme par magie.<br><br>
+              🎉 <em>Félicitations ! Après cette étape, le cube sera entièrement résolu !</em>`,
+        [de]: `<strong>Schritt 8. Ecken drehen. Finale!</strong><br>
+               Der letzte Schritt ist, die Ecken so zu drehen, dass Gelb nach oben zeigt.<br><br>
+              ⚠️ <em>Achtung:</em> Beim Drehen einer Ecke werden die unteren Ebenen <strong>vorübergehend zerstört</strong>. Das ist normal! Keine Panik.<br><br>
+              <em>Prinzip:</em> Verwende für jede Ecke dieselbe kurze Sequenz (4 Züge). Nach dem Drehen aller Ecken löst sich der Würfel wie von Zauberhand.<br><br>
+              🎉 <em>Glückwunsch! Nach diesem Schritt ist der Würfel vollständig gelöst!</em>`,
+        [ja]: `<strong>ステップ8。コーナーを回す。フィナーレ！</strong><br>
+               最後のステップは、黄色が上を向くようにコーナーを回すことです。<br><br>
+              ⚠️ <em>注意：</em> 1つのコーナーを回すと、下の層が<strong>一時的に崩れます</strong>。これは正常です！慌てないでください。<br><br>
+              <em>原則：</em> 各コーナーに同じ短い手順（4手）を使います。すべてのコーナーを回し終えると、キューブは魔法のように自然と揃います。<br><br>
+              🎉 <em>おめでとうございます！このステップの後、キューブは完全に揃います！</em>`,
+        [pt_BR]: `<strong>Passo 8. Girar os cantos. Final!</strong><br>
+               O último passo é girar os cantos para que o amarelo aponte para cima.<br><br>
+              ⚠️ <em>Atenção:</em> ao girar um canto, as camadas de baixo <strong>se desfazem temporariamente</strong>. Isso é normal! Não entre em pânico.<br><br>
+              <em>Princípio:</em> use a mesma sequência curta (4 movimentos) para cada canto. Depois de girar todos os cantos, o cubo se resolve magicamente sozinho.<br><br>
+              🎉 <em>Parabéns! Após este passo, o cubo estará completamente resolvido!</em>`,
+        [ar]: `<strong>الخطوة 8. تدوير الزوايا. النهاية!</strong><br>
+               الخطوة الأخيرة هي تدوير الزوايا بحيث يتجه الأصفر إلى الأعلى.<br><br>
+              ⚠️ <em>تنبيه:</em> عند تدوير زاوية واحدة، ستنهار الطبقات السفلية <strong>مؤقتًا</strong>. هذا طبيعي! لا داعي للذعر.<br><br>
+              <em>المبدأ:</em> استخدم نفس التسلسل القصير (4 حركات) لكل زاوية. بعد تدوير جميع الزوايا، سيتجمع المكعب من تلقاء نفسه كالسحر.<br><br>
+              🎉 <em>تهانينا! بعد هذه الخطوة سيكون المكعب مكتملًا بالكامل!</em>`,
+        [tr]: `<strong>Adım 8. Köşeleri döndür. Final!</strong><br>
+               Son adım, sarının yukarı bakması için köşeleri döndürmektir.<br><br>
+              ⚠️ <em>Dikkat:</em> bir köşeyi döndürürken alt katmanlar <strong>geçici olarak bozulur</strong>. Bu normaldir! Panik yapma.<br><br>
+              <em>İlke:</em> her köşe için aynı kısa diziyi (4 hamle) kullan. Tüm köşeler döndürüldükten sonra küp sihirli bir şekilde kendiliğinden çözülür.<br><br>
+              🎉 <em>Tebrikler! Bu adımdan sonra küp tamamen çözülmüş olacak!</em>`,
+    },
 };

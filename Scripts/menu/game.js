@@ -1,14 +1,18 @@
 // Scripts/menu/game.js
 import { getObjects, scrambleCube, solveCube } from '../cube.js';
+import { startTrainingCource } from '../cube/training.js';
+import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
+import { p398$art } from '../main/scene.js';
+import { analytics } from '../platform/analytics.js';
+import { game, ui } from '../state.js';
 import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from '../timer.js';
 import { showTimerInGame, updateProgressBar } from '../ui.js';
-import { game, ui } from '../state.js';
-import { lockToLandscape } from '../utils/orientation.js';
 import { cLog, isDev } from '../utils/logger.js';
-import { getPauseMenu, getBlurMenu, showConfirmationDialog, hideMenuContainers } from './modals.js'
-import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
-import { notif } from './data.js';
-import { analytics } from '../platform/analytics.js';
+import { lockToLandscape } from '../utils/orientation.js';
+import { initModeGame } from './data.js';
+import { getBlurMenu, getPauseMenu, hideMenuContainers, showConfirmationDialog } from './modals.js';
+
+const devElements = document.getElementById("devElements");
 
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
@@ -16,7 +20,7 @@ export function initGameButtons(){
     document.getElementById('normalMode').addEventListener('click',  async () => {
         if (!isDev) analytics.gameStarted('normal');
         game.active = true
-        game.mode = 'normal';
+        await initModeGame('normal');
         updateExtraMobileControlsVisibility();
         game.solved = false
         hideMenuContainers()
@@ -41,16 +45,22 @@ export function initGameButtons(){
     document.getElementById('freeMode').addEventListener('click', () => {
         if (!isDev) analytics.gameStarted('free');
         game.active = true
-        game.mode = 'free';
+        initModeGame('free');
         createExtraMobileControls();
         updateExtraMobileControlsVisibility();
         hideMenuContainers();
         startGameTimer();
         lockToLandscape()
+        if (isDev) p398$art(); // хрен кто допетрит что это ахаха
     });
 
-    document.getElementById('trainingMode').addEventListener('click', ()=> {
-        notif.info('🛠Пока в разработке🛠', 'top-right', 4500)
+    document.getElementById('trainingMode').addEventListener('click', async () => {
+        await initModeGame('training')
+        document.getElementById('trainingModal').style.display = 'block';
+        hideMenuContainers()
+        document.getElementById('startTrainingBtn').addEventListener('click', () => {
+            startTrainingCource();
+        })
     })
    
     reset?.addEventListener('click', async () => {
@@ -61,6 +71,8 @@ export function initGameButtons(){
     });
 
     document.getElementById('BackToMenuBtn')?.addEventListener('click', goToMainMenu);
+    document.getElementById('backMenuTrainingBtn')?.addEventListener('click', goToMainMenu);
+    
     document.getElementById('resetAndExitBtn')?.addEventListener('click', () => {
         game.exitMenu = true;
         getPauseMenu().style.display = 'none';
@@ -95,7 +107,8 @@ export function goToMainMenu() {
     game.exitMenu = false;
 
     // Скрываем всё, кроме главного меню
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    document.querySelectorAll('.modal, .modal-std').forEach(m => m.style.display = 'none');
+    if (devElements) devElements.style.display = 'none';
     document.getElementById('mainMenu').style.display = 'flex';
 
     // Очищаем состояние кубика

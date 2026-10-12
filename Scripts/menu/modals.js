@@ -2,6 +2,7 @@
 import { updateSettingTitle } from './help.js';
 import { showWheel } from '../rkUpravlenie.js';
 import { isYandex } from '../platform/detect.js';
+import { t } from '../translations.js';
 
 let blurMenu, pauseMenu;
 
@@ -48,7 +49,7 @@ export function supportModalChanging() {
     } else {
         putStarYandex.style.display = 'none';
         putStar.style.display = 'block';
-        putStar.innerHTML = `Поставить звезду на <a href="https://github.com/Maksim2021-whiteHAKER/Cubik_rubika" target="_blank" style="color: #00aaff;">GitHub</a> ⭐ `;
+        putStar.innerHTML = t('putStar');
         financialHelpWallet.style.display = 'block'
         financialHelpBoosty.style.display = 'block'
         financialHelpDonationAlerts.style.display = 'block'

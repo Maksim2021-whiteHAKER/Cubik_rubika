@@ -28,6 +28,11 @@ export const game = {
     state_sounds: 3,
     rewardAlreadyGiven: false,
     freeModeWarnShown: false,
+    initDev: false,
+    trainingStep: 0,
+    trainingComplete: false,
+    unlockedHints: [],
+    rewardReceived: false
 };
 
 export const ui = {
@@ -55,4 +60,5 @@ export const cube = {
     progressArrows: [],
     rotationAxis: new THREE.Vector3(),
     scrambleMoves: 20,
+    startScrambleStudy: false,
 }

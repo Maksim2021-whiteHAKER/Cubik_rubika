@@ -3,6 +3,7 @@ import { applyColorTheme } from '../cube.js';
 import { resetSettings } from '../platform/settingsStorage.js';
 import { clearStorage, removeItem } from '../platform/storage.js';
 import { resetWheelToDefault } from '../rkUpravlenie.js';
+import { game } from '../state.js';
 import { applyTextures } from '../texturing.js';
 import { updateTextureSelectorOptions } from '../ui.js';
 import { cLog } from '../utils/logger.js';
@@ -44,7 +45,7 @@ export async function clearCustomThemes() {
 export async function clearAllData() {
     const ok = await showConfirmationDialog(
         'ВНИМАНИЕ! Вы собираетесь сбросить ВСЕ настройки и данные.<br>' +
-        'Будут удалены: темы, настройки звука, управление, монеты и прогресс.<br>' +
+        'Будут удалены: темы, настройки звука, управление, монеты, <strong>прогресс обучения</strong> и таблица лидеров.<br>' +
         'Это действие нельзя отменить!'
     );
     if (!ok) return;
@@ -52,6 +53,11 @@ export async function clearAllData() {
     try {
         // 1. Очищаем весь localStorage (включая монеты, настройки и ключи колеса)
         clearStorage();
+
+        game.trainingComplete = false;
+        game.rewardReceived = false;
+        game.trainingStep = 0;
+        game.unlockedHints = [];
         
         // 2. Принудительно восстанавливаем колесо, так как clearStorage его обнулил
         resetWheelToDefault();
@@ -144,6 +150,10 @@ export function initDataButtons() {
     
     if (clearCustomThemesBtn) clearCustomThemesBtn.addEventListener('click', clearCustomThemes);
     if (clearAllDataBtn) clearAllDataBtn.addEventListener('click', clearAllData);
+}
+
+export async function initModeGame(mode) {
+    game.mode = mode;
 }
 
 export const notif = {

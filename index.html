@@ -9,8 +9,10 @@
         <link rel="stylesheet" href="styles/style_menu.css" type="text/css">
         <link rel="stylesheet" href="styles/cursors.css" type="text/css">
         <link rel="stylesheet" href="styles/mainMenu.css" type="text/css">
+        <link rel="stylesheet" href="styles/trainingMode.css" type="text/css">
         <link rel="stylesheet" href="styles/WheelOfFortune.css" type="text/css">
         <link rel="stylesheet" href="styles/notification.css" type="text/css">
+        <link rel="stylesheet" href="styles/Vdk.css" type="text/css">
         <script type="module" src="Scripts/checkProtocol.js"></script>
         <script type="module" src="Scripts/metrika.js"></script>
     </head>
@@ -59,10 +61,8 @@
                 <button id="creatorBtn" class="menu-btn">Создатель</button>
                 <button id="supportBtn" class="menu-btn">Поддержать автора</button>
             </div>
-
-
-
         </div>
+
         <div id="gameModeSelectModal" class="modal_con">
             <div class="modal-content">
                 <span class="close-btn">&otimes;</span>
@@ -73,14 +73,50 @@
         </div>
 
         <!-- Модальные окна -->
+
+        <!-- обучение -->
+        <div id="trainingModal" class="modal-std">
+            <div id="trainingContent" class="modal-content-std">
+                <h2 id="welcomeToTrainingMode">🎓 Режим Обучения</h2>
+                
+                <p id="aboutThisMode">
+                    Добро пожаловать! Этот режим поможет вам понять логику сборки Кубика.
+                </p>
+                
+                <ul id="ul-training">
+                    <li><strong>Самостоятельность:</strong> Мы не даём готовых решений. Вам предстоит проявить смекалку и выполнить задания курса своими силами.</li>
+                    <br>
+                    <li><strong>Умные подсказки:</strong> Если вы застряли, доступны видео-подсказки. Они покажут <em>направление</em> решения, но не весь алгоритм целиком, чтобы сохранить азарт головоломки.</li>
+                </ul>
+
+                <div id="div-training-gift">
+                    <strong id="textGift">🎁 Награда за первое прохождение:</strong><br>
+                    <span id="text150Monet">150 монет / 150 coins</span>
+                </div>
+
+                <div id="containerBtnTraining">
+                    <button id="startTrainingBtn" class="btn-primary">Начать обучение</button>
+                    <button id="backMenuTrainingBtn" class="btn-secondary">Обратно в меню</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="congratsModalEndStudy" class="modal_con">
+            <!--  заполняется в js -->
+        </div>
+
+        <!-- --- -->
         <div id="congratsModal" class="modal_con">
             <div class="modal-content">
                 <h2 id="congrats">🎉 Поздравляем 🎉</h2>
                 <p id="timesolve">Время сборки / Time solve: <BR> <span id="solveTime">00:00:00</span> ч/м/с || h/m/s</p>
-                <button id="resetBtn">Собрать заново</button>
-                <button id="BackToMenuBtn">Вернуться в меню</button>
+                <div class="btns-reset-menu">
+                    <button id="resetBtn" class="menu-btn">Собрать заново</button>
+                    <button id="BackToMenuBtn" class="menu-btn" >Вернуться в меню</button>
+                </div>
             </div>
         </div>
+
         <div id="helpModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&otimes;</span>
@@ -321,7 +357,7 @@
                     </button>
                     <button id="cancelCustomTexturesBtn" class="compact-btn" style="background: #e74c3c; color: white;">
                         Отмена
-                </button>
+                    </button>
                 </div>
             </div>
         </div>
@@ -417,10 +453,38 @@
                 </button>
 
                 <div id="uiTimer" class="ui-timer" style="display: none;">00:00:00</div>
+                <div id="studyModal" class="modal-study" style="display: none; align-items: end; align-items: end;">
+                    <button id="hide-modal" class="hide-btn">🐵</button>
+                    <div id="modalStudyConytainer" class="modal-content-study">
+                        <div id="progressBarContainerStudy">
+                            <div id="progressBarStudy">
+                                <div id="progressFillStudy"></div>
+                            </div>
+                            <div id="progtextStudy"></div>
+                        </div>
+                        <p id="step-0"></p>
+                        <div class="container-btn-study">
+                            <button id="backBtnStudy" class="compact-btn">◀ Назад</button>
+                            <button id="videoHintStudy" class="compact-btn">Подсказка 💡</button>
+                            <button id="nextBtnStudy" class="compact-btn">Далее ▶</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <script src="Scripts/translations.js" type="module"></script>
+        <!-- Модальное окно для видео-подсказки -->
+        <div id="videoHintModal" class="modal-video-overlay" style="display: none;">
+            <div class="modal-video-content">
+                <button id="closeVideoBtn" class="close-video-btn">&times;</button>
+                <video id="hintVideoPlayer" controls playsinline>
+                    <source src="" type="video/mp4">
+                    Ваш браузер не поддерживает воспроизведение видео.
+                </video>
+            </div>
+        </div>
+
         <script src="Scripts/index.js" type="module"></script>
+        <script src="Scripts/translations.js" type="module"></script>
     </body>
 </html>

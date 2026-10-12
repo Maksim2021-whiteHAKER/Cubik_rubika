@@ -7,6 +7,7 @@ import { analytics } from '../platform/analytics.js';
 import { getElapsed } from '../timer.js';
 import { notif } from '../menu/data.js';
 import { addPlayerCoins } from '../platform/storage.js';
+import { testOnUserSolved } from './action.js';
 
 function gettingTimeReward() {
 
@@ -22,10 +23,10 @@ function gettingTimeReward() {
 
     cLog('✅ Кубик собран по позициям и кватернионам!');
 
-    if (game.mode === 'free') {
+    if (game.mode === 'free' || game.mode === 'training') {
         // Показываем предупреждение только если оно еще не было показано за эту сессию
         if (!game.freeModeWarnShown) {
-            notif.warn("⚠ Свободный режим: награда не начисляется", 'center', 6500);
+            notif.warn("⚠ Свободный режим и тренировочном: награда не начисляется за сборку", 'center', 6500);
             game.freeModeWarnShown = true; // Добавь это свойство в game в state.js
         }
         return;
@@ -104,6 +105,12 @@ export function isCubeSolved(debugMode = false) {
         } : false;
         updateProgressBar(0);
         return result;
+    }
+
+    if (game.mode === 'training') {
+        if (game.trainingStep === 1) {
+            return testOnUserSolved()
+        }
     }
     
     if (app.isMouseDown === true) {

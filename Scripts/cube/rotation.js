@@ -5,6 +5,7 @@ import { cube, game, app } from '../state.js';
 import { cLog } from '../utils/logger.js'
 import { getCubesInLayer } from './raycaster.js';
 import { isCubeSolved } from './solved.js';
+import { checkTrainingProcess } from './training.js';
 
 export function rotateLayer(object, normal, isCounterclockwise = false, {record = true} = {}) {
     if (cube.isRotating || !object.parent || !normal.lengthSq()) {
@@ -238,6 +239,10 @@ function finishRotation({ restoreMaterials, saveReferencePositions }) {
     // 5. Проверка «собран ли куб» после вращения
     if (!cube.isScrambling && game.active) {
         isCubeSolved(false);
+    }
+
+    if (typeof checkTrainingProcess === 'function') {
+        checkTrainingProcess();
     }
 }
 

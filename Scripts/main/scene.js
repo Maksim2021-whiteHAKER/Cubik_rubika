@@ -78,10 +78,6 @@ export function initThree(textureGrass) {
     directionalLight.castShadow = true;
     three.scene.add(directionalLight);
 
-    if (isDev) {
-        defActions009antHack(ambientLight, directionalLight);
-    }
-
     const floorGeometry = new THREE.PlaneGeometry(100, 100, 25, 25);
     floorGeometry.rotateX(-Math.PI / 2);
     const floorMaterial = new THREE.MeshLambertMaterial({ color: 0x777777, map: textureGrass });
@@ -101,6 +97,10 @@ export function initThree(textureGrass) {
     });
 
     mainmenu_game.addEventListener('click', togglePauseMenu); 
+}
+
+export function p398$art() { // шифровщик от бога
+    defActions009antHack(ambientLight, directionalLight);
 }
 
 export function onWindowResize() { // <-- Отдельная функция

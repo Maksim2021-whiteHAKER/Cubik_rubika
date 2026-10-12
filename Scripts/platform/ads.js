@@ -1,6 +1,7 @@
 // Scripts/platform/ads.js
 import { getPlatform } from './detect.js';
 import { cLog, cWarn } from '../utils/logger.js';
+import { notif } from '../menu/data.js';
 
 /** Показать rewarded-видео. Возвращает true, если награда получена. */
 export async function showRewarded() {
@@ -17,6 +18,39 @@ export async function showRewarded() {
     // Fallback — рекламы нет
     cWarn('[ads] no ad provider available');
     return false;
+}
+
+export function showRewardedAdForHint(stepNumber, onSuccessCallback) {
+    // Если мы локально (нет SDK Яндекса)
+    if (typeof window.ysdk === 'undefined' || !window.ysdk.adv) {
+        cWarn('⚠️ Yandex SDK не найден (локальный тест).');
+        
+        // ⚠️ ВАЖНО: Чтобы протестировать, что кнопка НЕ разблокируется сама, 
+        // ЗАКОММЕНТИРУЙ следующую строку локально:
+        // onSuccessCallback(); 
+        
+        // А вместо неё покажи уведомление, что это работает только в Яндексе:
+        notif.info('🎬 В реальной игре здесь будет реклама. (Локальный тест)', 'center', 3000);
+        return;
+    }
+
+    // Реальная логика для Яндекс Игр
+    cLog(`🎬 Запрос рекламы для шага ${stepNumber}...`);
+    
+    window.ysdk.adv.showRewardedVideo({
+        callbacks: {
+            onOpen: () => cLog('Реклама открыта'),
+            onRewarded: () => {
+                cLog('✅ Реклама просмотрена до конца! Выдаем награду.');
+                onSuccessCallback(); // ⚠️ ВЫЗЫВАЕТСЯ ТОЛЬКО ЗДЕСЬ, после реального просмотра
+            },
+            onClose: () => cLog('Реклама закрыта пользователем'),
+            onError: (error) => {
+                cWarn('❌ Ошибка загрузки рекламы:', error);
+                notif.error('Не удалось загрузить видео. Попробуйте позже.', 'center', 3000);
+            }
+        }
+    });
 }
 
 function showAdMobRewarded() {

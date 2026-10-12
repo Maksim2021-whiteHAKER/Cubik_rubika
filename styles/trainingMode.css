@@ -1,0 +1,414 @@
+/* id */
+#welcomeToTrainingMode {
+    text-align: center; 
+    margin-bottom: 20px;
+    font-size: 32px;
+}
+
+#trainingContent {
+    max-width: 500px; 
+    text-align: left;
+}
+
+#aboutThisMode {
+    line-height: 1.6; 
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+#ul-training {
+    line-height: 1.6; 
+    margin-left: 20px; 
+    margin-bottom: 20px;
+}
+
+#div-training-gift {
+    background: rgba(241, 196, 15, 0.1); 
+    border: 1px solid #f1c40f; 
+    padding: 15px; 
+    border-radius: 10px; 
+    text-align: center; 
+    margin-bottom: 20px;
+}
+
+#textGift {
+    color: #f1c40f; 
+    font-size: 1.2rem;
+}
+
+#text150Monet {
+    font-size: 1.5rem; 
+    font-weight: bold;
+}
+
+#containerBtnTraining {
+    display: flex; 
+    gap: 10px; 
+    justify-content: center;
+}
+
+#progressBarContainerStudy {
+    position: relative;
+    width: 80%;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+#progressBarStudy {
+    border: 1px solid #7b06be;
+    border-radius: 20px;
+}
+
+#progressFillStudy {
+    background-color: #b2f937d5;
+    border: 1px solid #7b06be;
+    border-radius: 15px;
+    /* width: 25%; */
+}
+
+#progtextStudy {
+    position: absolute;
+    inset: 0;
+    right: -140%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    color: #f1c40f
+
+}
+
+/* Текстовый блок: делаем его гибким */
+#step-0 {
+    flex-grow: 1;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    overflow-wrap: break-word; /* Переносит длинные слова */
+    word-wrap: break-word;
+}
+
+#backBtnStudy, #nextBtnStudy, #videoHintStudy {
+    padding: 6px 5px;
+    border-radius: 20px;
+    margin: 0 0 0 0.5px;
+    padding: 7px;
+    z-index: 100;
+    pointer-events: auto !important;
+}
+
+#backBtnStudy:disabled, #nextBtnStudy:disabled, #videoHintStudy:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
+    
+}
+
+#backBtnStudy {
+    background-color: #cb0022;
+}
+
+#nextBtnStudy {
+    background-color: #00bcaa;
+}
+
+#videoHintStudy {
+    background-color: blueviolet;
+}
+
+#backBtnStudy:not([disabled]):hover {
+    background-color: #990022;
+}
+
+#nextBtnStudy:not([disabled]):hover {
+    background-color: #0099aa;
+}
+
+#videoHintStudy:not([disabled]):hover {
+    background-color: #7b06be;
+}
+
+#study-end {
+    max-height: 270px;
+}
+
+#congratsEndStudy {
+    margin-bottom: 1rem;
+    font-size: 28px;
+}
+
+#textCongratsEndStudyAlredyGain, #textCongratsEndStudyNotGain {
+    margin-bottom: 1.5rem;
+}
+
+#backToMainMenuFromStudy {
+    margin-top: 1rem;
+}
+
+/* id end*/
+
+/* class */
+.modal-std {
+    pointer-events:none ;
+}
+
+.modal-content-std {
+    pointer-events: auto !important;
+}
+
+.btn-primary, .btn-secondary {
+    background-color: #00bcaa;
+    padding: 10px 20px; /* ← Увеличил padding, 5px маловато для кнопок */
+    border-radius: 15px;
+    font-size: 18px;
+    color: white; /* ← Не забудь белый текст! */
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease; /* ← Плавная анимация */
+}
+
+.btn-secondary {
+    background-color: #cb0022;
+}
+
+.btn-primary:hover {
+    background-color: #0099aa;
+    transform: scale(1.05);
+}
+
+.btn-secondary:hover {
+    background-color: #990022;
+    transform: scale(1.05);
+}
+
+.modal-study {
+    position: fixed; /* Фиксируем относительно окна браузера */
+    top: 12%;
+    right: 30px; /* Отступ от правого края */
+    width: 430px; /* Оптимальная ширина для боковой панели */
+    max-width: calc(100vw - 40px); /* Защита от вылезания на очень узких экранах */
+    max-height: 85vh; /* Максимум 85% высоты экрана */
+    z-index: 10000; /* Поверх всех элементов игры */
+}
+
+/* Контент модалки: с умной прокруткой */
+.modal-content-study {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #00ffff;
+    background: rgba(0, 0, 0, 0.85); /* Чуть темнее для контраста текста */
+    border-radius: 15px;
+    color: #fff;
+    padding: 1.2rem;
+    box-sizing: border-box; /* Чтобы padding не ломал ширину */
+    
+    /* МАГИЯ ПРОКРУТКИ: */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Включает скролл, если текст не влезает по высоте */
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #00ffff rgba(0,0,0,0.3);
+    pointer-events: auto !important;
+}
+
+/* Красивый скроллбар для Chrome/Edge/Safari */
+.modal-content-study::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content-study::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+}
+
+.modal-content-study::-webkit-scrollbar-thumb {
+    background: #00ffff;
+    border-radius: 3px;
+}
+
+/* Контейнер для кнопок (прижимаем к низу модалки) */
+.container-btn-study {
+    display: flex;
+    flex-direction: column; /* Кнопки друг под другом для узкой панели */
+    gap: 10px;
+    margin-top: auto; /* Прижимает кнопки к самому низу */
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hide-btn {
+    position: absolute;
+    display: grid;
+    background-color: #990022;
+    border-radius: 32px;
+    top: -45px;
+    right: 0;
+    align-items: center;
+    font-size: 42px;
+    user-select: none;
+    pointer-events: auto !important;
+    z-index: 1000;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.hide-btn::after {
+    content: '🙈';
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.hide-btn.close::after {
+    opacity: 1;
+}
+
+.hide-btn:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+/* class end */
+
+@media (max-width: 1024px) {
+    #trainingModal {
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(10px);
+    }
+
+    #welcomeToTrainingMode {
+        text-align: center; 
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    #trainingContent {
+        max-width: 80%;
+        max-height: 85%;
+        padding: 15px;
+    }
+
+    #ul-training {
+        line-height: 1; 
+        margin-left: 10px; 
+        margin-bottom: 15px;
+    }
+
+    #textGift {
+        color: #f1c40f; 
+        font-size: 0.9rem;
+    }
+    
+    #text150Monet {
+        font-size: 1.2rem; 
+        font-weight: bold;
+    }
+
+    #div-training-gift {
+        border: 0.3px solid #f1c40f; 
+        padding: 3px; 
+        margin-bottom: 15px;
+    }
+    
+    #welcomeToTrainingMode {
+        font-size: 24px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    .modal-study {
+        top: 50%;
+        transform: translateY(-50%);
+        width: 275px;
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    #trainingModal {
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(10px);
+    }
+
+    #welcomeToTrainingMode {
+        text-align: center; 
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    #trainingContent {
+        max-width: 80%;
+        max-height: 85%;
+        padding: 15px;
+    }
+
+    #ul-training {
+        line-height: 1; 
+        margin-left: 10px; 
+        margin-bottom: 15px;
+    }
+
+    #textGift {
+        color: #f1c40f; 
+        font-size: 0.9rem;
+    }
+    
+    #text150Monet {
+        font-size: 1.2rem; 
+        font-weight: bold;
+    }
+
+    #div-training-gift {
+        border: 0.3px solid #f1c40f; 
+        padding: 3px; 
+        margin-bottom: 15px;
+    }
+    
+    #welcomeToTrainingMode {
+        font-size: 24px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    .hide-btn {
+        top: -23px;
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-study {
+        right: 10px;
+        left: 10px; /* На телефоне растягиваем почти на всю ширину для удобства */
+        width: auto;
+        max-width: none;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .modal-content-study {
+        padding: 1rem;
+    }
+    #step-0 {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .hide-btn {
+        top: -20px;
+        font-size: 21px;
+    }
+}
