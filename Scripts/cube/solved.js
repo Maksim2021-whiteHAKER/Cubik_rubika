@@ -7,7 +7,6 @@ import { analytics } from '../platform/analytics.js';
 import { getElapsed } from '../timer.js';
 import { notif } from '../menu/data.js';
 import { addPlayerCoins } from '../platform/storage.js';
-import { testOnUserSolved } from './action.js';
 import { sendScoreToLeaderboard } from '../platform/leaderboard.js';
 
 function gettingTimeReward() {
