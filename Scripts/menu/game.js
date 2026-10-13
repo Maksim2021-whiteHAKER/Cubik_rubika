@@ -4,6 +4,7 @@ import { startTrainingCource } from '../cube/training.js';
 import { createExtraMobileControls, updateExtraMobileControlsVisibility } from '../main/mobileControls.js';
 import { p398$art } from '../main/scene.js';
 import { analytics } from '../platform/analytics.js';
+import { showLeaderboard } from '../platform/leaderboard.js';
 import { game, ui } from '../state.js';
 import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from '../timer.js';
 import { showTimerInGame, updateProgressBar } from '../ui.js';
@@ -56,12 +57,21 @@ export function initGameButtons(){
 
     document.getElementById('trainingMode').addEventListener('click', async () => {
         await initModeGame('training')
+        const startTrainingBtn = document.getElementById('startTrainingBtn')
         document.getElementById('trainingModal').style.display = 'block';
         hideMenuContainers()
-        document.getElementById('startTrainingBtn').addEventListener('click', () => {
-            startTrainingCource();
-        })
+        if (startTrainingBtn) {
+            startTrainingBtn.onclick = () => {
+                if (typeof startTrainingCource === 'function') {
+                    startTrainingCource();
+                }
+            } 
+        }
     })
+
+    document.getElementById('openLeaderboardBtn')?.addEventListener('click', () => {
+        showLeaderboard()
+    });
    
     reset?.addEventListener('click', async () => {
         if (await showConfirmationDialog("Вы действительно хотите начать игру заново?")) {
@@ -107,9 +117,20 @@ export function goToMainMenu() {
     game.exitMenu = false;
 
     // Скрываем всё, кроме главного меню
-    document.querySelectorAll('.modal, .modal-std').forEach(m => m.style.display = 'none');
+    document.querySelectorAll('.modal, .modal-std, .modal-study, .modal_con, .modal-video-overlay').forEach(modal => {
+        modal.style.display = 'none';
+    });
+    
+    // Также явно прячем studyModal по ID (на всякий случай)
+    const studyModal = document.getElementById('studyModal');
+
+    if (studyModal) studyModal.style.display = 'none';
+
     if (devElements) devElements.style.display = 'none';
     document.getElementById('mainMenu').style.display = 'flex';
+
+    const pauseMenu = document.getElementById('pause-menu');
+    if (pauseMenu) { pauseMenu.style.display = 'none'; }
 
     // Очищаем состояние кубика
     if (ui.congratsModal) ui.congratsModal.style.display = 'none';

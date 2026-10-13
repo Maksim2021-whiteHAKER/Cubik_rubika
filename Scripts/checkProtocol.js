@@ -27,5 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         versionGame.textContent = version ;
         let versionConv = conversionVer(version);
         document.getElementById('titleHead').textContent = "Кубик-Рубика v" + versionConv
+        document.getElementById('versionNow').textContent = version + ")";
     }
 });

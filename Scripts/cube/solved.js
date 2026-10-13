@@ -8,6 +8,7 @@ import { getElapsed } from '../timer.js';
 import { notif } from '../menu/data.js';
 import { addPlayerCoins } from '../platform/storage.js';
 import { testOnUserSolved } from './action.js';
+import { sendScoreToLeaderboard } from '../platform/leaderboard.js';
 
 function gettingTimeReward() {
 
@@ -70,6 +71,7 @@ function gettingTimeReward() {
 
     // Гарантируем, что награда не меньше 10 и не больше максимума (защита от багов округления)
     rewardCoins = Math.max(minReward, Math.min(maxReward, rewardCoins));
+    sendScoreToLeaderboard(solveTimeSeconds);
 
     // 4. Начисление валюты
     const newBalance = addPlayerCoins(rewardCoins);
@@ -108,9 +110,7 @@ export function isCubeSolved(debugMode = false) {
     }
 
     if (game.mode === 'training') {
-        if (game.trainingStep === 1) {
-            return testOnUserSolved()
-        }
+        return debugMode ? { isSolved: false, progress: 0, unsolvedObjects: [] } : false;
     }
     
     if (app.isMouseDown === true) {

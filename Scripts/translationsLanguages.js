@@ -1882,16 +1882,16 @@ export const translations = {
               ⚠️ <em>Внимание:</em> при развороте одного угла нижние слои <strong>временно разрушатся</strong>. Это нормально! Не паникуйте.<br><br>
               <em>Принцип:</em> используйте одну и ту же короткую последовательность (4 хода) для каждого угла. После разворота всех углов кубик магическим образом соберётся сам.<br><br>
               🎉 <em>Поздравляем! После этого шага кубик будет полностью собран!</em>`,
-        [en]: `<strong>Step 8. Rotate the corners. Final!</strong><br>
-               The last step is to rotate the corners so that yellow faces up.<br><br>
-              ⚠️ <em>Attention:</em> when rotating one corner, the lower layers will <strong>temporarily break</strong>. This is normal! Don't panic.<br><br>
-              <em>Principle:</em> use the same short sequence (4 moves) for each corner. After rotating all corners, the cube will magically solve itself.<br><br>
-              🎉 <em>Congratulations! After this step, the cube will be completely solved!</em>`,
         [sr]: `<strong>Корак 8. Окрените углове. Финале!</strong><br>
                Последњи корак је да окренете углове тако да жуто гледа нагоре.<br><br>
               ⚠️ <em>Пажња:</em> при окретању једног угла, доњи слојеви ће се <strong>привремено разрушити</strong>. То је нормално! Не паничите.<br><br>
               <em>Принцип:</em> користите исти кратак низ (4 потеза) за сваки угао. Након окретања свих углова, коцка ће се магично сама саставити.<br><br>
               🎉 <em>Честитамо! Након овог корака коцка ће бити потпуно састављена!</em>`,
+        [en]: `<strong>Step 8. Rotate the corners. Final!</strong><br>
+              The last step is to rotate the corners so that yellow faces up.<br><br>
+             ⚠️ <em>Attention:</em> when rotating one corner, the lower layers will <strong>temporarily break</strong>. This is normal! Don't panic.<br><br>
+             <em>Principle:</em> use the same short sequence (4 moves) for each corner. After rotating all corners, the cube will magically solve itself.<br><br>
+             🎉 <em>Congratulations! After this step, the cube will be completely solved!</em>`,
         [es]: `<strong>Paso 8. Girar las esquinas. ¡Final!</strong><br>
                El último paso es girar las esquinas para que el amarillo mire hacia arriba.<br><br>
               ⚠️ <em>Atención:</em> al girar una esquina, las capas inferiores se <strong>romperán temporalmente</strong>. ¡Es normal! No entres en pánico.<br><br>
@@ -1933,4 +1933,74 @@ export const translations = {
               <em>İlke:</em> her köşe için aynı kısa diziyi (4 hamle) kullan. Tüm köşeler döndürüldükten sonra küp sihirli bir şekilde kendiliğinden çözülür.<br><br>
               🎉 <em>Tebrikler! Bu adımdan sonra küp tamamen çözülmüş olacak!</em>`,
     },
+    
+    "lb_loading": {
+        [ru]: "Загрузка...",
+        [sr]: "Учитавање...",
+        [en]: "Loading...",
+        [es]: "Cargando...",
+        [zh_CN]: "加载中...",
+        [fr]: "Chargement...",
+        [de]: "Laden...",
+        [ja]: "読み込み中...",
+        [pt_BR]: "Carregando...",
+        [ar]: "جارٍ التحميل...",
+        [tr]: "Yükleniyor...",
+    },
+
+    "lb_unavailable": {
+        [ru]: "Недоступно в локальном режиме",
+        [sr]: "Недоступно у локалном режиму",
+        [en]: "Unavailable in local mode",
+        [es]: "No disponible en modo local",
+        [zh_CN]: "本地模式下不可用",
+        [fr]: "Indisponible en mode local",
+        [de]: "Im lokalen Modus nicht verfügbar",
+        [ja]: "ローカルモードでは利用できません",
+        [pt_BR]: "Indisponível no modo local",
+        [ar]: "غير متاح في الوضع المحلي",
+        [tr]: "Yerel modda kullanılamaz",
+    },
+
+    "lb_no_data": {
+        [ru]: "Пока нет записей. Будь первым!",
+        [sr]: "Још нема записа. Буди први!",
+        [en]: "No records yet. Be the first!",
+        [es]: "Aún no hay registros. ¡Sé el primero!",
+        [zh_CN]: "暂无记录。成为第一个！",
+        [fr]: "Aucun enregistrement pour l'instant. Soyez le premier !",
+        [de]: "Noch keine Einträge. Sei der Erste!",
+        [ja]: "まだ記録がありません。最初になりましょう！",
+        [pt_BR]: "Ainda não há registros. Seja o primeiro!",
+        [ar]: "لا توجد سجلات بعد. كن الأول!",
+        [tr]: "Henüz kayıt yok. İlk sen ol!",
+    },
+
+    "lb_anonymous": {
+        [ru]: "Аноним",
+        [sr]: "Аноним",
+        [en]: "Anonymous",
+        [es]: "Anónimo",
+        [zh_CN]: "匿名",
+        [fr]: "Anonyme",
+        [de]: "Anonym",
+        [ja]: "匿名",
+        [pt_BR]: "Anônimo",
+        [ar]: "مجهول",
+        [tr]: "Anonim",
+    },
+
+    "loadingLeaders": {
+        [ru]: "Загрузка...",
+        [sr]: "Учитавање...",
+        [en]: "Loading...",
+        [es]: "Cargando...",
+        [zh_CN]: "加载中...",
+        [fr]: "Chargement...",
+        [de]: "Laden...",
+        [ja]: "読み込み中...",
+        [pt_BR]: "Carregando...",
+        [ar]: "جارٍ التحميل...",
+        [tr]: "Yükleniyor...",
+    }
 };

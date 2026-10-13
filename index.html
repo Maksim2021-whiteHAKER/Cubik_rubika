@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="styles/WheelOfFortune.css" type="text/css">
         <link rel="stylesheet" href="styles/notification.css" type="text/css">
         <link rel="stylesheet" href="styles/Vdk.css" type="text/css">
+        <link rel="stylesheet" href="styles/lidrs.css" type="text/css">
         <script type="module" src="Scripts/checkProtocol.js"></script>
         <script type="module" src="Scripts/metrika.js"></script>
     </head>
@@ -111,8 +112,22 @@
                 <h2 id="congrats">🎉 Поздравляем 🎉</h2>
                 <p id="timesolve">Время сборки / Time solve: <BR> <span id="solveTime">00:00:00</span> ч/м/с || h/m/s</p>
                 <div class="btns-reset-menu">
+                    <button id="openLeaderboardBtn" class="menu-btn" style="background-color: #f1c40f; color: #000;">🏆 Лидеры / Leaders</button>
                     <button id="resetBtn" class="menu-btn">Собрать заново</button>
                     <button id="BackToMenuBtn" class="menu-btn" >Вернуться в меню</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно таблицы лидеров -->
+        <div id="leaderboardModal" class="modal_con" style="display: none;">
+            <span class="close-btn">&otimes;</span>
+            <div class="modal-content" id="leaderBoardContent">
+                <span class="close-btn" onclick="document.getElementById('leaderboardModal').style.display='none'">&otimes;</span>
+                <h2 id="leaderboardTitle">🏆 Таблица лидеров / 🏆 Leaderboard</h2>               
+                <div id="leaderboardList">
+                    <!-- Сюда JavaScript будет вставлять игроков -->
+                    <p id="loadingLeaders">Загрузка...</p>
                 </div>
             </div>
         </div>
@@ -154,7 +169,7 @@
                 <h2 id="creator">Создатель/Creator</h2>
                 <div class="creator-info">
                     <div class="creator-details">
-                        <p><strong>Имя/name: </strong>Владимиров Максим / Vladimirov Maksim (4 курс)</p>
+                        <p><strong>Имя/name: </strong>Владимиров Максим / Vladimirov Maksim <br> (4 курс(0.0.1.4+)), сейчас/now : <span id="versionNow"></span> </p>
                         <p><strong>GitHub: </strong><a href="https://github.com/Maksim2021-whiteHAKER"
                                 target="_blank">github.com/Maksim2021-whiteHAKER</a></p>
                         <br>

@@ -1,0 +1,61 @@
+/* styles/lidrs.css*/
+
+#leaderBoardContent {
+    max-width: 500px; 
+    max-height: 80vh; 
+    overflow-y: auto;
+}
+
+#leaderboardTitle {
+    text-align: center; 
+    margin-bottom: 20px;
+}
+
+#leaderboardList {
+    display: flex; flex-direction: column; gap: 10px;
+}
+
+#loadingLeaders {
+    text-align: center; 
+    color: #aaa;
+}
+
+#closeLeaderboardBtn {
+    margin-top: 20px; 
+    width: 100%;
+}
+
+.lb-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lb-entry.is-user {
+    background: rgba(0, 188, 170, 0.2); /* Подсветка текущего игрока */
+    border-color: #00bcaa;
+}
+
+.lb-rank {
+    font-weight: bold;
+    color: #f1c40f;
+    width: 30px;
+}
+
+.lb-name {
+    flex-grow: 1;
+    text-align: left;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lb-score {
+    font-weight: bold;
+    color: #fff;
+}
