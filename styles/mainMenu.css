@@ -23,6 +23,7 @@
 .title {
     border: 1px solid black;
     background-color: rgba(0,0,0,0.7);
+    border-radius: 32px;
     text-align: center;
     width: 50%;
     color: white;
@@ -136,7 +137,7 @@
     background: #1a1a1a;
     border-radius: 15px;
     color: #fff;
-    text-align: 0;
+    text-align: center;
 }
 
 .ui-element {
@@ -440,10 +441,10 @@ p {
   }
 
   .currency_balance {
-    width: 110px;
-    height: 25px;        
+    width: 140px;
+    height: 35px;        
     padding: 0 38px 0 10px;
-    font-size: 0.9rem;
+    font-size: 1.3rem;
   }
 }
 
