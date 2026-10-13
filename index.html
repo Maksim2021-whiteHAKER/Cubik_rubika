@@ -119,6 +119,15 @@
             </div>
         </div>
 
+        <div id="prom-con-mod" class="modal_con" style="display: none;">
+            <div id="promoModalCon" class="modal-content">
+                <span class="close-btn">&otimes;</span>
+                <p id="textMessagePromo" style="display: none;"> 😈 invalid promo</p>
+                PROMOCODE: <input id="promInput" type="text" maxlength="14"></input>
+                <button id="acceptPromo">✔</button>
+            </div>           
+        </div>
+
         <!-- Модальное окно таблицы лидеров -->
         <div id="leaderboardModal" class="modal_con" style="display: none;">
             <span class="close-btn">&otimes;</span>
@@ -319,11 +328,11 @@
                 <!-- Быстрые действия (внизу) -->
                 <div class="quick-actions">
                     <button id="quick-help" class="quick-btn">❓ Помощь</button>
+                    <button id="promBtn" class="quick-btn">PROMOCODE</button>
                     <button id="reset-settings" class="quick-btn">🔄 Сброс</button>
                 </div>
             </div>
         </div>
-
       
         <!-- Модальное окно загрузки пользовательских текстур -->
         <div id="customTextureModal" class="modal_con">

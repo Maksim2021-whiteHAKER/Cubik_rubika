@@ -72,7 +72,12 @@ export function showModal(modal){
 }
 
 export function hideModals() {
+    const textMessagePrm = document.getElementById('textMessagePromo');
+    const inputPrm = document.getElementById('promInput');
     document.querySelectorAll(['.modal','.modal_set','.wheel-container', '.modal_con']).forEach(m => m.style.display = 'none');
+    textMessagePrm.style.display = 'none';
+    inputPrm.value = '';
+    
 }
 
 export function hideModalWF(){

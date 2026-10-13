@@ -32,7 +32,8 @@ export const game = {
     trainingStep: 0,
     trainingComplete: false,
     unlockedHints: [],
-    rewardReceived: false
+    rewardReceived: false,
+    friendPromoGain: false,
 };
 
 export const ui = {

@@ -540,6 +540,39 @@ button, .control-btn {
     border: 2px solid #ecf0f1;
 }
 
+#prom-con-mod {
+  z-index: 20000;
+}
+
+#promInput {
+  border: 1px solid #00ffff;
+  border-radius: 25px;
+  background-color: white;
+  font-size: 23px;
+  color: black;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
+}
+
+#promoModalCon {
+  max-width: 400px;
+}
+
+#acceptPromo {
+  border: 1px dashed #0f9000;
+  background-color: #0f9000;
+  border-radius: 125px;
+  height: 45px;
+  width: 45px;
+  font-size: 25px;
+}
+
+#acceptPromo:hover {
+  background-color: #0d6303;
+  transform: scale(1.1);
+}
+
 /* Адаптация для маленьких экранов */
 @media (max-width: 480px) {    
     .rotate-btn {

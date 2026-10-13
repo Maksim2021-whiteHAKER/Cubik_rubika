@@ -2,17 +2,22 @@
 import { applyColorTheme } from '../cube.js';
 import { unlockCustomTexture } from '../platform/customTexture.js';
 import { getSettings, saveSettings } from '../platform/settingsStorage.js';
-import { getPlayerCoins } from '../platform/storage.js';
+import { addPlayerCoins, getPlayerCoins } from '../platform/storage.js';
 import { initWheelOfFortune, spinWheelThemes } from '../rkUpravlenie.js';
+import { game } from '../state.js';
 import { applyTextures, textureManager } from '../texturing.js';
 import { showBtnUpload, updateCustomThemeUI } from '../ui.js';
 import { cLog } from '../utils/logger.js';
+import { b$932, d8a$31, e8c$32 } from '../utils/shif.js';
 import { notif, resetAllSettings } from './data.js';
 import { updateFormStyle } from './form.js';
 import { showConfirmationDialog, showModal } from './modals.js';
 
 export function initSettings() {
     const unlockBtn = document.getElementById('unlockCustomTheme');
+    const acceptPromo = document.getElementById('acceptPromo');
+    const inputPrm = document.getElementById('promInput');
+    const textMessagePrm = document.getElementById('textMessagePromo');
 
     updateCustomThemeUI();    
     showBtnUpload(); // отображение разблокированой кнопки т.е их должно быть две, т.к после нажатия кнопка скрывается
@@ -39,6 +44,37 @@ export function initSettings() {
         const helpModal = document.getElementById('helpModal');
         if (helpModal) showModal(helpModal);
     });
+
+    document.getElementById('promBtn')?.addEventListener('click', () => {
+        document.getElementById('prom-con-mod').style.display = 'block'
+    })
+
+    acceptPromo?.addEventListener('click', () => {
+        let text = inputPrm.value
+        const textenc = e8c$32(text)
+        const enc2 = d8a$31(textenc, 'en').toString()
+        const arko = b$932().toString()
+        const promoGain = localStorage.getItem('promoFriendGain')
+        promoGain ? game.friendPromoGain = true : game.friendPromoGain = false;
+        if (game.friendPromoGain) {
+            textMessagePrm.innerHTML = 'ты уже получил(а) дружеский подарок 😜 <br> you already gain friend gift 😜';
+            textMessagePrm.style.display = 'block';
+        } else {
+            if (enc2.includes(arko)) {
+                cLog('получено')
+                addPlayerCoins(10);
+                notif.success('Получено 10 💰', 'top-right', 5000)
+                textMessagePrm.innerHTML = '✅ VALID PROMO'
+                textMessagePrm.style.display = 'block';
+                localStorage.setItem('promoFriendGain', 'true');
+                game.friendPromoGain = true;
+            } else {
+                cLog('не получено')
+                textMessagePrm.innerHTML = '😈 INVALID PROMO, промо есть README'
+                textMessagePrm.style.display = 'block';
+            }
+        }
+    })
 
     unlockBtn?.addEventListener('click', async () => {
         const result = unlockCustomTexture();
