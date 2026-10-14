@@ -22,7 +22,7 @@ export function updateProgressBar(percentage){
             // Небольшая задержка для завершения анимации
             setTimeout(() => {
                 if (ui.congratsModal && game.mode === 'normal') {
-                    ui.congratsModal.style.display = 'flex';
+                    ui.congratsModal.style.display = 'block';
                     game.active = false;
                     stopTimer();
                 }

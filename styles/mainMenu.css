@@ -100,7 +100,7 @@
 }
 
 /* Modal Styles */
-.modal, .modal_con, .modal-std {
+.modal, .modal_con, .modal-std, .modal_cong {
     display: none;
     position: fixed;
     top: 0;
