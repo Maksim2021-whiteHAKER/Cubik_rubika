@@ -123,6 +123,7 @@ export function goToMainMenu() {
     
     // Также явно прячем studyModal по ID (на всякий случай)
     const studyModal = document.getElementById('studyModal');
+    const timer = document.getElementById('uiTimer');
 
     if (studyModal) studyModal.style.display = 'none';
 
@@ -131,6 +132,8 @@ export function goToMainMenu() {
 
     const pauseMenu = document.getElementById('pause-menu');
     if (pauseMenu) { pauseMenu.style.display = 'none'; }
+
+    if (timer) { timer.style.display = 'none' }
 
     // Очищаем состояние кубика
     if (ui.congratsModal) ui.congratsModal.style.display = 'none';
