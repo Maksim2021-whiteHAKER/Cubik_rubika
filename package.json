@@ -10,9 +10,12 @@
     "lint:fix": "eslint . --fix",
     "dev": "vite",
     "build": "vite build",
+    "build:vercel": "cross-env VERCEL=1 vite build",
+    "build:yandex": "cross-env YANDEX=1 vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "eslint": "^10.10.0",
     "globals": "^17.12.0",
     "jsdom": "^29.1.1",

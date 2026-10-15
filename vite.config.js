@@ -1,8 +1,14 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 
+function resolveBase() {
+  if (process.env.YANDEX === '1') return './';
+  if (process.env.VERCEL === '1') return '/';
+  return '/Cubik_rubika/';
+}
+
 export default defineConfig({
-  base: process.env.VERCEL === '1' ? '/' : '/Cubik_rubika/',
+  base: resolveBase(),
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
