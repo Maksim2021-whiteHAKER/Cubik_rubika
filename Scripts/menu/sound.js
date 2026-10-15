@@ -155,19 +155,23 @@ export function getMusic() {
 }
 
 // ✅ АВТОМАТИЧЕСКИЙ ЗАПУСК МУЗЫКИ ПОСЛЕ ПЕРВОГО КЛИКА
+// =====================================================================
+// 1. ОБХОД АВТОПЛЕЯ БРАУЗЕРА (Срабатывает при ПЕРВОМ клике/таче/клавише)
+// =====================================================================
 function unlockAudioOnFirstInteraction() {
   const bgMusic = document.getElementById('background_music');
   
-  // Запускаем ТОЛЬКО если музыка есть, она на паузе, и в настройках разрешена музыка
-  if (bgMusic && bgMusic.paused) {
-      if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
-          bgMusic.play().catch(e => {
-              cLog('Audio autoplay blocked until interaction (это нормально при первом клике)');
-          });
-      }
+  // Если музыки нет или она уже играет — ничего не делаем
+  if (!bgMusic || !bgMusic.paused) return;
+
+  // Запускаем ТОЛЬКО если в настройках игрока музыка разрешена
+  if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
+      bgMusic.play().catch(() => {
+          cLog('Audio autoplay blocked (ждем следующего взаимодействия)');
+      });
   }
 
-  // Как только отработали, удаляем слушатели, чтобы не нагружать систему
+  // Как только отработали, удаляем слушатели, чтобы не нагружать систему лишними проверками
   document.removeEventListener('click', unlockAudioOnFirstInteraction);
   document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
   document.removeEventListener('keydown', unlockAudioOnFirstInteraction);
@@ -177,3 +181,28 @@ function unlockAudioOnFirstInteraction() {
 document.addEventListener('click', unlockAudioOnFirstInteraction);
 document.addEventListener('touchstart', unlockAudioOnFirstInteraction);
 document.addEventListener('keydown', unlockAudioOnFirstInteraction);
+
+
+// =====================================================================
+// 2. ПАУЗА ПРИ СВОРАЧИВАНИИ ВКЛАДКИ (Срабатывает при смене visibility)
+// =====================================================================
+document.addEventListener('visibilitychange', () => {
+    const bgMusic = document.getElementById('background_music');
+    if (!bgMusic) return;
+
+    if (document.visibilityState === 'hidden') {
+        // Вкладка скрыта (игрок ушел) -> ставим на паузу и запоминаем состояние
+        if (!bgMusic.paused) {
+            bgMusic.dataset.wasPlaying = 'true';
+            bgMusic.pause();
+        }
+    } else {
+        // Вкладка стала активной (игрок вернулся) -> возобновляем, НО только если она играла И разрешена настройками
+        if (bgMusic.dataset.wasPlaying === 'true') {
+            if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
+                bgMusic.play().catch(() => {}); 
+            }
+            bgMusic.dataset.wasPlaying = 'false';
+        }
+    }
+});
