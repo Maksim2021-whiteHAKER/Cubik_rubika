@@ -6,10 +6,26 @@ import { translations } from "./translationsLanguages.js";
 let version_game = 'lite'
 
 function getUserLanguage() {
-    const browserLang = navigator.language || navigator.userLanguage;
-    const langCode = browserLang.split('-')[0].toLowerCase();
-    // Проверяем, поддерживаем ли мы этот язык, если нет - используем 'ru' по умолчанию
-    return translations['title'] && translations['title'][langCode] ? langCode : 'ru';
+    let langCode = 'ru'; // Фолбэк по умолчанию
+
+    // 1. ПРИОРИТЕТ: Язык из Яндекс SDK (если игра запущена на платформе)
+    if (typeof window.ysdk !== 'undefined' && window.ysdk.environment && window.ysdk.environment.i18n && window.ysdk.environment.i18n.lang) {
+        langCode = window.ysdk.environment.i18n.lang;
+    } 
+    // 2. ФОЛБЭК: Язык браузера (для локальной разработки или других платформ)
+    else {
+        const browserLang = navigator.language || navigator.userLanguage;
+        langCode = browserLang.split('-')[0].toLowerCase();
+    }
+
+    // Нормализация кодов языков (Яндекс может отдать 'zh' вместо 'zh-CN', 'pt' вместо 'pt-BR')
+    if (langCode === 'zh' || langCode === 'zh-CN') langCode = 'zh-CN';
+    if (langCode === 'pt' || langCode === 'pt-BR') langCode = 'pt-BR';
+
+    // Проверяем, поддерживаем ли мы этот язык. Если нет - возвращаем 'ru'
+    const supportedLangs = ['ru', 'sr', 'en', 'es', 'zh-CN', 'fr', 'de', 'ja', 'pt-BR', 'ar', 'tr'];
+    
+    return supportedLangs.includes(langCode) ? langCode : 'ru';
 }
 
 let currentLanguage = getUserLanguage();

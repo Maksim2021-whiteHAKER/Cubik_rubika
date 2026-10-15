@@ -153,3 +153,27 @@ export function initSoundPresets() {
 export function getMusic() {
   return music;
 }
+
+// ✅ АВТОМАТИЧЕСКИЙ ЗАПУСК МУЗЫКИ ПОСЛЕ ПЕРВОГО КЛИКА
+function unlockAudioOnFirstInteraction() {
+  const bgMusic = document.getElementById('background_music');
+  
+  // Запускаем ТОЛЬКО если музыка есть, она на паузе, и в настройках разрешена музыка
+  if (bgMusic && bgMusic.paused) {
+      if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
+          bgMusic.play().catch(e => {
+              cLog('Audio autoplay blocked until interaction (это нормально при первом клике)');
+          });
+      }
+  }
+
+  // Как только отработали, удаляем слушатели, чтобы не нагружать систему
+  document.removeEventListener('click', unlockAudioOnFirstInteraction);
+  document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
+  document.removeEventListener('keydown', unlockAudioOnFirstInteraction);
+}
+
+// Вешаем слушатели на ПЕРВОЕ взаимодействие с игрой
+document.addEventListener('click', unlockAudioOnFirstInteraction);
+document.addEventListener('touchstart', unlockAudioOnFirstInteraction);
+document.addEventListener('keydown', unlockAudioOnFirstInteraction);

@@ -20,34 +20,46 @@ export async function showRewarded() {
     return false;
 }
 
-export function showRewardedAdForHint(stepNumber, onSuccessCallback) {
-    // Если мы локально (нет SDK Яндекса)
+export function showRewardedAdForHint(stepNumber, onRewardCallback) {
+    // Находим элемент фоновой музыки по ID из index.html
+    const bgMusic = document.getElementById('background_music');
+    const wasPlaying = bgMusic && !bgMusic.paused; // Запоминаем, играла ли она
+
     if (typeof window.ysdk === 'undefined' || !window.ysdk.adv) {
-        cWarn('⚠️ Yandex SDK не найден (локальный тест).');
-        
-        // ⚠️ ВАЖНО: Чтобы протестировать, что кнопка НЕ разблокируется сама, 
-        // ЗАКОММЕНТИРУЙ следующую строку локально:
-        // onSuccessCallback(); 
-        
-        // А вместо неё покажи уведомление, что это работает только в Яндексе:
-        notif.info('🎬 В реальной игре здесь будет реклама. (Локальный тест)', 'center', 3000);
+        cWarn('Yandex SDK не найден. Симуляция успешного просмотра рекламы.');
+        onRewardCallback();
         return;
     }
 
-    // Реальная логика для Яндекс Игр
-    cLog(`🎬 Запрос рекламы для шага ${stepNumber}...`);
+    cLog(`🎬 Запрос рекламы для подсказки шага ${stepNumber}...`);
     
     window.ysdk.adv.showRewardedVideo({
         callbacks: {
-            onOpen: () => cLog('Реклама открыта'),
-            onRewarded: () => {
-                cLog('✅ Реклама просмотрена до конца! Выдаем награду.');
-                onSuccessCallback(); // ⚠️ ВЫЗЫВАЕТСЯ ТОЛЬКО ЗДЕСЬ, после реального просмотра
+            onOpen: () => {
+                cLog('Реклама открыта');
+                // ⏸ ПАУЗИМУ МУЗЫКУ ПРИ ОТКРЫТИИ РЕКЛАМЫ
+                if (bgMusic && wasPlaying) {
+                    bgMusic.pause();
+                }
             },
-            onClose: () => cLog('Реклама закрыта пользователем'),
+            onRewarded: () => {
+                cLog('✅ Реклама просмотрена до конца! Выдаем подсказку.');
+                onRewardCallback();
+            },
+            onClose: () => {
+                cLog('Реклама закрыта');
+                // ▶️ ВОЗОБНОВЛЯЕМ МУЗЫКУ ПРИ ЗАКРЫТИИ
+                if (bgMusic && wasPlaying) {
+                    bgMusic.play().catch(() => {});
+                }
+            },
             onError: (error) => {
                 cWarn('❌ Ошибка загрузки рекламы:', error);
                 notif.error('Не удалось загрузить видео. Попробуйте позже.', 'center', 3000);
+                // ▶️ ВОЗОБНОВЛЯЕМ МУЗЫКУ ДАЖЕ ПРИ ОШИБКЕ
+                if (bgMusic && wasPlaying) {
+                    bgMusic.play().catch(() => {});
+                }
             }
         }
     });
