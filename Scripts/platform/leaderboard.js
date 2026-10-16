@@ -2,7 +2,7 @@
 import { cLog, cWarn } from '../utils/logger.js';
 import { t } from '../translations.js';
 
-const LEADERBOARD_NAME = 'best_time_normal';
+const LEADERBOARD_NAME = 'bestTimeNormal';
 
 /**
  * Отправить результат в таблицу лидеров
