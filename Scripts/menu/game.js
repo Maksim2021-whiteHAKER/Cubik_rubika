@@ -8,12 +8,28 @@ import { showLeaderboard } from '../platform/leaderboard.js';
 import { game, ui } from '../state.js';
 import { pauseTimer, resumeTimer, startGameTimer, stopTimer } from '../timer.js';
 import { showTimerInGame, updateProgressBar } from '../ui.js';
-import { cLog, isDev } from '../utils/logger.js';
+import { cLog, cWarn, isDev } from '../utils/logger.js';
 import { lockToLandscape } from '../utils/orientation.js';
 import { initModeGame } from './data.js';
 import { getBlurMenu, getPauseMenu, hideMenuContainers, showConfirmationDialog } from './modals.js';
 
 const devElements = document.getElementById("devElements");
+
+function updateWidthMobileBtn(sizeSmall = false) {
+    const targetElement = document.getElementById('mobile-controls') || document.getElementById('extra-mobile-controls');
+    if (!targetElement) {
+        cWarn('⚠️ updateWidthMobileBtn: Элемент mobile-controls не найден в DOM! Проверь id в HTML.');
+        return;
+    }
+
+    if (sizeSmall) {
+        targetElement.classList.add('small');
+        cLog('✅ Добавлен класс .small к мобильным кнопкам');
+    } else {
+        targetElement.classList.remove('small');
+        cLog('✅ Удален класс .small у мобильных кнопок');
+    }
+}
 
 export function initGameButtons(){
     const reset = document.getElementById('resetBtn');
@@ -23,6 +39,7 @@ export function initGameButtons(){
         game.active = true
         await initModeGame('normal');
         updateExtraMobileControlsVisibility();
+        updateWidthMobileBtn()
         game.solved = false
         hideMenuContainers()
         cLog(`_objectsNM: ${getObjects().length}`);
@@ -49,6 +66,7 @@ export function initGameButtons(){
         initModeGame('free');
         createExtraMobileControls();
         updateExtraMobileControlsVisibility();
+        updateWidthMobileBtn()
         hideMenuContainers();
         startGameTimer();
         lockToLandscape()
@@ -59,6 +77,7 @@ export function initGameButtons(){
         await initModeGame('training')
         const startTrainingBtn = document.getElementById('startTrainingBtn')
         document.getElementById('trainingModal').style.display = 'block';
+        updateWidthMobileBtn(true);
         hideMenuContainers()
         if (startTrainingBtn) {
             startTrainingBtn.onclick = () => {
