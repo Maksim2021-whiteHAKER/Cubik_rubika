@@ -155,19 +155,15 @@ export function getMusic() {
 }
 
 // =====================================================================
-// ПОДСКАЗКА ДЛЯ ЗАПУСКА МУЗЫКИ
+// 1. ПОДСКАЗКА И ОБХОД АВТОПЛЕЯ (Срабатывает при ПЕРВОМ клике/таче)
 // =====================================================================
 function showMusicHint() {
   const hint = document.getElementById('musicHint');
   const bgMusic = document.getElementById('background_music');
   
-  // Показываем подсказку ТОЛЬКО если:
-  // 1. Элемент существует
-  // 2. Музыка на паузе
-  // 3. В настройках музыка разрешена
   if (hint && bgMusic && bgMusic.paused) {
       if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
-          hint.classList.add('hidden');
+          hint.classList.remove('hidden'); // ✅ Убираем hidden, чтобы показать
       }
   }
 }
@@ -175,46 +171,61 @@ function showMusicHint() {
 function hideMusicHint() {
   const hint = document.getElementById('musicHint');
   if (hint) {
-      hint.classList.remove('hidden');
-      // Полностью удаляем из DOM через 300мс (после анимации исчезновения)
+      hint.classList.add('hidden'); // ✅ Добавляем hidden, чтобы скрыть
       setTimeout(() => {
           if (hint) hint.remove();
       }, 300);
   }
 }
 
-// =====================================================================
-// ОБХОД АВТОПЛЕЯ БРАУЗЕРА (Срабатывает при ПЕРВОМ клике/таче/клавише)
-// =====================================================================
 function unlockAudioOnFirstInteraction() {
   const bgMusic = document.getElementById('background_music');
   
-  // Если музыки нет или она уже играет — ничего не делаем
   if (!bgMusic || !bgMusic.paused) {
       hideMusicHint();
       return;
   }
 
-  // Запускаем ТОЛЬКО если в настройках игрока музыка разрешена
   if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
       bgMusic.play().catch(() => {
           cLog('Audio autoplay blocked (ждем следующего взаимодействия)');
       });
   }
 
-  // Скрываем подсказку
   hideMusicHint();
 
-  // Как только отработали, удаляем слушатели
   document.removeEventListener('click', unlockAudioOnFirstInteraction);
   document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
   document.removeEventListener('keydown', unlockAudioOnFirstInteraction);
 }
 
-// Вешаем слушатели на ПЕРВОЕ взаимодействие с игрой
 document.addEventListener('click', unlockAudioOnFirstInteraction);
 document.addEventListener('touchstart', unlockAudioOnFirstInteraction);
 document.addEventListener('keydown', unlockAudioOnFirstInteraction);
 
-// Показываем подсказку после инициализации звука (с небольшой задержкой)
 setTimeout(showMusicHint, 500);
+
+
+// =====================================================================
+// 2. ПАУЗА ПРИ СВОРАЧИВАНИИ ВКЛАДКИ (✅ ТОТ САМЫЙ ФИКС 1.3!)
+// =====================================================================
+document.addEventListener('visibilitychange', () => {
+    const bgMusic = document.getElementById('background_music');
+    if (!bgMusic) return;
+
+    if (document.visibilityState === 'hidden') {
+        // Вкладка скрыта -> ставим на паузу и запоминаем состояние
+        if (!bgMusic.paused) {
+            bgMusic.dataset.wasPlaying = 'true';
+            bgMusic.pause();
+        }
+    } else {
+        // Вкладка стала активной -> возобновляем, если она играла и разрешена
+        if (bgMusic.dataset.wasPlaying === 'true') {
+            if (game.state_sounds === sounds.ONLY_MUSIC || game.state_sounds === sounds.BOTH_ON) {
+                bgMusic.play().catch(() => {}); 
+            }
+            bgMusic.dataset.wasPlaying = 'false';
+        }
+    }
+});

@@ -2002,5 +2002,19 @@ export const translations = {
         [pt_BR]: "Carregando...",
         [ar]: "جارٍ التحميل...",
         [tr]: "Yükleniyor...",
+    },
+
+    "textHintMusicCircle": {
+        [ru]: "Нажми в любом месте чтобы включить музыку",
+        [sr]: "Кликните било где да бисте укључили музику",
+        [en]: "playing sound after click anyplace",
+        [es]: "Haz clic en cualquier lugar para activar la música.",
+        [zh_CN]: "点击任意位置即可播放音乐。",
+        [fr]: "Cliquez n’importe où pour lancer la musique.",
+        [de]: "Klicken Sie irgendwo, um die Musik zu starten.",
+        [ja]: "音楽をオンにするには、任意の場所をタップします",
+        [pt_BR]: "Toque em qualquer lugar para ligar a música",
+        [ar]: "انقر في أي مكان لتشغيل الموسيقى",
+        [tr]: "Tıkla herhangi bir yere müziği açmak için",
     }
 };
